@@ -110,6 +110,7 @@ function SignupSide ({currentUser, setCurrentUser, sampleUsers}) {
             const loginPayload = {
                 username: loginUsername,
                 password: loginPassword,
+                email: loginEmail
             };
     
             const decryptedPayload = JSON.stringify(loginPayload)

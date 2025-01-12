@@ -60,7 +60,7 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
                     <img src={profileUser.backGround}/>
                 </div>
                 <div className="z-45 absolute -translate-x-1 -bottom-1/4  mb-2 ml-4 max-h-35 max-w-35">
-                    <img className="rounded-full h-32 w-full object-cover border-4 border-black" src={profileUser.profileP}/>
+                    <img className="rounded-full h-32 w-full object-cover border-4 border-black" src={profileUser.profilePic}/>
                 </div>
             </div>
             <div className="flex-[200] flex-col h-full w-full flex px-4 py-3">
