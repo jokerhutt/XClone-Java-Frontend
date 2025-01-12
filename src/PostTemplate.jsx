@@ -11,6 +11,7 @@ function PostTemplate ({post, posts, currentUser}) {
 
     const [postUser, setPostUser] = useState(null);
     const [postLikes, setPostLikes] = useState([]);
+    const [postReposts, setPostReposts] = useState([]);
 
     useEffect(() => {
         if (post) {
@@ -39,13 +40,30 @@ function PostTemplate ({post, posts, currentUser}) {
         }
     }, [post])
 
+    useEffect(() => { 
+        if (post) {
+            const postID = post.postId;
+            fetch(`http://localhost:6790/api/postreposts/${postID}`)
+            .then(response => response.json())
+            .then(data => setPostReposts([...data]))
+            .catch(error => {
+                console.error('Error fetching reposts:', error);
+                setPostReposts([]);
+            });
+        }
+    }, [post])
+
     useEffect(() => {
         console.log("Post user template user is + " + JSON.stringify(postUser))
     }, [postUser])
 
     useEffect(() => {
         console.log("Post user template likes is: " + JSON.stringify(postLikes))
-    }, [postUser])
+    }, [postLikes])
+
+    useEffect(() => {
+        console.log("Post user template reposts is: " + JSON.stringify(postLikes))
+    }, [postReposts])
 
     function handleNewLike () {
         const likeInformation = {
@@ -78,6 +96,35 @@ function PostTemplate ({post, posts, currentUser}) {
 
     }
 
+    function handleNewRepost () {
+        const repostInformation = {
+            postId: post.postId,
+            reposterId: currentUser.id
+        };
+        const decryptedPayload = JSON.stringify(repostInformation)
+        console.log("Super Secret Repost Information is being sent..." + decryptedPayload)
+
+        fetch('http://localhost:6790/api/newrepost', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(repostInformation),
+          })
+          .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Failed to sign up');
+            }
+        })
+        .then((data) => {
+              alert('Repost added successfully!');
+              console.log("Response is " + JSON.stringify(data));
+              setPostReposts([...data]);  
+              console.log(data);
+        });
+
+    }
+
     return(
         <>
         {postUser ? (
@@ -101,7 +148,9 @@ function PostTemplate ({post, posts, currentUser}) {
                     <FaRegComment className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
                     </div>
                     <div className="flex items-center gap-2">
-                    <FaRetweet className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
+                    <FaRetweet 
+                    onClick={() => handleNewRepost()}
+                    className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{postReposts.length}</p>
                     </div>
                     <div className="flex items-center gap-2">
                     <FaRegHeart 
