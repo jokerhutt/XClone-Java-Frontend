@@ -14,6 +14,8 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
     const {profileUserId} = useParams();
     const [profileUser, setProfileUser] = useState(null);
     const [userPosts, setUserPosts] = useState(null);
+    const [userLikedPosts, setUserLikedPosts] = useState(null);
+    const [tabState, setTabState] = useState("posts");
 
     useEffect(() => {
         console.log("user ID is " + profileUserId)
@@ -37,6 +39,16 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
     useEffect(() => {
         console.log("userpost is: " + JSON.stringify(userPosts));
     }, [userPosts])
+
+    useEffect(() => {
+        fetch(`http://localhost:6790/api/grabuserlikes/${profileUserId}`)
+        .then(response => response.json())
+        .then((data) => setUserLikedPosts([...data]))
+        .catch(error => {
+            console.error('Error fetching likes:', error);
+            setUserLikedPosts([]);
+        });
+    }, [])
 
     return(
         <div className="flex flex-col flex-grow">
@@ -96,8 +108,15 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
 
             </div>
             <div className="flex-[55] h-full w-full border-b-2 border-twitterBorder pb-0.5 justify-evenly px-4 flex">
-                <div className="flex justify-center w-full h-full hover:bg-twitterBorder">
-                    <p className="border-b-2 font-bold border-twitterBlue">Posts</p>
+                <div 
+                onClick={() => setTabState("posts")}
+                className="flex justify-center w-full h-full hover:bg-twitterBorder">
+                    {tabState == "posts" ? (
+                        <p className="border-b-2 font-bold border-twitterBlue">Posts</p>
+                    ) : (
+                        <p>Posts</p>
+                    )}
+                    
                 </div>
                 <div className="flex justify-center items-center w-full h-full hover:bg-twitterBorder">
                     <p>Replies</p>
@@ -105,8 +124,15 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
                 <div className="flex justify-center items-center w-full h-full hover:bg-twitterBorder">
                     <p>Media</p>
                 </div>
-                <div className="flex justify-center items-center w-full h-full hover:bg-twitterBorder">
-                    <p>Likes</p>
+                <div 
+                onClick={() => setTabState("likes")}
+                className="flex justify-center items-center w-full h-full hover:bg-twitterBorder">
+                    {tabState == "likes" ? (
+                        <p className="border-b-2 font-bold border-twitterBlue">Likes</p>
+                    ) : (
+                        <p>Likes</p>
+                    )}
+                    
                 </div>
             </div>
 
@@ -115,9 +141,17 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
 
         </div>
 
-        {userPosts ? (
+        {userPosts && tabState == "posts" ? (
             <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder">
                 {userPosts.map((post) => 
+                    <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
+                        <PostTemplate currentUser={currentUser} post={post} posts={posts}/>
+                    </div>
+                )}
+            </div>
+        ) : userLikedPosts && tabState == "likes" ? (
+            <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder">
+                {userLikedPosts.map((post) => 
                     <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
                         <PostTemplate currentUser={currentUser} post={post} posts={posts}/>
                     </div>
