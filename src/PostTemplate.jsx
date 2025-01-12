@@ -7,9 +7,10 @@ import { FaRetweet } from "react-icons/fa6";
 
 
 
-function PostTemplate ({post, posts}) {
+function PostTemplate ({post, posts, currentUser}) {
 
     const [postUser, setPostUser] = useState(null);
+    const [postLikes, setPostLikes] = useState([]);
 
     useEffect(() => {
         if (post) {
@@ -25,9 +26,57 @@ function PostTemplate ({post, posts}) {
 
     }, [posts, post])
 
+    useEffect(() => { 
+        if (post) {
+            const postID = post.postId;
+            fetch(`http://localhost:6790/api/postlikes/${postID}`)
+            .then(response => response.json())
+            .then(data => setPostLikes([...data]))
+            .catch(error => {
+                console.error('Error fetching likes:', error);
+                setPostLikes([]);
+            });
+        }
+    }, [post])
+
     useEffect(() => {
         console.log("Post user template user is + " + JSON.stringify(postUser))
     }, [postUser])
+
+    useEffect(() => {
+        console.log("Post user template likes is: " + JSON.stringify(postLikes))
+    }, [postUser])
+
+    function handleNewLike () {
+        const likeInformation = {
+            postId: post.postId,
+            likerId: currentUser.id
+        };
+
+        const decryptedPayload = JSON.stringify(likeInformation)
+
+        console.log("Super Secret Like Information is being sent..." + decryptedPayload)
+
+        fetch('http://localhost:6790/api/newlike', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(likeInformation),
+          })
+          .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Failed to sign up');
+            }
+        })
+        .then((data) => {
+              alert('Like added successfully!');
+              console.log("Response is " + JSON.stringify(data));
+              setPostLikes([...data]);  
+              console.log(data);
+        });
+
+    }
 
     return(
         <>
@@ -55,7 +104,9 @@ function PostTemplate ({post, posts}) {
                     <FaRetweet className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
                     </div>
                     <div className="flex items-center gap-2">
-                    <FaRegHeart className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
+                    <FaRegHeart 
+                    onClick={() => handleNewLike()}
+                    className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{postLikes.length}</p>
                     </div>
                     <div className="flex items-center gap-2">
                     <FaRegChartBar className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>

@@ -16,7 +16,7 @@ function MainFeed ({posts, currentUser, setCurrentUser, setPosts}) {
             <div className="flex-[3] flex flex-col-reverse justify-end h-full w-full border-l-2  border-r-2 border-twitterBorder">
                 {posts.map((post) => 
                 <div className="pb-2 border-b-2 border-twitterBorder">
-                    <PostTemplate post={post} posts={posts}/>
+                    <PostTemplate post={post} posts={posts} currentUser={currentUser} />
                 </div>
                 )}
             </div>
