@@ -161,7 +161,7 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
             <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder">
                 {userLikedPosts.map((post) => 
                     <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
-                        <PostTemplate profileUser={profileUser} currentUser={currentUser} post={post} posts={posts}/>
+                        <PostTemplate currentUser={currentUser} post={post} posts={posts}/>
                     </div>
                 )}
             </div>
