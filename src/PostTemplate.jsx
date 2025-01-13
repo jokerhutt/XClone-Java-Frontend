@@ -7,11 +7,12 @@ import { FaRetweet } from "react-icons/fa6";
 
 
 
-function PostTemplate ({post, posts, currentUser}) {
+function PostTemplate ({post, posts, currentUser, profileUser}) {
 
     const [postUser, setPostUser] = useState(null);
     const [postLikes, setPostLikes] = useState([]);
     const [postReposts, setPostReposts] = useState([]);
+    const [likedByUser, setLikedByUser] = useState(false);
 
     useEffect(() => {
         if (post) {
@@ -39,6 +40,18 @@ function PostTemplate ({post, posts, currentUser}) {
             });
         }
     }, [post])
+
+    useEffect(() => {
+        if (postLikes && currentUser) {
+            const likedByUser = postLikes.find(like => like.likerId === currentUser.id);
+            if (likedByUser){
+                setLikedByUser(true);
+            } else {
+                setLikedByUser(false);
+            }
+        }
+
+    }, [postLikes, currentUser]);
 
     useEffect(() => { 
         if (post) {
@@ -135,10 +148,24 @@ function PostTemplate ({post, posts, currentUser}) {
             </div>
 
             <div className="flex flex-col text-white flex-[12]">
-                <div className="flex gap-2">
-                    <p className="font-bold">{postUser.displayName}</p>
-                    <p className="text-twitterBorder">@{postUser.username}</p>
+                {profileUser && post.creatorId != profileUser.id ? (
+                <div className="flex justify-between">
+                    <div className="flex gap-2">
+                            <p className="font-bold">{postUser.displayName}</p>
+                            <p className="text-twitterBorder">@{postUser.username}</p>
+                    </div>
+                    <div className="flex items-center gap-2 text-twitterBlue font-semibold">
+                        <FaRetweet className="text-lg"/>
+                        <p> {profileUser.displayName} Reposted </p>
+                    </div>
                 </div>
+                ) : (
+                    <div className="flex gap-2">
+                        <p className="font-bold">{postUser.displayName}</p>
+                        <p className="text-twitterBorder">@{postUser.username}</p>
+                    </div>
+                )}
+
                 <div className="text-white pt-1 pb-2">
                     <p>{post.postText}</p>
                 </div>
@@ -152,11 +179,20 @@ function PostTemplate ({post, posts, currentUser}) {
                     onClick={() => handleNewRepost()}
                     className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{postReposts.length}</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                    <FaRegHeart 
-                    onClick={() => handleNewLike()}
-                    className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{postLikes.length}</p>
-                    </div>
+                    {likedByUser ? (
+                        <div className="flex items-center gap-2">
+                        <FaRegHeart 
+                        onClick={() => handleNewLike()}
+                        className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{postLikes.length}</p>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-2">
+                        <FaRegHeart 
+                        onClick={() => handleNewLike()}
+                        className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{postLikes.length}</p>
+                        </div>
+                    )}
+                    
                     <div className="flex items-center gap-2">
                     <FaRegChartBar className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
                     </div>

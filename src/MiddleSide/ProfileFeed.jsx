@@ -14,6 +14,7 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
     const {profileUserId} = useParams();
     const [profileUser, setProfileUser] = useState(null);
     const [userPosts, setUserPosts] = useState(null);
+    const [userPostsAndReposts, setUserPostsAndReposts] = useState([]);
     const [userLikedPosts, setUserLikedPosts] = useState(null);
     const [tabState, setTabState] = useState("posts");
 
@@ -33,12 +34,19 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
     }, [profileUser])
 
     useEffect(() => {
+        fetch(`http://localhost:6790/api/grabpostsandreposts/${profileUserId}`)
+        .then(response => response.json())
+        .then((data) => setUserPostsAndReposts([...data]))
+        .catch(error => console.error(error));
+    }, [profileUser])
+
+    useEffect(() => {
         console.log("userdata is: " + JSON.stringify(profileUser));
     }, [profileUser])
 
     useEffect(() => {
-        console.log("userpost is: " + JSON.stringify(userPosts));
-    }, [userPosts])
+        console.log("userpost is: " + JSON.stringify(userPostsAndReposts));
+    }, [userPostsAndReposts])
 
     useEffect(() => {
         fetch(`http://localhost:6790/api/grabuserlikes/${profileUserId}`)
@@ -143,9 +151,9 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
 
         {userPosts && tabState == "posts" ? (
             <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder">
-                {userPosts.map((post) => 
+                {userPostsAndReposts.map((post) => 
                     <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
-                        <PostTemplate currentUser={currentUser} post={post} posts={posts}/>
+                        <PostTemplate profileUser={profileUser} currentUser={currentUser} post={post} posts={posts}/>
                     </div>
                 )}
             </div>
@@ -153,7 +161,7 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
             <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder">
                 {userLikedPosts.map((post) => 
                     <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
-                        <PostTemplate currentUser={currentUser} post={post} posts={posts}/>
+                        <PostTemplate profileUser={profileUser} currentUser={currentUser} post={post} posts={posts}/>
                     </div>
                 )}
             </div>
