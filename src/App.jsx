@@ -7,6 +7,7 @@ import LeftFeed from './LeftSide/LeftFeed'
 import MainFeed from './MiddleSide/MainFeed'
 import ProfileFeed from './MiddleSide/ProfileFeed';
 import './App.css'
+import NotificationFeed from './MiddleSide/NotificationFeed';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -15,6 +16,7 @@ function App() {
 
   const [sampleUsers, setSampleUsers] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [userNotifications, setUserNotifications] = useState([]);
 
   useEffect(() => {
     fetch('http://localhost:6790/api/sampleusers')
@@ -39,6 +41,22 @@ function App() {
     console.log("Updated posts state:", posts); // Logs whenever sampleUsers changes
   }, [posts]);
 
+  useEffect(() => {
+    if (currentUser) {
+      const profileUserId = currentUser.id;
+      fetch(`http://localhost:6790/api/notifications/${profileUserId}`)
+      .then(response => response.json())
+      .then(data => setUserNotifications([...data]))
+      .catch(error => console.error(error));  
+    }
+
+
+  }, [currentUser])
+
+  useEffect(() => {
+    console.log("Updated notifications state:", userNotifications); // Logs whenever sampleUsers changes
+  }, [userNotifications]);
+
   
   return (
     <Router>
@@ -47,7 +65,7 @@ function App() {
 
       <div className='grid grid-cols-12 h-screen w-screen'>
         <div className='flex bg-black h-screen flex-col col-span-3'>
-          <LeftFeed currentUser={currentUser} setCurrentUser={setCurrentUser}/>
+          <LeftFeed currentUser={currentUser} setCurrentUser={setCurrentUser} userNotifications={userNotifications} setUserNotifications={setUserNotifications}/>
         </div>
         <div className='flex bg-black h-screen flex-col col-span-5'>
           <Routes>
@@ -62,6 +80,12 @@ function App() {
               path="/:profileUserId" 
               element={
               <ProfileFeed currentUser={currentUser} setCurrentUser={setCurrentUser} posts={posts} setPosts={setPosts}/>}
+            />
+
+            <Route 
+              path="/notifications/:profileUserId" 
+              element={
+              <NotificationFeed userNotifications={userNotifications} currentUser={currentUser}/>}
             />
             
 

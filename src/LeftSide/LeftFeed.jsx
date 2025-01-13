@@ -25,10 +25,18 @@ function LeftFeed ({currentUser}) {
                     <FaSearch/>
                     <p>Explore</p>
                 </Link>
-                <Link to="/notifications" className="flex gap-4 items-center text-2xl font-bold">
+                {currentUser ? (
+                <Link to={`/notifications/${currentUser.id}`} className="flex gap-4 items-center text-2xl font-bold">
                     <FaBell/>
                     <p>Notifications</p>
                 </Link>
+                ) : (
+                <div className="flex gap-4 items-center text-2xl font-bold">
+                    <FaBell/>
+                    <p>Notifications</p>
+                </div>
+                )}
+
                 <Link to="/messages" className="flex gap-4 items-center text-2xl font-bold">
                     <IoMdMail/>
                     <p>Messages</p>

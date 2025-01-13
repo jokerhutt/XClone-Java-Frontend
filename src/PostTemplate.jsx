@@ -81,7 +81,11 @@ function PostTemplate ({post, posts, currentUser, profileUser}) {
     function handleNewLike () {
         const likeInformation = {
             postId: post.postId,
-            likerId: currentUser.id
+            likerId: currentUser.id,
+            notificationType: "LIKE",
+            notificationObject: post.postId, //TODO
+            receiverId: post.creatorId,
+            senderId: currentUser.id 
         };
 
         const decryptedPayload = JSON.stringify(likeInformation)
@@ -105,8 +109,7 @@ function PostTemplate ({post, posts, currentUser, profileUser}) {
               console.log("Response is " + JSON.stringify(data));
               setPostLikes([...data]);  
               console.log(data);
-        });
-
+        })
     }
 
     function handleNewRepost () {
