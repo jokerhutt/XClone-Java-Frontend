@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FaHeart } from "react-icons/fa";
 import '../App.css'
 
 function NotificationTemplate ({notification, currentUser}) {
@@ -44,7 +45,7 @@ function NotificationTemplate ({notification, currentUser}) {
     }, [notificationObject])
 
     useEffect(() => {
-        console.log("Notifications sender user is: " + notificationObject)
+        console.log("Notifications sender user is: " + JSON.stringify(notificationSender))
     }, [notificationSender])
 
     useEffect(() => {
@@ -56,23 +57,21 @@ function NotificationTemplate ({notification, currentUser}) {
         {currentUser && notification && notificationObject && notificationSender ? (
             <div>
             {notification.notificationType === "LIKE" ? (
-                <div className="w-full h-full flex pl-4 pr-4 pt-3 flex-grow">
+                <div className="w-full h-full flex pl-4 pr-4 pt-3 pb-3 flex-grow">
 
-                    <div>
-                        
+                    <div className="pr-4">
+                    <FaHeart className="text-red-500 text-3xl"/>
                     </div>
 
-                    <div className="flex flex-col text-white flex-[12]">
+                    <div className="flex flex-col text-white flex-[12] gap-3">
                         <div>
-                            <img src={notificationSender.profilePic}/>
+                            <img src={notificationSender.profilePic} className="h-8 rounded-full"/>
                         </div>
                         <div>
-                            <div>
-                                <p> {notificationSender.displayName} liked your post</p>
-                            </div>
-                            <div>
-                                <p> {notificationObject.postText} </p>
-                            </div>
+                            <p> {notificationSender.displayName} liked your post</p>
+                        </div>
+                        <div>
+                            <p className="text-twitterBorder"> {notificationObject.postText} </p>
                         </div>
                     </div>
 
