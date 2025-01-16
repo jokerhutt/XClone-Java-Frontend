@@ -54,10 +54,7 @@ function ReplyTemplate ({currentUser, replyObject, profileUser, posts}) {
         <div>
             {replyObject && replyPost && replyPostUser ? (
                 <div className="flex-col w-full h-full">
-                    <PostTemplate currentUser={currentUser} post={replyPost} posts={posts} isAReplyParent={isAReplyParent}/>
-                    <div>
-                    <ReplyPostTemplate currentUser={currentUser} post={replyObject} postUser={replyPostUser}/>
-                    </div>
+                    <PostTemplate currentUser={currentUser} replyObject={replyObject} replyPostUser={replyPostUser} post={replyPost} posts={posts} isAReplyParent={isAReplyParent}/>
                 </div>
 
             ) : (

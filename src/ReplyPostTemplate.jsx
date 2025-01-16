@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 
 
-function ReplyPostTemplate ({post, currentUser, postUser}) {
+function ReplyPostTemplate ({post, currentUser, postUser, ogPostUser}) {
 
     const [postLikes, setPostLikes] = useState([]);
     const [postReposts, setPostReposts] = useState([]);
@@ -33,7 +33,7 @@ function ReplyPostTemplate ({post, currentUser, postUser}) {
                         <p className="text-twitterBorder">@{postUser.username}</p>
                     </div>
                     <div>
-                        <p className="text-twitterBorder"> Replying to <span className="text-twitterBlue">@{postUser.username}</span> </p>
+                        <p className="text-twitterBorder"> Replying to <span className="text-twitterBlue">@{ogPostUser.username}</span> </p>
                     </div>
                     </div>
 

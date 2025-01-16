@@ -56,7 +56,7 @@ function ReplyingModal ({post, postUser, currentUser}) {
             </div>
             <div className="flex w-full">
                 <div className="w-16 flex-col justify-center h-full mb-0 pb-0">
-                        <img src={postUser.profilePic} className="h-12 w-12 rounded-full"/>
+                    <img src={postUser.profilePic} className="h-12 w-12 rounded-full"/>
                     <div className="flex items-center justify-center h-full bg-none w-full">
                         <div className="bg-none border-r-0.5 border-l-0.5 border-twitterBorder w-0.5 mr-2 border h-4 max-h-20 mb-2 mt-0">
                         </div>
@@ -71,7 +71,6 @@ function ReplyingModal ({post, postUser, currentUser}) {
                     </div>
                 </div>
             </div>
-
             <div className="flex w-full">
                 <div className="w-16 flex items-center justify-center h-6 bg-none">
                     <div className="bg-none border-r-0.5 border-l-0.5 border-twitterBorder w-0.5 mr-2 border h-full">
@@ -83,7 +82,6 @@ function ReplyingModal ({post, postUser, currentUser}) {
                     </div>
                 </div>
             </div>
-
             <div className="flex w-full" >
                 <div className="w-16 flex justify-start items-start">
                     <img src={currentUser.profilePic} className="h-12 w-12 rounded-full"/>

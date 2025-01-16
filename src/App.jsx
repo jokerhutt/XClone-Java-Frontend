@@ -67,7 +67,7 @@ function App() {
         <div className='flex bg-black h-screen flex-col col-span-3'>
           <LeftFeed currentUser={currentUser} setCurrentUser={setCurrentUser} userNotifications={userNotifications} setUserNotifications={setUserNotifications}/>
         </div>
-        <div className='flex bg-black h-screen flex-col col-span-5'>
+        <div className='flex bg-black h-full flex-col col-span-5 overflow-y-auto scrollbar-none'>
           <Routes>
 
             <Route 

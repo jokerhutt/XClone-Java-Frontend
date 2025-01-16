@@ -145,7 +145,7 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
                 <div 
                 onClick={() => setTabState("replies")}
                 className="flex justify-center items-center w-full h-full hover:bg-twitterBorder">
-                    {tabState == "likes" ? (
+                    {tabState == "replies" ? (
                         <p className="border-b-2 font-bold border-twitterBlue">Replies</p>
                     ) : (
                         <p>Replies</p>

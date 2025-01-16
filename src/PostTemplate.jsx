@@ -5,11 +5,12 @@ import ReplyingModal from "./ReplyingModal";
 import { FaRegComment, FaRegHeart, FaRegChartBar, FaRegBookmark } from "react-icons/fa";
 import { FaRetweet } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import ReplyPostTemplate from "./ReplyPostTemplate";
 
 
 
 
-function PostTemplate ({post, posts, currentUser, profileUser, isAReplyParent}) {
+function PostTemplate ({post, posts, currentUser, profileUser, isAReplyParent, replyObject, replyPostUser}) {
 
     const [postUser, setPostUser] = useState(null);
     const [postLikes, setPostLikes] = useState([]);
@@ -174,6 +175,7 @@ function PostTemplate ({post, posts, currentUser, profileUser, isAReplyParent}) 
     return(
         <>
         {postUser ? (
+            <div className="w-full h-full flex-col">
             <div className="w-full h-full flex pl-4 pr-4 pt-3 flex-grow">
 
             {isReplyingToggle ? (
@@ -259,7 +261,14 @@ function PostTemplate ({post, posts, currentUser, profileUser, isAReplyParent}) 
                 
                 </div>
             </div>
-
+        </div>
+        {isAReplyParent ? (
+                <div>
+                    <ReplyPostTemplate currentUser={currentUser} post={replyObject} postUser={replyPostUser} ogPostUser={postUser}/>
+                </div>
+            ) : (
+                null
+            )}
         </div>
         ) : (
             <div>

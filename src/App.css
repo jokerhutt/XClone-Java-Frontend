@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.flex {
+  scrollbar-width: none; /* Firefox */
+}
+
+.flex::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
