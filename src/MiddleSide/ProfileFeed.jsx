@@ -6,6 +6,7 @@ import { IoIosCalendar } from "react-icons/io";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { MdCalendarMonth } from "react-icons/md";
 import { useParams } from "react-router"
+import { useNavigate } from "react-router-dom";
 import '../App.css'
 import PostTemplate from "../PostTemplate";
 
@@ -17,6 +18,8 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
     const [userPostsAndReposts, setUserPostsAndReposts] = useState([]);
     const [userLikedPosts, setUserLikedPosts] = useState(null);
     const [tabState, setTabState] = useState("posts");
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         console.log("user ID is " + profileUserId)
@@ -66,7 +69,7 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
 
             <div className="flex-[45] flex h-full w-full px-4">
                 <div className="w-8 mr-2 h-full flex justify-start text-lg items-center">
-                    <FaArrowLeft/>
+                    <FaArrowLeft onClick={() => navigate(-1)} className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
                 </div>
                 <div>
                     <div className="flex gap-2 items-center">
@@ -80,7 +83,7 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
                     <img src={profileUser.backGround}/>
                 </div>
                 <div className="z-45 absolute -translate-x-1 -bottom-1/4  mb-2 ml-4 max-h-35 max-w-35">
-                    <img className="rounded-full h-32 w-full object-cover border-4 border-black" src={profileUser.profilePic}/>
+                    <img className="rounded-full h-32 w-32 object-cover border-4 border-black" src={profileUser.profilePic}/>
                 </div>
             </div>
             <div className="flex-[200] flex-col h-full w-full flex px-4 py-3">
@@ -98,7 +101,7 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
                     <p className="text-sm">@{profileUser.username}</p>
                 </div>
                 <div className="flex-[65] h-full w-full flex flex-col gap-0.5">
-                    <p>21 year old on my web development journey</p>
+                    <p>{profileUser.bio}</p>
                     <div className="flex gap-5 mb-3 text-twitterBorder">
                         <div className="flex items-center gap-2">
                             <MdOutlineLocationOn className="text-twitterBorder"/>

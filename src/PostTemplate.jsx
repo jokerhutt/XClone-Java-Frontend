@@ -1,8 +1,10 @@
 import "./App.css"
 
 import { useState, useEffect } from "react";
+import ReplyingModal from "./ReplyingModal";
 import { FaRegComment, FaRegHeart, FaRegChartBar, FaRegBookmark } from "react-icons/fa";
 import { FaRetweet } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 
 
@@ -13,6 +15,8 @@ function PostTemplate ({post, posts, currentUser, profileUser}) {
     const [postLikes, setPostLikes] = useState([]);
     const [postReposts, setPostReposts] = useState([]);
     const [likedByUser, setLikedByUser] = useState(false);
+    const [isReplyingToggle, setIsReplyingToggle] = useState(false);
+    const [postReplies, setPostReplies] = useState([]);
 
     useEffect(() => {
         if (post) {
@@ -27,6 +31,24 @@ function PostTemplate ({post, posts, currentUser, profileUser}) {
         )
 
     }, [posts, post])
+
+    useEffect(() => {
+        if (post) {
+            const postID = post.postId
+            fetch(`http://localhost:6790/api/replies/${postID}`)
+            .then(response => response.json())
+            .then(data => setPostReplies([...data]))
+            .catch(error => console.error(error))
+        }
+        else (
+            alert("Broooo")
+        )
+
+    }, [posts, post])
+
+    useEffect(() => {
+        console.log("Post Replies is: " + JSON.stringify(postReplies))
+    }, [postReplies])
 
     useEffect(() => { 
         if (post) {
@@ -115,7 +137,11 @@ function PostTemplate ({post, posts, currentUser, profileUser}) {
     function handleNewRepost () {
         const repostInformation = {
             postId: post.postId,
-            reposterId: currentUser.id
+            reposterId: currentUser.id,
+            notificationType: "REPOST",
+            notificationObject: post.postId,
+            receiverId: post.creatorId,
+            senderId: currentUser.id 
         };
         const decryptedPayload = JSON.stringify(repostInformation)
         console.log("Super Secret Repost Information is being sent..." + decryptedPayload)
@@ -141,14 +167,24 @@ function PostTemplate ({post, posts, currentUser, profileUser}) {
 
     }
 
+    useEffect(() => {
+        console.log(isReplyingToggle)
+    }, [isReplyingToggle])
+
     return(
         <>
         {postUser ? (
             <div className="w-full h-full flex pl-4 pr-4 pt-3 flex-grow">
 
-            <div className="flex-[1] flex flex-col w-full h-full mr-4 ">
+            {isReplyingToggle ? (
+                <ReplyingModal postUser={postUser} currentUser={currentUser} post={post}/>
+            ) : (
+                null
+            )}
+            
+            <Link to={`/${postUser.id}`} className="flex-[1] flex flex-col w-full h-full mr-4 ">
                 <img src={postUser.profilePic} className="rounded-full"/>
-            </div>
+            </Link>
 
             <div className="flex flex-col text-white flex-[12]">
                 {profileUser && post.creatorId != profileUser.id ? (
@@ -174,9 +210,15 @@ function PostTemplate ({post, posts, currentUser, profileUser}) {
                 </div>
 
                 <div className="flex-[1] max-h-5 py-2 text-gray-300 flex justify-between pb-2">
-                    <div className="flex items-center gap-2">
-                    <FaRegComment className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
-                    </div>
+                    {postReplies ? (
+                        <div className="flex items-center gap-2">
+                        <FaRegComment onClick={() => setIsReplyingToggle(true)} className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{postReplies.length}</p>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-2">
+                        <FaRegComment onClick={() => setIsReplyingToggle(true)} className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
+                        </div>
+                    )}
                     <div className="flex items-center gap-2">
                     <FaRetweet 
                     onClick={() => handleNewRepost()}
