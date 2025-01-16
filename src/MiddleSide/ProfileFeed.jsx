@@ -7,6 +7,7 @@ import { MdOutlineLocationOn } from "react-icons/md";
 import { MdCalendarMonth } from "react-icons/md";
 import { useParams } from "react-router"
 import { useNavigate } from "react-router-dom";
+import ReplyTemplate from "../ReplyTemplate";
 import '../App.css'
 import PostTemplate from "../PostTemplate";
 
@@ -18,6 +19,7 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
     const [userPostsAndReposts, setUserPostsAndReposts] = useState([]);
     const [userLikedPosts, setUserLikedPosts] = useState(null);
     const [tabState, setTabState] = useState("posts");
+    const [userReplies, setUserReplies] = useState([]);
 
     const navigate = useNavigate();
 
@@ -28,6 +30,13 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
         .then((data) => setProfileUser(data))
         .catch(error => console.error(error));
     }, [profileUserId]);
+
+    useEffect(() => {
+        fetch(`http://localhost:6790/api/grabuserreplies/${profileUserId}`)
+        .then(response => response.json())
+        .then((data) => setUserReplies([...data]))
+        .catch(error => console.error(error));
+    }, [profileUser])
 
     useEffect(() => {
         fetch(`http://localhost:6790/api/grabposts/${profileUserId}`)
@@ -50,6 +59,10 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
     useEffect(() => {
         console.log("userpost is: " + JSON.stringify(userPostsAndReposts));
     }, [userPostsAndReposts])
+
+    useEffect(() => {
+        console.log("user replies is: " + JSON.stringify(userReplies));
+    }, [userReplies])
 
     useEffect(() => {
         fetch(`http://localhost:6790/api/grabuserlikes/${profileUserId}`)
@@ -129,8 +142,14 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
                     )}
                     
                 </div>
-                <div className="flex justify-center items-center w-full h-full hover:bg-twitterBorder">
-                    <p>Replies</p>
+                <div 
+                onClick={() => setTabState("replies")}
+                className="flex justify-center items-center w-full h-full hover:bg-twitterBorder">
+                    {tabState == "likes" ? (
+                        <p className="border-b-2 font-bold border-twitterBlue">Replies</p>
+                    ) : (
+                        <p>Replies</p>
+                    )}
                 </div>
                 <div className="flex justify-center items-center w-full h-full hover:bg-twitterBorder">
                     <p>Media</p>
@@ -165,6 +184,14 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
                 {userLikedPosts.map((post) => 
                     <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
                         <PostTemplate currentUser={currentUser} post={post} posts={posts}/>
+                    </div>
+                )}
+            </div>
+        ) : tabState == "replies" && userReplies && profileUser ? (
+            <div>
+                {userReplies.map((reply) => 
+                    <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
+                        <ReplyTemplate posts={posts} currentUser={currentUser} replyObject={reply} profileUser={profileUser}/>
                     </div>
                 )}
             </div>

@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 
 
-function PostTemplate ({post, posts, currentUser, profileUser}) {
+function PostTemplate ({post, posts, currentUser, profileUser, isAReplyParent}) {
 
     const [postUser, setPostUser] = useState(null);
     const [postLikes, setPostLikes] = useState([]);
@@ -41,7 +41,7 @@ function PostTemplate ({post, posts, currentUser, profileUser}) {
             .catch(error => console.error(error))
         }
         else (
-            alert("Broooo")
+            console.log("Epic fail")
         )
 
     }, [posts, post])
@@ -182,9 +182,21 @@ function PostTemplate ({post, posts, currentUser, profileUser}) {
                 null
             )}
             
-            <Link to={`/${postUser.id}`} className="flex-[1] flex flex-col w-full h-full mr-4 ">
-                <img src={postUser.profilePic} className="rounded-full"/>
-            </Link>
+            {isAReplyParent ? (
+                <div className="flex-[1] flex flex-col w-full h-full mr-4 ">
+                <Link to={`/${postUser.id}`}>
+                    <img src={postUser.profilePic} className="rounded-full"/>
+                </Link>
+                <div className="flex items-center justify-center h-full bg-none w-full ml-1">
+                    <div className="bg-none border-r-0.5 border-l-0.5 border-twitterBorder w-0.5 mr-2 border h-4 max-h-20 mb-2 mt-0">
+                    </div> 
+                </div>
+                </div>
+            ) : (
+                <Link to={`/${postUser.id}`} className="flex-[1] flex flex-col w-full h-full mr-4 ">
+                    <img src={postUser.profilePic} className="rounded-full"/>
+                </Link>
+            )}
 
             <div className="flex flex-col text-white flex-[12]">
                 {profileUser && post.creatorId != profileUser.id ? (

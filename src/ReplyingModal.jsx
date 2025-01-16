@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { CiImageOn } from "react-icons/ci";
 import { MdOutlineGifBox } from "react-icons/md";
 import { BsEmojiSmile } from "react-icons/bs";
+import "./App.css"
 
 function ReplyingModal ({post, postUser, currentUser}) {
 
