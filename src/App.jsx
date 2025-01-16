@@ -17,6 +17,8 @@ function App() {
   const [sampleUsers, setSampleUsers] = useState(null);
   const [posts, setPosts] = useState([]);
   const [userNotifications, setUserNotifications] = useState([]);
+  const [userFollowing, setUserFollowing] = useState([]);
+  const [userFollowers, setUserFollowers] = useState([]);
 
   useEffect(() => {
     fetch('http://localhost:6790/api/sampleusers')
@@ -25,6 +27,30 @@ function App() {
     .then(console.log("Sample users is " + sampleUsers))
     .catch(error => console.error(error));
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      const profileUserId = currentUser.id;
+      fetch(`http://localhost:6790/api/grabuserfollowing/${profileUserId}`)
+      .then(response => response.json())
+      .then(data => setUserFollowing([...data]))
+      .then(console.log("user following is " + userFollowing))
+      .catch(error => console.error(error));
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (currentUser) {
+      const profileUserId = currentUser.id;
+      fetch(`http://localhost:6790/api/grabuserfollowers/${profileUserId}`)
+      .then(response => response.json())
+      .then(data => setUserFollowers([...data]))
+      .then(console.log("user userfollowers is " + userFollowers))
+      .catch(error => console.error(error));
+    }
+  }, [currentUser])
+
+
 
   useEffect(() => {
     console.log("Updated sampleUsers state:", sampleUsers); // Logs whenever sampleUsers changes
@@ -40,6 +66,38 @@ function App() {
   useEffect(() => {
     console.log("Updated posts state:", posts); // Logs whenever sampleUsers changes
   }, [posts]);
+
+  function handleNewFollow(followedId, followingId) {
+    const newFollowInformation = {
+      followedId: followedId,
+      followingId: followingId,
+      notificationType: "FOLLOW",
+      notificationObject: followedId,
+      receiverId: followedId,
+      senderId: followingId 
+  };
+  const decryptedPayload = JSON.stringify(newFollowInformation)
+  console.log("Super Secret Repost Information is being sent..." + newFollowInformation)
+
+  fetch('http://localhost:6790/api/newfollow', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newFollowInformation),
+    })
+    .then(response => {
+      if (response.ok) {
+          return response.json();
+      } else {
+          throw new Error('Failed to Follow');
+      }
+  })
+  .then((data) => {
+        alert('Follow added successfully!');
+        console.log("Response is " + JSON.stringify(data));
+        setUserFollowing([...data]);  
+        console.log(JSON.stringify(data));
+  });
+  }
 
   useEffect(() => {
     if (currentUser) {
@@ -79,7 +137,7 @@ function App() {
             <Route 
               path="/:profileUserId" 
               element={
-              <ProfileFeed currentUser={currentUser} setCurrentUser={setCurrentUser} posts={posts} setPosts={setPosts}/>}
+              <ProfileFeed userFollowing={userFollowing} userFollowers={userFollowers} currentUser={currentUser} setCurrentUser={setCurrentUser} posts={posts} setPosts={setPosts}/>}
             />
 
             <Route 
@@ -98,7 +156,7 @@ function App() {
           </Routes>
         </div>
         <div className='flex bg-black h-screen flex-col col-span-4'>
-          <RightFeed sampleUsers={sampleUsers} currentUser={currentUser} setCurrentUser={setCurrentUser}/>
+          <RightFeed sampleUsers={sampleUsers} currentUser={currentUser} setCurrentUser={setCurrentUser} userFollowing={userFollowing} handleNewFollow={handleNewFollow}/>
         </div>
       </div>
       </div>

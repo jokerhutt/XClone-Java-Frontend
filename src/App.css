@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 .flex {
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
 }
 
 .flex::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }

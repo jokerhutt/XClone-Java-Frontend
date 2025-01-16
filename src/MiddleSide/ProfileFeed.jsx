@@ -11,7 +11,7 @@ import ReplyTemplate from "../ReplyTemplate";
 import '../App.css'
 import PostTemplate from "../PostTemplate";
 
-function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
+function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts, userFollowers, userFollowing}) {
 
     const {profileUserId} = useParams();
     const [profileUser, setProfileUser] = useState(null);
@@ -20,6 +20,8 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
     const [userLikedPosts, setUserLikedPosts] = useState(null);
     const [tabState, setTabState] = useState("posts");
     const [userReplies, setUserReplies] = useState([]);
+    const [profileUserFollowers, setProfileUserFollowers] = useState([]);
+    const [profileUserFollowing, setProfileUserFollowing] = useState([]);
 
     const navigate = useNavigate();
 
@@ -29,7 +31,7 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
         .then(response => response.json())
         .then((data) => setProfileUser(data))
         .catch(error => console.error(error));
-    }, [profileUserId]);
+    }, [tabState]);
 
     useEffect(() => {
         fetch(`http://localhost:6790/api/grabuserreplies/${profileUserId}`)
@@ -44,6 +46,28 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
         .then((data) => setUserPosts([...data]))
         .catch(error => console.error(error));
     }, [profileUser])
+
+    useEffect(() => {
+        if (profileUser) {
+          const profileUserId = profileUser.id;
+          fetch(`http://localhost:6790/api/grabuserfollowing/${profileUserId}`)
+          .then(response => response.json())
+          .then(data => setProfileUserFollowing([...data]))
+          .then(console.log("user following is " + profileUserFollowing))
+          .catch(error => console.error(error));
+        }
+      }, [profileUser]);
+    
+      useEffect(() => {
+        if (profileUser) {
+          const profileUserId = profileUser.id;
+          fetch(`http://localhost:6790/api/grabuserfollowers/${profileUserId}`)
+          .then(response => response.json())
+          .then(data => setProfileUserFollowers([...data]))
+          .then(console.log("user userfollowers is " + profileUserFollowers))
+          .catch(error => console.error(error));
+        }
+      }, [profileUser])
 
     useEffect(() => {
         fetch(`http://localhost:6790/api/grabpostsandreposts/${profileUserId}`)
@@ -76,7 +100,7 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
 
     return(
         <div className="flex flex-col flex-grow">
-            {profileUser ? (
+            {profileUser && profileUserFollowers && profileUserFollowing ? (
                 <>
             <div className="flex-[526] flex flex-col flex-grow bg-black h-full w-full text-white pt-3">
 
@@ -115,7 +139,7 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
                 </div>
                 <div className="flex-[65] h-full w-full flex flex-col gap-0.5">
                     <p>{profileUser.bio}</p>
-                    <div className="flex gap-5 mb-3 text-twitterBorder">
+                    <div className="flex gap-5 my-1 text-twitterBorder">
                         <div className="flex items-center gap-2">
                             <MdOutlineLocationOn className="text-twitterBorder"/>
                             <p>The Hague</p>
@@ -125,8 +149,9 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts}) {
                             <p>Joined December 2023</p>
                         </div>
                     </div>
-                    <div>
-
+                    <div className="flex gap-8 mb-3 text-twitterBorder">
+                        <p> <span className="text-white font-bold">{profileUserFollowing.length}</span> Following</p>
+                        <p> <span className="text-white font-bold">{profileUserFollowers.length}</span> Followers</p>
                     </div>
                 </div>
 

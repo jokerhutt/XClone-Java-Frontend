@@ -1,6 +1,13 @@
+import { useEffect } from 'react';
 import '../App.css'
 
-function YouMightLike ({sampleuser}) {
+function YouMightLike ({sampleuser, userFollowing, handleNewFollow, currentUser}) {
+
+    useEffect(() => {
+        console.log("SAMPLE USER IS: " + JSON.stringify(sampleuser) + " AND CURRENTUSER IS: " + JSON.stringify(currentUser));
+        console.log("Found ID Match Is " + userFollowing.find(follow => follow.followedID === sampleuser.id))
+    }, [sampleuser, currentUser])
+
     return(
 
         <div className='px-4 py-3 flex w-full h-full hover:cursor-pointer'>
@@ -12,10 +19,28 @@ function YouMightLike ({sampleuser}) {
                 <p className="text-twitterBorder">@{sampleuser.username}</p>
             </div>
             <div className='h-full w-full text-black flex-[3] flex justify-center items-center'>
-                <div className='h-3/5 w-full bg-white flex justify-center items-center rounded-l-full rounded-r-full hover:bg-gray-200'>
-                    <p>Follow</p>
-                </div>
-
+                {sampleuser && userFollowing ? (
+                    <>
+                        {userFollowing.find(follow => follow.followedId === sampleuser.id) ? (
+                            <div 
+                            onClick={() => handleNewFollow(sampleuser.id, currentUser.id)}
+                            className='h-3/5 w-full bg-black border-white border text-white border-1 flex justify-center items-center rounded-l-full rounded-r-full hover:cursor-pointer hover:border-twitterBorder  hover:bg-white hover:text-black'>
+                                <p>Following</p>
+                            </div>
+                        ) : (
+                            <div 
+                            onClick={() => handleNewFollow(sampleuser.id, currentUser.id)}
+                            className='h-3/5 hover:cursor-pointer w-full bg-white flex justify-center items-center rounded-l-full rounded-r-full hover:bg-gray-200'>
+                                <p>Follow</p>
+                            </div>
+                        )
+                        }
+                    </>
+                ) : (
+                    <div className='h-3/5 w-full hover:cursor-pointer bg-white flex justify-center items-center rounded-l-full rounded-r-full hover:bg-gray-200'>
+                        <p>Follow</p>
+                    </div>
+                )}
             </div>
         </div>
     )

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { BiRepost } from "react-icons/bi";
+import { FaUser } from "react-icons/fa";
 
 import '../App.css'
 
@@ -134,9 +135,21 @@ function NotificationTemplate ({notification, currentUser}) {
                     </div>
 
                 </div>
-            ) : notification.notificationType === "COMMENT" ? (
-                <div className="w-full h-full flex pl-4 pr-4 pt-3 flex-grow">
-                    <p>WIP</p>
+            ) : notification.notificationType === "FOLLOW" && notificationSender ? (
+                <div className="w-full h-full text-white flex pl-4 pr-4 pt-3 pb-3 flex-grow">
+                    
+                    <div className="pr-4">
+                        <FaUser className="text-3xl text-twitterBlue"/>
+                    </div>
+                    <div className="flex-col flex gap-2 w-full h-full">
+                        <div>
+                            <img src={notificationSender.profilePic} className="h-8 rounded-full"/>
+                        </div>
+                        <div>
+                            <p><span className="font-bold text-white">{notificationSender.displayName} </span> followed you</p>
+                        </div>
+                    </div>
+
                 </div>
             ) : (
                 null
