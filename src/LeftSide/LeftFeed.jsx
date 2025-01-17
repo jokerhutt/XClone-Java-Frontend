@@ -66,10 +66,17 @@ function LeftFeed ({currentUser, setPosts}) {
         <FaListAlt/>
         <p>Lists</p>
     </Link>
-    <Link to="/saved" className="flex gap-4 items-center text-2xl font-bold">
+    {currentUser ? (
+    <Link to={`/bookmarks/${currentUser.id}`} className="flex gap-4 items-center text-2xl font-bold">
         <FaBookmark/>
         <p>Bookmarks</p>
     </Link>
+    ) : (
+    <div className="flex gap-4 items-center text-2xl font-bold">
+        <FaBookmark/>
+        <p>Bookmarks</p>
+    </div>  
+    )}
     <Link to="/communities" className="flex gap-4 items-center text-2xl font-bold">
         <FaUserGroup />
         <p>Communities</p>

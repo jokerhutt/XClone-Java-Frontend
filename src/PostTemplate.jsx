@@ -19,9 +19,22 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
     const [postLikes, setPostLikes] = useState([]);
     const [postReposts, setPostReposts] = useState([]);
     const [likedByUser, setLikedByUser] = useState(false);
+    const [userBookMarked, setUserBookMarked] = useState([]);
+    const [bookMarkedByUser, setBookMarkedByUser] = useState(false);
     const [isReplyingToggle, setIsReplyingToggle] = useState(false);
     const [postReplies, setPostReplies] = useState([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (currentUser) {
+          const profileUserId = currentUser.id;
+          fetch(`http://localhost:6790/api/grabuserbookmarked/${profileUserId}`)
+          .then(response => response.json())
+          .then(data => setUserBookMarked([...data]))
+          .then(console.log("users bookmarked is " + userBookMarked))
+          .catch(error => console.error(error));
+        }
+      }, []);
 
     useEffect(() => {
         if (post) {
@@ -85,6 +98,18 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
 
     }, [postLikes, currentUser]);
 
+
+    useEffect(() => {
+        if (userBookMarked && currentUser) {
+            const isbookmarked = userBookMarked.find(bookmark => bookmark.userId === currentUser.id);
+            if (isbookmarked){
+                setBookMarkedByUser(true);
+            } else {
+                setBookMarkedByUser(false);
+            }
+        }
+    }, [userBookMarked, currentUser]);
+
     useEffect(() => { 
         if (post) {
             const postID = post.postId;
@@ -142,6 +167,34 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
               setPostLikes([...data]);  
               console.log(data);
         })
+    }
+
+    function handleNewBookMark () {
+            const bookMarkInformation = {
+                userId: currentUser.id,
+                postId: post.postId
+            };
+
+            fetch('http://localhost:6790/api/newbookmark', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bookMarkInformation),
+              })
+              .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Failed to add bookmark');
+                }
+            })
+            .then((data) => {
+                  alert('Bookmark added successfully!');
+                  console.log("Response Bookmarked is is " + JSON.stringify(data));
+                  setUserBookMarked([...data]);  
+                  console.log(data);
+            });
+    
+
     }
 
     function handleNewRepost () {
@@ -266,9 +319,20 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
                     <div className="flex items-center gap-2">
                     <FaRegChartBar className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                    <FaRegBookmark className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
-                    </div>
+                    {bookMarkedByUser ? (
+                        <div className="flex items-center gap-2">
+                        <FaRegBookmark 
+                        onClick={() => {handleNewBookMark()}}
+                        className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-2">
+                        <FaRegBookmark 
+                        onClick={() => {handleNewBookMark()}}
+                        className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
+                        </div>
+                    )}
+
                 
                 </div>
             </div>

@@ -8,13 +8,13 @@ import MainFeed from './MiddleSide/MainFeed'
 import ZoomedPost from './ZoomedPost';
 import ProfileFeed from './MiddleSide/ProfileFeed';
 import './App.css'
+import BookMarks from './BookMarks';
 import NotificationFeed from './MiddleSide/NotificationFeed';
 
 function App() {
   const [count, setCount] = useState(0)
 
   const [currentUser, setCurrentUser] = useState(null);
-
   const [sampleUsers, setSampleUsers] = useState(null);
   const [posts, setPosts] = useState([]);
   const [userNotifications, setUserNotifications] = useState([]);
@@ -157,6 +157,12 @@ function App() {
               path="/post/:postId"
               element={
               <ZoomedPost currentUser={currentUser}/>
+              }/>
+
+            <Route
+              path="/bookmarks/:userId"
+              element={
+              <BookMarks currentUser={currentUser}/>
               }/>
             
 
