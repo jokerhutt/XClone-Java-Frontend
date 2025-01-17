@@ -22,6 +22,7 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
     const [userBookMarked, setUserBookMarked] = useState([]);
     const [bookMarkedByUser, setBookMarkedByUser] = useState(false);
     const [isReplyingToggle, setIsReplyingToggle] = useState(false);
+    const [postBookMarks, setPostBookMarks] = useState([]);
     const [postReplies, setPostReplies] = useState([]);
     const navigate = useNavigate();
 
@@ -67,6 +68,19 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
             console.log("Epic fail")
         )
 
+    }, [post])
+
+    useEffect(() => {
+        if (post) {
+            const postID = post.postId
+            fetch(`http://localhost:6790/api/grabpostbookmarks/${postID}`)
+            .then(response => response.json())
+            .then(data => setPostBookMarks([...data]))
+            .catch(error => {
+                console.error('Error fetching bookmarks:', error);
+                setPostBookMarks([]);
+            });
+        }
     }, [post])
 
     useEffect(() => {
@@ -319,17 +333,17 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
                     <div className="flex items-center gap-2">
                     <FaRegChartBar className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
                     </div>
-                    {bookMarkedByUser ? (
+                    {bookMarkedByUser && postBookMarks ? (
                         <div className="flex items-center gap-2">
                         <FaRegBookmark 
                         onClick={() => {handleNewBookMark()}}
-                        className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
+                        className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{postBookMarks.length}</p>
                         </div>
                     ) : (
                         <div className="flex items-center gap-2">
                         <FaRegBookmark 
                         onClick={() => {handleNewBookMark()}}
-                        className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
+                        className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{postBookMarks.length}</p>
                         </div>
                     )}
 
