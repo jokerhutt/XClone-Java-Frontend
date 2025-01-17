@@ -11,7 +11,7 @@ import ReplyTemplate from "../ReplyTemplate";
 import '../App.css'
 import PostTemplate from "../PostTemplate";
 
-function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts, userFollowers, userFollowing}) {
+function ProfileFeed ({handleNewFollow, posts, currentUser, setCurrentUser, setPosts, userFollowers, userFollowing}) {
 
     const {profileUserId} = useParams();
     const [profileUser, setProfileUser] = useState(null);
@@ -56,7 +56,7 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts, userFollowe
           .then(console.log("user following is " + profileUserFollowing))
           .catch(error => console.error(error));
         }
-      }, [profileUser]);
+      }, [profileUser, userFollowing]);
     
       useEffect(() => {
         if (profileUser) {
@@ -67,7 +67,7 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts, userFollowe
           .then(console.log("user userfollowers is " + profileUserFollowers))
           .catch(error => console.error(error));
         }
-      }, [profileUser])
+      }, [profileUser, userFollowing])
 
     useEffect(() => {
         fetch(`http://localhost:6790/api/grabpostsandreposts/${profileUserId}`)
@@ -75,6 +75,22 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts, userFollowe
         .then((data) => setUserPostsAndReposts([...data]))
         .catch(error => console.error(error));
     }, [profileUser])
+
+    useEffect(() => {
+        if (userFollowing) {
+          console.log("Fetched user following:", JSON.stringify(userFollowing));
+        } else {
+          console.log("No user following data available");
+        }
+      }, [userFollowing]);
+      
+      useEffect(() => {
+        if (userFollowers) {
+          console.log("Fetched user followers:", JSON.stringify(userFollowers));
+        } else {
+          console.log("No user followers data available");
+        }
+      }, [userFollowers]);
 
     useEffect(() => {
         console.log("userdata is: " + JSON.stringify(profileUser));
@@ -100,7 +116,7 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts, userFollowe
 
     return(
         <div className="flex flex-col flex-grow">
-            {profileUser && profileUserFollowers && profileUserFollowing ? (
+            {profileUser && profileUserFollowers && profileUserFollowing && userFollowing && userFollowers ? (
                 <>
             <div className="flex-[526] flex flex-col flex-grow bg-black h-full w-full text-white pt-3">
 
@@ -127,9 +143,25 @@ function ProfileFeed ({posts, currentUser, setCurrentUser, setPosts, userFollowe
 
                 <div className="flex-[69] h-full w-full flex">
                     <div className="h-full w-full flex justify-end">
-                        <div className="h-full w-1/5 flex justify-center items-center border-twitterBorder rounded-l-xl rounded-r-xl py-0.5 border-2">
+                        {currentUser && profileUser.id === currentUser.id? (
+                        <div 
+                        className="hover:cursor-pointer h-full w-1/5 flex justify-center items-center border-twitterBorder rounded-l-xl rounded-r-xl py-0.5 border-2">
                             <p className="text-4">Edit Profile</p>
                         </div>
+                        ) : currentUser && profileUser && userFollowing.find(follow => follow.followedId === profileUser.id) ? (
+                            <div 
+                            onClick={() => handleNewFollow(profileUser.id, currentUser.id)}
+                            className="hover:cursor-pointer h-full w-1/5 flex justify-center items-center border-twitterBorder rounded-l-xl rounded-r-xl py-0.5 border-2">
+                                <p className="text-4">Following</p>
+                            </div>
+                        ) : (
+                            <div 
+                            onClick={() => handleNewFollow(profileUser.id, currentUser.id)}
+                            className="hover:cursor-pointer h-full w-1/5 flex justify-center items-center bg-white text-black rounded-l-xl rounded-r-xl py-0.5 border-2">
+                                <p className="text-4">Follow</p>
+                            </div>
+                        )}
+
                     </div>
                 </div>
 

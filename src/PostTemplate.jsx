@@ -186,7 +186,7 @@ function PostTemplate ({post, posts, currentUser, profileUser, isAReplyParent, r
             
             {isAReplyParent ? (
                 <div className="flex-[1] flex flex-col w-full h-full mr-4 ">
-                <Link to={`/${postUser.id}`}>
+                <Link to={`/${post.creatorId}`}>
                     <img src={postUser.profilePic} className="rounded-full"/>
                 </Link>
                 <div className="flex items-center justify-center h-full bg-none w-full ml-1">
@@ -195,7 +195,7 @@ function PostTemplate ({post, posts, currentUser, profileUser, isAReplyParent, r
                 </div>
                 </div>
             ) : (
-                <Link to={`/${postUser.id}`} className="flex-[1] flex flex-col w-full h-full mr-4 ">
+                <Link to={`/${post.creatorId}`} className="flex-[1] flex flex-col w-full h-full mr-4 ">
                     <img src={postUser.profilePic} className="rounded-full"/>
                 </Link>
             )}

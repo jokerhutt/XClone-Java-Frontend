@@ -33,7 +33,10 @@ function App() {
       const profileUserId = currentUser.id;
       fetch(`http://localhost:6790/api/grabuserfollowing/${profileUserId}`)
       .then(response => response.json())
-      .then(data => setUserFollowing([...data]))
+      .then(data => {
+        console.log("Fetched following data:", data); // Check the response here
+        setUserFollowing([...data]);
+    })
       .then(console.log("user following is " + userFollowing))
       .catch(error => console.error(error));
     }
@@ -44,7 +47,10 @@ function App() {
       const profileUserId = currentUser.id;
       fetch(`http://localhost:6790/api/grabuserfollowers/${profileUserId}`)
       .then(response => response.json())
-      .then(data => setUserFollowers([...data]))
+      .then(data => {
+        console.log("Fetched followers data:", data); // Check the response here
+        setUserFollowers([...data]);
+    })
       .then(console.log("user userfollowers is " + userFollowers))
       .catch(error => console.error(error));
     }
@@ -123,7 +129,7 @@ function App() {
 
       <div className='grid grid-cols-12 h-screen w-screen'>
         <div className='flex bg-black h-screen flex-col col-span-3'>
-          <LeftFeed currentUser={currentUser} setCurrentUser={setCurrentUser} userNotifications={userNotifications} setUserNotifications={setUserNotifications}/>
+          <LeftFeed currentUser={currentUser} setCurrentUser={setCurrentUser} userNotifications={userNotifications} setPosts={setPosts} setUserNotifications={setUserNotifications}/>
         </div>
         <div className='flex bg-black h-full flex-col col-span-5 overflow-y-auto scrollbar-none'>
           <Routes>
@@ -137,7 +143,7 @@ function App() {
             <Route 
               path="/:profileUserId" 
               element={
-              <ProfileFeed userFollowing={userFollowing} userFollowers={userFollowers} currentUser={currentUser} setCurrentUser={setCurrentUser} posts={posts} setPosts={setPosts}/>}
+              <ProfileFeed handleNewFollow={handleNewFollow} userFollowing={userFollowing} userFollowers={userFollowers} currentUser={currentUser} setCurrentUser={setCurrentUser} posts={posts} setPosts={setPosts}/>}
             />
 
             <Route 
