@@ -251,7 +251,7 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
     return(
         <>
         {postUser ? (
-            <div className="w-full h-full flex-col">
+            <div className="w-full h-full flex-col-reverse">
             <div className="w-full h-fit flex pl-4 pr-4 pt-3 flex-grow">
 
             {isReplyingToggle ? (
