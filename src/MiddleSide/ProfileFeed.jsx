@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import ReplyTemplate from "../ReplyTemplate";
 import '../App.css'
 import PostTemplate from "../PostTemplate";
+import { use } from "react";
 
 function ProfileFeed ({handleNewFollow, posts, currentUser, setCurrentUser, setPosts, userFollowers, userFollowing}) {
 
@@ -22,6 +23,7 @@ function ProfileFeed ({handleNewFollow, posts, currentUser, setCurrentUser, setP
     const [userReplies, setUserReplies] = useState([]);
     const [profileUserFollowers, setProfileUserFollowers] = useState([]);
     const [profileUserFollowing, setProfileUserFollowing] = useState([]);
+    const [isAReplyParent, setIsAReplyParent] = useState(true);
 
     const navigate = useNavigate();
 
@@ -248,7 +250,7 @@ function ProfileFeed ({handleNewFollow, posts, currentUser, setCurrentUser, setP
             <div>
                 {userReplies.map((reply) => 
                     <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
-                        <ReplyTemplate posts={posts} currentUser={currentUser} replyObject={reply} profileUser={profileUser}/>
+                        <ReplyTemplate posts={posts} currentUser={currentUser} replyObject={reply} profileUser={profileUser} isAReplyParent={isAReplyParent}/>
                     </div>
                 )}
             </div>

@@ -5,12 +5,15 @@ import ReplyingModal from "./ReplyingModal";
 import { FaRegComment, FaRegHeart, FaRegChartBar, FaRegBookmark } from "react-icons/fa";
 import { FaRetweet } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import ReplyTemplate from "./ReplyTemplate";
+
 import ReplyPostTemplate from "./ReplyPostTemplate";
 
 
 
 
-function PostTemplate ({post, posts, currentUser, profileUser, isAReplyParent, replyObject, replyPostUser}) {
+function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObject, isInZoomedMode}) {
 
     const [postUser, setPostUser] = useState(null);
     const [postLikes, setPostLikes] = useState([]);
@@ -18,6 +21,7 @@ function PostTemplate ({post, posts, currentUser, profileUser, isAReplyParent, r
     const [likedByUser, setLikedByUser] = useState(false);
     const [isReplyingToggle, setIsReplyingToggle] = useState(false);
     const [postReplies, setPostReplies] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (post) {
@@ -31,7 +35,12 @@ function PostTemplate ({post, posts, currentUser, profileUser, isAReplyParent, r
             alert("Broooo")
         )
 
-    }, [posts, post])
+    }, [post])
+
+    const handleNavigation = () => {
+        const postId = post.postId;
+        navigate(`/post/${postId}`);
+    }
 
     useEffect(() => {
         if (post) {
@@ -45,7 +54,7 @@ function PostTemplate ({post, posts, currentUser, profileUser, isAReplyParent, r
             console.log("Epic fail")
         )
 
-    }, [posts, post])
+    }, [post])
 
     useEffect(() => {
         console.log("Post Replies is: " + JSON.stringify(postReplies))
@@ -176,7 +185,7 @@ function PostTemplate ({post, posts, currentUser, profileUser, isAReplyParent, r
         <>
         {postUser ? (
             <div className="w-full h-full flex-col">
-            <div className="w-full h-full flex pl-4 pr-4 pt-3 flex-grow">
+            <div className="w-full h-fit flex pl-4 pr-4 pt-3 flex-grow">
 
             {isReplyingToggle ? (
                 <ReplyingModal postUser={postUser} currentUser={currentUser} post={post}/>
@@ -219,7 +228,9 @@ function PostTemplate ({post, posts, currentUser, profileUser, isAReplyParent, r
                     </div>
                 )}
 
-                <div className="text-white pt-1 pb-2">
+                <div 
+                onClick={() => handleNavigation()}
+                className="hover:cursor-pointer text-white pt-1 pb-2">
                     <p>{post.postText}</p>
                 </div>
 
@@ -262,19 +273,31 @@ function PostTemplate ({post, posts, currentUser, profileUser, isAReplyParent, r
                 </div>
             </div>
         </div>
-        {isAReplyParent ? (
+        {isAReplyParent && replyObject && postUser ? (
                 <div>
-                    <ReplyPostTemplate currentUser={currentUser} post={replyObject} postUser={replyPostUser} ogPostUser={postUser}/>
+                    <ReplyPostTemplate post={replyObject} ogPostUser={postUser}/>
                 </div>
-            ) : (
-                null
+            ) : isInZoomedMode && postUser && postReplies ?(
+                <div className="flex-col w-full h-full mt-4">
+                <div className="">
+                    <hr/>
+                </div>
+                {postReplies.map((reply) => 
+                <div>
+                <ReplyPostTemplate post={reply} ogPostUser={postUser}/>
+                 </div>
             )}
         </div>
-        ) : (
-            <div>
-            <p>Waiting</p>    
+        ) :  (
+            null
+                )}
+            </div>) : (
+            <div className="flex-col w-full h-full text-white">
+                <div className="text-twitterBlue h-full w-full flex justify-center items-center text-3xl animate-pulse">
+                    <p>Loading...</p>
+                </div>
             </div>
-        )}
+            )}
 </>
     )
 }

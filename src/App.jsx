@@ -5,6 +5,7 @@ import viteLogo from '/vite.svg'
 import RightFeed from './RightFeed/RightFeed'
 import LeftFeed from './LeftSide/LeftFeed'
 import MainFeed from './MiddleSide/MainFeed'
+import ZoomedPost from './ZoomedPost';
 import ProfileFeed from './MiddleSide/ProfileFeed';
 import './App.css'
 import NotificationFeed from './MiddleSide/NotificationFeed';
@@ -131,7 +132,7 @@ function App() {
         <div className='flex bg-black h-screen flex-col col-span-3'>
           <LeftFeed currentUser={currentUser} setCurrentUser={setCurrentUser} userNotifications={userNotifications} setPosts={setPosts} setUserNotifications={setUserNotifications}/>
         </div>
-        <div className='flex bg-black h-full flex-col col-span-5 overflow-y-auto scrollbar-none'>
+        <div className='flex bg-black h-full flex-col col-span-5 overflow-y-auto scrollbar-none pb-10'>
           <Routes>
 
             <Route 
@@ -151,6 +152,12 @@ function App() {
               element={
               <NotificationFeed userNotifications={userNotifications} currentUser={currentUser}/>}
             />
+
+            <Route
+              path="/post/:postId"
+              element={
+              <ZoomedPost currentUser={currentUser}/>
+              }/>
             
 
             {/* <Route 

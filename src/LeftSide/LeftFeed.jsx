@@ -34,7 +34,7 @@ function LeftFeed ({currentUser, setPosts}) {
 <div className="flex flex-col flex-grow h-full w-full ml-20">
 
 <div className="flex-[1] h-full w-full bg-black flex items-center">
-    <img src="X.png" className="h-8 w-8"/>
+    <img src="/X.png" className="h-8 w-8"/>
 </div>
 
 <div className="flex-[10] h-full w-full bg-black text-white mt-4 flex flex-col gap-6">

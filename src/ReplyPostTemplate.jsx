@@ -9,19 +9,43 @@ import { Link } from "react-router-dom";
 
 
 
-function ReplyPostTemplate ({post, currentUser, postUser, ogPostUser}) {
+function ReplyPostTemplate ({post, ogPostUser}) {
 
     const [postLikes, setPostLikes] = useState([]);
     const [postReposts, setPostReposts] = useState([]);
+    const [replyPostUser, setReplyPostUser] = useState(null);
+
+
+    //postuser is sender
+    //ogpostuser is receiver
+
+    useEffect(() => {
+        if (post) {
+            const postID = post.replySenderId
+            fetch(`http://localhost:6790/api/users/${postID}`)
+            .then(response => response.json())
+            .then(data => setReplyPostUser(data))
+            .catch(error => console.error(error))
+        }
+        else {
+            console.log("Epic fail")
+        }
+    }, [post])
+
+    useEffect(() => {
+        console.log("post is: " + JSON.stringify(post));
+        console.log("OG POST USER IS: " + JSON.stringify(ogPostUser));
+        console.log("Reply post user is: " + JSON.stringify(replyPostUser));
+    }, [])
 
     return(
         <>
-        {postUser ? (
+        {replyPostUser && post && ogPostUser ? (
             <div className="w-full h-full flex pl-4 pr-4 pt-3 flex-grow">
             
             <div className="flex-[1] flex flex-col w-full h-full mr-4 ">
-                <Link to={`/${postUser.id}`} className="">
-                    <img src={postUser.profilePic} className="rounded-full"/>
+                <Link to={`/${replyPostUser.id}`} className="">
+                    <img src={replyPostUser.profilePic} className="rounded-full"/>
                 </Link>
             </div>
 
@@ -29,8 +53,8 @@ function ReplyPostTemplate ({post, currentUser, postUser, ogPostUser}) {
             <div className="flex flex-col text-white flex-[12]">
                     <div>
                     <div className="flex gap-2">
-                        <p className="font-bold">{postUser.displayName}</p>
-                        <p className="text-twitterBorder">@{postUser.username}</p>
+                        <p className="font-bold">{replyPostUser.displayName}</p>
+                        <p className="text-twitterBorder">@{replyPostUser.username}</p>
                     </div>
                     <div>
                         <p className="text-twitterBorder"> Replying to <span className="text-twitterBlue">@{ogPostUser.username}</span> </p>
@@ -67,9 +91,9 @@ function ReplyPostTemplate ({post, currentUser, postUser, ogPostUser}) {
 
         </div>
         ) : (
-            <div>
-            <p>Waiting</p>    
-            </div>
+            <div className="text-twitterBlue h-full w-full flex justify-center items-center text-3xl animate-pulse">
+                <p>REPLYTEMPLATE LOADING...</p>
+             </div>
         )}
 </>
     )
