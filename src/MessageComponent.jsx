@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { IoMdSend } from "react-icons/io";
+import { Link } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 import IndividualMessage from "./IndividualMessage";
 import ConvoPreview from "./ConvoPreview";
@@ -89,11 +90,13 @@ function MessageComponent ({currentUser}) {
     return (
         <div className="flex w-full h-full bg-none">
 
-            <div className="flex-[35] w-full h-full border-r-2 border-twitterBorder">
+            <div className="flex-[40] w-full h-full border-x-2 border-twitterBorder">
             {userConvos && currentUser ? (
                     <>
                         {userConvos.map((convo) => 
-                        <ConvoPreview convo={convo} currentUser={currentUser}/>
+                                <Link to={`/messages/${currentUser.id}/${convo.user1Id === currentUser.id ? convo.user2Id : convo.user1Id}`}>
+                                    <ConvoPreview convo={convo} currentUser={currentUser}/>
+                                </Link>
                         )}   
                     </>
                 ) : (
@@ -104,7 +107,7 @@ function MessageComponent ({currentUser}) {
  
             </div>
 
-            <div className="flex-[65] w-full h-full border-l-2 border-white flex-col">
+            <div className="flex-[60] w-full h-full border-l-2 border-white flex-col">
                 
                 <div className="w-full flex-col flex-[80] h-full bg-black overflow-y-scroll">
                 {convoMessages && currentUser ? (
