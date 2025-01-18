@@ -48,6 +48,10 @@ function MessageComponent ({currentUser}) {
     }, [userId, otherUserId, currentConvo])
 
     useEffect(() => {
+        console.log("Convo messages is " + JSON.stringify(convoMessages))
+    }, [convoMessages])
+
+    useEffect(() => {
         if (userId) {
             fetch(`http://localhost:6790/api/userconversations/${userId}`)
             .then(response => response.json())
@@ -106,7 +110,7 @@ function MessageComponent ({currentUser}) {
                 {convoMessages && currentUser ? (
                     <>
                         {convoMessages.map((message) => 
-                        <IndividualMessage message={message}/>
+                        <IndividualMessage message={message} currentUser={currentUser}/>
                         )}   
                     </>
                 ) : (
