@@ -5,9 +5,11 @@ import { MdOutlineVerified } from "react-icons/md";
 import { IoIosCalendar } from "react-icons/io";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { MdCalendarMonth } from "react-icons/md";
+import { Link } from "react-router-dom";
 import { useParams } from "react-router"
 import { useNavigate } from "react-router-dom";
 import ReplyTemplate from "../ReplyTemplate";
+import { CiMail } from "react-icons/ci";
 import '../App.css'
 import PostTemplate from "../PostTemplate";
 import { use } from "react";
@@ -144,18 +146,23 @@ function ProfileFeed ({handleNewFollow, posts, currentUser, setCurrentUser, setP
             <div className="flex-[200] flex-col h-full w-full flex px-4 py-3">
 
                 <div className="flex-[69] h-full w-full flex">
-                    <div className="h-full w-full flex justify-end">
+                    <div className="h-full w-full flex justify-end gap-6 items-center">
                         {currentUser && profileUser.id === currentUser.id? (
                         <div 
                         className="hover:cursor-pointer h-full w-1/5 flex justify-center items-center border-twitterBorder rounded-l-xl rounded-r-xl py-0.5 border-2">
                             <p className="text-4">Edit Profile</p>
                         </div>
                         ) : currentUser && profileUser && userFollowing.find(follow => follow.followedId === profileUser.id) ? (
-                            <div 
-                            onClick={() => handleNewFollow(profileUser.id, currentUser.id)}
-                            className="hover:cursor-pointer h-full w-1/5 flex justify-center items-center border-twitterBorder rounded-l-xl rounded-r-xl py-0.5 border-2">
-                                <p className="text-4">Following</p>
-                            </div>
+                                <>
+                                <Link to={`/messages/${currentUser.id}/${profileUser.id}`} className="text-xl hover:cursor-pointer">
+                                    <CiMail />
+                                </Link>
+                                <div 
+                                onClick={() => handleNewFollow(profileUser.id, currentUser.id)}
+                                className="hover:cursor-pointer h-full w-1/5 flex justify-center items-center border-twitterBorder rounded-l-xl rounded-r-xl py-0.5 border-2">
+                                    <p className="text-4">Following</p>
+                                </div>
+                                </>
                         ) : (
                             <div 
                             onClick={() => handleNewFollow(profileUser.id, currentUser.id)}

@@ -2,16 +2,22 @@
 import { useState } from "react";
 import '../../App.css'
 import NewPost from "./NewPost";
-function TopMainFeed ({currentUser, setCurrentUser, setPosts}) {
+function TopMainFeed ({currentUser, setCurrentUser, setPosts, mainFeedTab, setMainFeedTab}) {
     return(
         <div className="flex flex-col flex-grow h-full">
+            
             <div className="flex-[1] bg-black h-full">
                 <div className="flex flex-row justify-center h-full border-s-twitterBorder">
-                    <div className="px-4 flex flex-row justify-center items-end h-full w-full" >
-                        <p className="text-white py-4 font-bold border-b-4 border-b-twitterBlue text-sm">For You</p>
+                    <div
+                    className="px-4 flex flex-row justify-center items-end h-full w-full" >
+                        <p 
+                        onClick={() => setMainFeedTab("FORYOU")}
+                        className="hover:cursor-pointer  text-white py-4 font-bold border-b-4 border-b-twitterBlue text-sm">For You</p>
                     </div>
                     <div className="px-4 flex flex-row justify-center items-end h-full w-full">
-                        <p className="text-white py-4 font-bold text-sm">Following</p>
+                        <p 
+                        onClick={() => setMainFeedTab("FOLLOWING")}
+                        className="hover:cursor-pointer text-white py-4 font-bold text-sm">Following</p>
                     </div>
                 </div>
             </div>

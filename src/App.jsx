@@ -8,6 +8,7 @@ import MainFeed from './MiddleSide/MainFeed'
 import ZoomedPost from './ZoomedPost';
 import ProfileFeed from './MiddleSide/ProfileFeed';
 import './App.css'
+import MessageComponent from './MessageComponent';
 import BookMarks from './BookMarks';
 import NotificationFeed from './MiddleSide/NotificationFeed';
 
@@ -20,6 +21,7 @@ function App() {
   const [userNotifications, setUserNotifications] = useState([]);
   const [userFollowing, setUserFollowing] = useState([]);
   const [userFollowers, setUserFollowers] = useState([]);
+  const [doubleParamMessage, setDoubleParamMessage] = useState(true);
 
   useEffect(() => {
     fetch('http://localhost:6790/api/sampleusers')
@@ -133,8 +135,7 @@ function App() {
           <LeftFeed currentUser={currentUser} setCurrentUser={setCurrentUser} userNotifications={userNotifications} setPosts={setPosts} setUserNotifications={setUserNotifications}/>
         </div>
         <div className='flex bg-black h-full flex-col col-span-5 overflow-y-auto scrollbar-none pb-10'>
-          <Routes>
-
+        <Routes>
             <Route 
               path="/" 
               element={
@@ -165,19 +166,32 @@ function App() {
               <BookMarks currentUser={currentUser}/>
               }/>
             
+            <Route 
+              path="/messages/:userId"
+              element={
+                <MessageComponent currentUser={currentUser}/>
+              }
+            />
+
+            <Route 
+              path="/messages/:userId/:otherUserId"
+              element={
+                <MessageComponent currentUser={currentUser}/>
+              }
+            />
 
             {/* <Route 
               path="/explore" 
               element={
               <MainFeed currentUser={currentUser} setCurrentUser={setCurrentUser} posts={posts} setPosts={setPosts}/>}
             /> */}
-
-          </Routes>
+        </Routes>
         </div>
         <div className='flex bg-black h-screen flex-col col-span-4'>
           <RightFeed sampleUsers={sampleUsers} currentUser={currentUser} setCurrentUser={setCurrentUser} userFollowing={userFollowing} handleNewFollow={handleNewFollow}/>
         </div>
       </div>
+      
       </div>
     </>
     </Router>

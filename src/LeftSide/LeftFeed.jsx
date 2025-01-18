@@ -57,11 +57,18 @@ function LeftFeed ({currentUser, setPosts}) {
         <p>Notifications</p>
     </div>
     )}
-
-    <Link to="/messages" className="flex gap-4 items-center text-2xl font-bold">
+    {currentUser ? (
+    <Link to={`/messages/${currentUser.id}`} className="flex gap-4 items-center text-2xl font-bold">
         <IoMdMail/>
         <p>Messages</p>
-    </Link>
+    </Link> 
+    ) : (
+        <Link to={`/messages}`} className="flex gap-4 items-center text-2xl font-bold">
+        <IoMdMail/>
+        <p>Messages</p>
+    </Link> 
+    )}
+
     <Link to="/lists" className="flex gap-4 items-center text-2xl font-bold">
         <FaListAlt/>
         <p>Lists</p>
