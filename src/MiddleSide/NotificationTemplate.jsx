@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { BiRepost } from "react-icons/bi";
+import { useNavigate } from 'react-router-dom';
 import { FaUser } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";
 
@@ -12,6 +13,7 @@ function NotificationTemplate ({notification, currentUser}) {
     const [notificationSender, setNotificationSender] = useState(null);
     const [notificationReply, setNotificationReply] = useState(null);
     const [notificationMessage, setNotificationMessage] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (currentUser && notification) {
@@ -38,15 +40,21 @@ function NotificationTemplate ({notification, currentUser}) {
         }
     },[currentUser, notification])
 
-    // useEffect(() => {
-    //     if (notificationReply) {
-    //         const notificationPostId = notificationReply.replyObjectId;
-    //         fetch(`http://localhost:6790/api/grabnotificationpost/${notificationPostId}`)
-    //         .then(response => response.json())
-    //         .then(data => setNotificationObject(data))
-    //         .catch(error => console.error(error)); 
-    //     }
-    // }, [notificationReply])
+    function fetchReplyObject () {
+        if (notificationReply) {
+            const notificationPostId = notificationReply.replyObjectId;
+            fetch(`http://localhost:6790/api/grabnotificationpost/${notificationPostId}`)
+            .then(response => response.json())
+            .then(data => setNotificationObject(data))
+            .catch(error => console.error(error)); 
+        }
+    }
+
+    useEffect(() => {
+        if (notificationReply) {
+            fetchReplyObject();
+        }
+    }, [notificationReply])
 
     useEffect(() => {
 
@@ -75,6 +83,18 @@ function NotificationTemplate ({notification, currentUser}) {
         console.log("Notification Reply is: " + JSON.stringify(notificationReply))
     }, [notificationReply])
 
+    const handlePostNavigation = () => {
+        const postId = notificationObject.postId;
+        navigate(`/post/${postId}`);
+    }
+
+    const handleProfileNavigation = () => {
+        if (notificationSender) {
+            const userID = notificationSender.id;
+            navigate(`/${userID}`);
+        }
+    }
+
 
 
     return (
@@ -82,7 +102,9 @@ function NotificationTemplate ({notification, currentUser}) {
         {currentUser && notification && notificationSender ? (
             <div>
             {notification.notificationType === "LIKE" && notificationObject ? (
-                <div className="w-full h-full flex pl-4 pr-4 pt-3 pb-3 flex-grow">
+                <div
+                onClick={() => handlePostNavigation()}
+                className="hover:bg-twitterBorder hover:bg-opacity-50 hover:cursor-pointer w-full h-full flex pl-4 pr-4 pt-3 pb-3 flex-grow">
 
                     <div className="pr-4">
                     <FaHeart className="text-red-500 text-3xl"/>
@@ -102,7 +124,7 @@ function NotificationTemplate ({notification, currentUser}) {
 
                 </div>
             ) : notification.notificationType === "REPOST" && notificationReply ? (
-                <div className="w-full h-full flex pl-4 pr-4 pt-3 pb-3 flex-grow">
+                <div onClick={() => handlePostNavigation()} className="w-full h-full flex pl-4 pr-4 pt-3 pb-3 flex-grow">
 
                     <div className="pr-4">
                     <BiRepost className="text-green-400 text-3xl"/>
@@ -121,7 +143,7 @@ function NotificationTemplate ({notification, currentUser}) {
                     </div>
                 </div>
             ) : notification.notificationType === "REPLY" && notificationReply && notificationSender? (
-                <div className="w-full h-full flex pl-4 pr-4 pt-3 pb-3 flex-grow">
+                <div onClick={() => handlePostNavigation()} className="hover:bg-twitterBorder hover:bg-opacity-50 hover:cursor-pointer w-full h-full flex pl-4 pr-4 pt-3 pb-3 flex-grow">
 
                     <div className="pr-4">
                         <img src={notificationSender.profilePic} className="h-8 rounded-full"/>
@@ -141,7 +163,7 @@ function NotificationTemplate ({notification, currentUser}) {
 
                 </div>
             ) : notification.notificationType === "FOLLOW" && notificationSender ? (
-                <div className="w-full h-full text-white flex pl-4 pr-4 pt-3 pb-3 flex-grow">
+                <div onClick={() => handleProfileNavigation()} className="hover:bg-twitterBorder hover:bg-opacity-50 hover:cursor-pointer w-full h-full text-white flex pl-4 pr-4 pt-3 pb-3 flex-grow">
                     
                     <div className="pr-4">
                         <FaUser className="text-3xl text-twitterBlue"/>

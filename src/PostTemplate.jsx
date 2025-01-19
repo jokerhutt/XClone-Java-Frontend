@@ -17,6 +17,7 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
 
     const [postUser, setPostUser] = useState(null);
     const [postLikes, setPostLikes] = useState([]);
+    const [currentPostMedia, setCurrentPostMedia] = useState([]);
     const [postReposts, setPostReposts] = useState([]);
     const [likedByUser, setLikedByUser] = useState(false);
     const [userBookMarked, setUserBookMarked] = useState([]);
@@ -68,6 +69,21 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
             console.log("Epic fail")
         )
 
+    }, [post])
+
+    function grabPostMedia () {
+            const postID = post.postId
+            fetch(`http://localhost:6790/api/grabpostmedia/${postID}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Received data from grabbed post media is: " + JSON.stringify(data) + data)
+                setCurrentPostMedia([...data])
+            })
+            .catch(error => console.error(error))
+    }
+
+    useEffect(() => {
+        grabPostMedia();
     }, [post])
 
     useEffect(() => {
@@ -248,6 +264,10 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
         console.log(isReplyingToggle)
     }, [isReplyingToggle])
 
+    useEffect(() => {
+            console.log("THIS POSTS MEDIA IS: " + JSON.stringify(currentPostMedia))
+    }, [currentPostMedia])
+
     return(
         <>
         {postUser ? (
@@ -255,7 +275,7 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
             <div className="w-full h-fit flex pl-4 pr-4 pt-3 flex-grow">
 
             {isReplyingToggle ? (
-                <ReplyingModal setIsReplyingToggle={setIsReplyingToggle} postUser={postUser} currentUser={currentUser} post={post}/>
+                <ReplyingModal setIsReplyingToggle={setIsReplyingToggle(false)} postUser={postUser} currentUser={currentUser} post={post}/>
             ) : (
                 null
             )}
@@ -300,6 +320,23 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
                 className="hover:cursor-pointer text-white pt-1 pb-2">
                     <p>{post.postText}</p>
                 </div>
+
+                {currentPostMedia && currentPostMedia.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
+                        {currentPostMedia.map((image, index) => {
+                            return (
+                                <div key={index} className="col-span-1">
+                                    <img
+                                        src={image.mediaFile}
+                                        className="w-full h-48 object-cover rounded-lg "
+                                    />
+                                </div>
+                            )
+                        })}
+                    </div>
+                ) : (
+                    null
+                )}
 
                 <div className="flex-[1] max-h-5 py-2 text-gray-300 flex justify-between pb-2">
                     {postReplies ? (

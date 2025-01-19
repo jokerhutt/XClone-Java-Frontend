@@ -2,7 +2,7 @@
 import { useState } from "react";
 import '../../App.css'
 import NewPost from "./NewPost";
-function TopMainFeed ({currentUser, setCurrentUser, setPosts, mainFeedTab, setMainFeedTab, fetchUserFollowingPosts}) {
+function TopMainFeed ({currentUser, setCurrentUser, setPosts, mainFeedTab, setMainFeedTab, fetchUserFollowingPosts, refreshPosts}) {
 
     function handleTabChange(tabType) {
 
@@ -44,7 +44,7 @@ function TopMainFeed ({currentUser, setCurrentUser, setPosts, mainFeedTab, setMa
                 </div>
             </div>
             <div className="flex-[6] bg-black h-full px-4 border-2 border-twitterBorder" >
-                <NewPost setPosts={setPosts} setCurrentUser={setCurrentUser} currentUser={currentUser}/>
+                <NewPost refreshPosts={refreshPosts} setPosts={setPosts} setCurrentUser={setCurrentUser} currentUser={currentUser}/>
             </div>
         </div>
     )

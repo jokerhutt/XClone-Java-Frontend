@@ -7,10 +7,12 @@ import { FaGlobeAmericas } from "react-icons/fa";
 
 
 
-function NewPost ({currentUser, setCurrentUser, setPosts, isPosting}) {
+function NewPost ({currentUser, setCurrentUser, setPosts, isPosting, refreshPosts}) {
 
     const [postTitle, setPostTitle] = useState("");
-    const [postMedia, setPostMedia] = useState("");
+    const [postMedia, setPostMedia] = useState([]);
+
+    const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
     useEffect(() => {
         console.log("Is posting is: " + isPosting)
@@ -22,6 +24,31 @@ function NewPost ({currentUser, setCurrentUser, setPosts, isPosting}) {
         }
     }, [currentUser])
 
+    const handleImageClick = () => {
+        document.getElementById('imageInput').click();
+      };
+
+    const handleImageChange = (event) => {
+    const files = Array.from(event.target.files);
+    const imagePreviews = [];
+
+    files.forEach((file) => {
+        if (file.size <= MAX_IMAGE_SIZE) {
+            const reader = new FileReader();
+            reader.onload = () => {
+              imagePreviews.push(reader.result); // Add each image preview to the array
+              if (imagePreviews.length === files.length) {
+                setPostMedia((prevImages) => [...prevImages, ...imagePreviews]); // Append new images to the existing state
+              }
+            };
+            reader.readAsDataURL(file); 
+        } else {
+            alert("Needs file under 5mb.");
+        }
+
+      });
+    };
+
     function handleNewPost (e) {
 
         e.preventDefault();
@@ -29,6 +56,7 @@ function NewPost ({currentUser, setCurrentUser, setPosts, isPosting}) {
         const newPostPayload = {
             postTitle: postTitle,
             userId: currentUser.id,
+            postMedia: postMedia,
         };
 
         fetch('http://localhost:6790/api/newpost', {
@@ -46,8 +74,24 @@ function NewPost ({currentUser, setCurrentUser, setPosts, isPosting}) {
         .then((data) => {
                 alert('Post Upload successful!');
                 setPosts(prevPosts => [data, ...prevPosts]);
-        });
+        })
+        .then(() => {
+            setTimeout(() => {
+                refreshPosts();
+            }, 10);
+        })
     }
+    
+    useEffect(() => {
+        console.log("POst media length is " + postMedia.length)
+        if (postMedia) {
+            console.log("POST MEDIA IS: " + JSON.stringify(postMedia))
+        }
+    }, [postMedia])
+
+    const handleRemoveImage = (indexToRemove) => {
+        setPostMedia((prevImages) => prevImages.filter((_, index) => index !== indexToRemove));
+      };
 
     return(
         
@@ -73,6 +117,29 @@ function NewPost ({currentUser, setCurrentUser, setPosts, isPosting}) {
             
                             <div className="flex-[12] flex flex-col w-full">
                                 <input placeholder="What is happening?!" onChange={(e) => setPostTitle(e.target.value)} className="text-xl flex-[5] flex py-3 h-6 bg-transparent text-gray-100 border-none focus:outline-none"/>
+
+                                {postMedia.length > 0 ? (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
+                                        {postMedia.slice(0, 4).map((image, index) => {
+                                            return (
+                                                <div key={index} className="col-span-1 relative">
+                                                    <img
+                                                        src={image}
+                                                        className="w-full h-48 object-cover relative rounded-lg"
+                                                    />
+                                                    <div 
+                                                    onClick={() => handleRemoveImage(index)}
+                                                    className="z-60 absolute top-2 rounded-full border-2 right-4 hover:cursor-pointer hover:bg-twitterHover hover:bg-opacity-40">
+                                                        <p className="text-white px-1.5">X</p>
+                                                    </div>
+                                                </div>
+                                            )
+
+                                        })}
+                                    </div>
+                                ) : (
+                                    null
+                                )}
             
                                 <div className="flex-[12] text-white ">
             
@@ -85,7 +152,17 @@ function NewPost ({currentUser, setCurrentUser, setPosts, isPosting}) {
             
                                     <div className="flex-[3] flex justify-between">
                                         <div className="h-1/2 flex gap-4 pt-2 text-twitterBlue items-center">
-                                            <CiImageOn className="text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
+                                        <div>
+                                            <input
+                                                id="imageInput"
+                                                type="file"
+                                                accept=".png,.jpg,.jpeg"
+                                                multiple
+                                                onChange={handleImageChange} // Handle file change
+                                                style={{ display: 'none' }} // Hide the file input
+                                            />
+                                            <CiImageOn onClick={handleImageClick} className="hover:cursor-pointer text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300"/>
+                                        </div>
                                             <MdOutlineGifBox className="text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
                                             <BsEmojiSmile className="text-l hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
                                         </div>

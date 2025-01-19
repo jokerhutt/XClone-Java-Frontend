@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 import PostTemplate from "../PostTemplate";
 import '../App.css'
 
-function MainFeed ({posts, currentUser, setCurrentUser, setPosts, userFollowingPosts, fetchUserFollowingPosts}) {
+function MainFeed ({posts, currentUser, setCurrentUser, setPosts, userFollowingPosts, fetchUserFollowingPosts, refreshPosts}) {
 
     const [mainFeedTab, setMainFeedTab] = useState("FORYOU");
 
@@ -28,7 +28,7 @@ function MainFeed ({posts, currentUser, setCurrentUser, setPosts, userFollowingP
     return(
         <div className="flex flex-col flex-grow">
             <div className="flex-[1] bg-black">
-                <TopMainFeed fetchUserFollowingPosts={fetchUserFollowingPosts} setPosts={setPosts} currentUser={currentUser} setCurrentUser={setCurrentUser} mainFeedTab={mainFeedTab} setMainFeedTab={setMainFeedTab}/>
+                <TopMainFeed refreshPosts={refreshPosts} fetchUserFollowingPosts={fetchUserFollowingPosts} setPosts={setPosts} currentUser={currentUser} setCurrentUser={setCurrentUser} mainFeedTab={mainFeedTab} setMainFeedTab={setMainFeedTab}/>
             </div>
 {mainFeedTab === "FORYOU" ? (
             <div className="flex-[3] flex flex-col-reverse justify-end h-full w-full border-l-2  border-r-2 border-twitterBorder">

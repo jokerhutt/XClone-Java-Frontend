@@ -97,11 +97,15 @@ function App() {
     console.log("Updated sampleUsers state:", sampleUsers); // Logs whenever sampleUsers changes
   }, [sampleUsers]);
 
-  useEffect(() => {
-    fetch('http://localhost:6790/api/sampleposts')
+  function refreshPosts () {
+    fetch('http://localhost:6790/api/getallposts')
     .then(response => response.json())
     .then(data => setPosts([...data]))
     .catch(error => console.error(error));
+  }
+
+  useEffect(() => {
+    refreshPosts();
   }, [currentUser]);
 
   useEffect(() => {
@@ -188,7 +192,7 @@ function App() {
             <Route 
               path="/" 
               element={
-              <MainFeed fetchUserFollowingPosts={fetchUserFollowingPosts} userFollowingPosts={userFollowingPosts} currentUser={currentUser} setCurrentUser={setCurrentUser} posts={posts} setPosts={setPosts}/>}
+              <MainFeed refreshPosts={refreshPosts} fetchUserFollowingPosts={fetchUserFollowingPosts} userFollowingPosts={userFollowingPosts} currentUser={currentUser} setCurrentUser={setCurrentUser} posts={posts} setPosts={setPosts}/>}
             />
 
             <Route 
