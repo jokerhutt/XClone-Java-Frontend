@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { BiRepost } from "react-icons/bi";
 import { FaUser } from "react-icons/fa";
+import { FaMessage } from "react-icons/fa6";
 
 import '../App.css'
 
@@ -10,6 +11,7 @@ function NotificationTemplate ({notification, currentUser}) {
     const [notificationObject, setNotificationObject] = useState(null);
     const [notificationSender, setNotificationSender] = useState(null);
     const [notificationReply, setNotificationReply] = useState(null);
+    const [notificationMessage, setNotificationMessage] = useState(null);
 
     useEffect(() => {
         if (currentUser && notification) {
@@ -26,8 +28,12 @@ function NotificationTemplate ({notification, currentUser}) {
                 .then(response => response.json())
                 .then(data => setNotificationReply(data))
                 .catch(error => console.error(error)); 
-            } else if (notification.notificationType === "COMMENT") {
-                null
+            } else if (notification.notificationType === "MESSAGE") {
+                const messageId = notification.notificationObject;
+                fetch(`http://localhost:6790/api/grabmessagebymessageid/${messageId}`)
+                .then(response => response.json())
+                .then(data => setNotificationMessage(data))
+                .catch(error => console.error(error)); 
             }
         }
     },[currentUser, notification])
@@ -113,7 +119,6 @@ function NotificationTemplate ({notification, currentUser}) {
                             <p className="text-twitterBorder"> {notificationObject.postText} </p>
                         </div>
                     </div>
-
                 </div>
             ) : notification.notificationType === "REPLY" && notificationReply && notificationSender? (
                 <div className="w-full h-full flex pl-4 pr-4 pt-3 pb-3 flex-grow">
@@ -150,6 +155,25 @@ function NotificationTemplate ({notification, currentUser}) {
                         </div>
                     </div>
 
+                </div>
+            ) : notification.notificationType === "MESSAGE" && notificationSender && notificationMessage ? (
+                <div className="w-full h-full flex pl-4 pr-4 pt-3 pb-3 flex-grow">
+
+                    <div className="pr-4">
+                        <FaMessage className="text-green-400 text-3xl"/>
+                    </div>
+
+                    <div className="flex flex-col text-white flex-[12] gap-3">
+                        <div>
+                            <img src={notificationSender.profilePic} className="h-8 rounded-full"/>
+                        </div>
+                        <div>
+                            <p> {notificationSender.displayName} Sent you a Message</p>
+                        </div>
+                        <div>
+                            <p className="text-twitterBorder"> {notificationMessage.messageText} </p>
+                        </div>
+                    </div>
                 </div>
             ) : (
                 null

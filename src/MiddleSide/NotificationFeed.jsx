@@ -4,19 +4,17 @@ import { useState, useEffect } from "react";
 import NotificationTemplate from "./NotificationTemplate";
 import '../App.css'
 
-function NotificationFeed ({userNotifications, currentUser}) {
-
-
+function NotificationFeed ({nonMessageNotifications, currentUser}) {
 
     return (
     
         
         <div className="flex flex-col flex-grow">
-            {currentUser && userNotifications ? (
+            {currentUser && nonMessageNotifications ? (
             <div className="flex-[3] flex flex-col-reverse justify-end h-full w-full border-l-2  border-r-2 border-twitterBorder">
-                {userNotifications.map((notification) => 
+                {nonMessageNotifications.map((notification) => 
                 <div className="border-b-2 border-twitterBorder">
-                    <NotificationTemplate notification={notification}currentUser={currentUser} />
+                    <NotificationTemplate notification={notification}currentUser={currentUser}/>
                 </div>
                 )}
             </div>

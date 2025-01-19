@@ -6,6 +6,7 @@ export default {
       colors: {
         twitterBlue: '#1C9BF0',
         twitterBorder: '#4C5159', 
+        twitterHover: '#16181c',
       },
       fontFamily: {
         sans: ['Helvetica', 'Arial', 'sans-serif'],

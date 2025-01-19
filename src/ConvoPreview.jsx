@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
+import { GoDotFill } from "react-icons/go";
 
-function ConvoPreview ({convo, currentUser}) {
+
+function ConvoPreview ({messageUpdater, refreshNotifications, convo, currentUser, messageNotifications, convoMessages}) {
 
     const [convoOtherUser, setConvoOtherUser] = useState(null);
     const [lastMessage, setLastMessage] = useState(null);
     const [otherUserFirstName, setOtherUserFirstName] = useState(null);
+    const [unreadNotifications, setUnreadNotifications] = useState([]);
+
 
     useEffect(() => {
 
@@ -15,11 +19,21 @@ function ConvoPreview ({convo, currentUser}) {
             } else if (convo.user2Id === currentUser.id) {
                     handleUser1Grabbing();
             }
-
         }
-
     }, [convo])
 
+    useEffect(() => {
+        if (messageNotifications) {
+            const filteredNotifications = messageNotifications.filter(notification => 
+                notification.notificationObject === convo.id && notification.isRead == 0
+            );
+            
+            setUnreadNotifications([...filteredNotifications]);
+        }
+    }, [messageNotifications, convo, convoMessages])
+
+    //TODO
+    //convo.lastmessageid being updated?
     useEffect(() => {
         if (convo) {
             const messageId = convo.lastMessageId;
@@ -29,7 +43,13 @@ function ConvoPreview ({convo, currentUser}) {
             .then(console.log("CHECK7"))
             .catch(error => console.error(error));    
         }
-    }, [convo])
+    }, [convo, messageNotifications, convoMessages, messageUpdater])
+
+    useEffect(() => {
+        console.log("Unread notifs is: " + JSON.stringify(unreadNotifications));
+        console.log("Last message is: " + JSON.stringify(lastMessage));
+        console.log("message notifs is: " + JSON.stringify(messageNotifications));
+    }, [unreadNotifications, lastMessage, messageNotifications])
 
     useEffect(() => {
 
@@ -72,7 +92,49 @@ function ConvoPreview ({convo, currentUser}) {
     }
 
     return (
-        <div className="w-full border-b-2 border-twitterBorder pl-4 py-4 hover:bg-twitterBorder hover:bg-opacity-50">
+        <>
+
+        {unreadNotifications && unreadNotifications.length > 0 ? (
+
+            <div className="w-full border-b-2 border-twitterBorder pl-4 py-4 bg-twitterHover">
+            {convoOtherUser && convo && otherUserFirstName ? (
+                <div className=" flex w-full h-full">
+
+                    <div className="flex-[25]">
+                        <div>
+                            <img src={convoOtherUser.profilePic} className="w-10 h-10 rounded-full"/>
+                        </div>
+                    </div>
+
+                    <div className="flex-col flex-[75] text-white">
+                        <div className="flex justify-between items-center">
+                            <p className="text-white font-bold">{otherUserFirstName}</p>
+                            <div className="mr-6 text-twitterBlue">
+                                <GoDotFill />
+                            </div>
+                        </div>
+
+                        {lastMessage ? (
+                            <div>
+                                <p>{lastMessage.messageText}</p>
+                            </div>
+                        ) : (
+                            <div>
+                                <p>No messages yet!</p>
+                            </div>   
+                        )}
+                    </div>
+                </div>
+            ) : (
+            <div className="text-twitterBlue h-full w-full flex justify-center items-center text-3xl animate-pulse">
+                <p>Loading Preview...</p>
+            </div>
+            )}         
+            </div>
+
+        ) : (
+
+            <div className="w-full border-b-2 border-twitterBorder pl-4 py-4 hover:bg-twitterBorder hover:bg-opacity-50">
             {convoOtherUser && convo && otherUserFirstName ? (
                 <div className=" flex w-full h-full">
 
@@ -102,9 +164,16 @@ function ConvoPreview ({convo, currentUser}) {
             <div className="text-twitterBlue h-full w-full flex justify-center items-center text-3xl animate-pulse">
                 <p>Loading Preview...</p>
             </div>
-            )}
-            
-        </div>
+            )}         
+            </div>
+
+        )}
+
+
+
+
+
+        </>
     )
 }
 

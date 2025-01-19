@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { IoMdSend } from "react-icons/io";
+import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 import IndividualMessage from "./IndividualMessage";
 import ConvoPreview from "./ConvoPreview";
 
-function MessageComponent ({currentUser}) {
+function MessageComponent ({currentUser, messageNotifications, refreshNotifications, userNotifications}) {
 
     const { userId, otherUserId } = useParams();
     const [messageText, setMessageText] = useState("");
@@ -13,6 +14,8 @@ function MessageComponent ({currentUser}) {
     const [userConvos, setUserConvos] = useState([]);
     const [currentConvo, setCurrentConvo] = useState(null);
     const [otherConvoUser, setOtherConvoUser] = useState(null);
+    const [messageUpdater, setMessageUpdater] = useState(true);
+    const navigate = useNavigate();
     
     useEffect(() => {
         if (userId && otherUserId) {
@@ -23,7 +26,7 @@ function MessageComponent ({currentUser}) {
             .then(console.log("CHECK1"))
             .catch(error => console.error(error));
         }
-    }, [userId, otherUserId])
+    }, [userId, otherUserId, userNotifications])
 
     useEffect(() => {
         if (otherUserId) {
@@ -35,7 +38,7 @@ function MessageComponent ({currentUser}) {
             .then(console.log("CHECK2"))
             .catch(error => console.error(error));
         }
-    }, [otherUserId])
+    }, [otherUserId, userNotifications])
 
     useEffect(() => {
         if (userId && otherUserId && currentConvo) {
@@ -46,7 +49,7 @@ function MessageComponent ({currentUser}) {
             .then(console.log("CHECK3"))
             .catch(error => console.error(error));
         }
-    }, [userId, otherUserId, currentConvo])
+    }, [userId, otherUserId, currentConvo, messageNotifications, userNotifications])
 
     useEffect(() => {
         console.log("Convo messages is " + JSON.stringify(convoMessages))
@@ -54,14 +57,48 @@ function MessageComponent ({currentUser}) {
 
     useEffect(() => {
         if (userId) {
-            fetch(`http://localhost:6790/api/userconversations/${userId}`)
-            .then(response => response.json())
-            .then((data) => setUserConvos([...data]))
-            .then(console.log("CHECK4"))
-            .catch(error => console.error(error));
+            refreshUserConvos();
         }
-    }, [userId, otherUserId])
+    }, [userId, otherUserId, userNotifications])
 
+    function refreshUserConvos () {
+        fetch(`http://localhost:6790/api/userconversations/${userId}`)
+        .then(response => response.json())
+        .then((data) => setUserConvos([...data]))
+        .then(console.log("CHECK4"))
+        .then(setMessageUpdater(!messageUpdater))
+        .catch(error => console.error(error));
+    }
+
+    function handleConvoSwitch(convo) {
+
+        const otherPackagedUserId = convo.user1Id === currentUser.id ? convo.user2Id : convo.user1Id;
+
+        const newReadPayload = {
+            notificationObjectId: convo.id,
+            receiverId: currentUser.id,
+            senderId: otherPackagedUserId,
+            notificationType: "MESSAGE"
+        }
+
+        fetch('http://localhost:6790/api/markasread', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newReadPayload),
+        })
+        .then(response => response.json()) // Use response.json() to parse the response body as JSON
+        .then(data => {
+            console.log("Response Data: ", JSON.stringify(data)); // Log the parsed JSON response
+            refreshNotifications();
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+
+    }
+
+
+    //TODO
     function handleNewMessage() {
         const newMessagePayload = {
             senderId: userId,
@@ -84,19 +121,24 @@ function MessageComponent ({currentUser}) {
         .then((data) => {
                 alert('Post Upload successful!');
                 setConvoMessages([...data]);
-        });
+        })
+        .then(() => {
+            setTimeout(() => {
+                refreshUserConvos();
+            }, 50);
+        })
     }
 
     return (
         <div className="flex w-full h-full bg-none">
 
             <div className="flex-[40] w-full h-full border-x-2 border-twitterBorder">
-            {userConvos && currentUser ? (
+            {userConvos && currentUser && messageNotifications ? (
                     <>
                         {userConvos.map((convo) => 
-                                <Link to={`/messages/${currentUser.id}/${convo.user1Id === currentUser.id ? convo.user2Id : convo.user1Id}`}>
-                                    <ConvoPreview convo={convo} currentUser={currentUser}/>
-                                </Link>
+                                <div className="hover:cursor-pointer" onClick={() => { handleConvoSwitch(convo); navigate(`/messages/${currentUser.id}/${convo.user1Id === currentUser.id ? convo.user2Id : convo.user1Id}`); }}>
+                                    <ConvoPreview messageUpdater={messageUpdater} refreshNotifications={refreshNotifications} convoMessages={convoMessages} convo={convo} currentUser={currentUser} messageNotifications={messageNotifications}/>
+                                </div>
                         )}   
                     </>
                 ) : (

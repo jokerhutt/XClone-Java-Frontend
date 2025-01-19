@@ -22,6 +22,8 @@ function App() {
   const [userFollowing, setUserFollowing] = useState([]);
   const [userFollowers, setUserFollowers] = useState([]);
   const [doubleParamMessage, setDoubleParamMessage] = useState(true);
+  const [nonMessageNotifications, setNonMessageNotifications] = useState([]);
+  const [messageNotifications, setMessageNotifications] = useState([]);
 
   useEffect(() => {
     fetch('http://localhost:6790/api/sampleusers')
@@ -30,6 +32,10 @@ function App() {
     .then(console.log("Sample users is " + sampleUsers))
     .catch(error => console.error(error));
   }, []);
+
+  useEffect(() => {
+    console.log("User notifs is really: " + JSON.stringify(userNotifications));
+  }, [userNotifications])
 
   useEffect(() => {
     if (currentUser) {
@@ -108,7 +114,7 @@ function App() {
   });
   }
 
-  useEffect(() => {
+  function refreshNotifications () {
     if (currentUser) {
       const profileUserId = currentUser.id;
       fetch(`http://localhost:6790/api/notifications/${profileUserId}`)
@@ -116,9 +122,26 @@ function App() {
       .then(data => setUserNotifications([...data]))
       .catch(error => console.error(error));  
     }
+  }
 
-
+  useEffect(() => {
+    if (currentUser) {
+      refreshNotifications();
+    }
   }, [currentUser])
+
+
+
+  useEffect(() => {
+    const tempNonMessageNotifications = userNotifications.filter(notification => notification.notificationType !== "MESSAGE");
+    setNonMessageNotifications([...tempNonMessageNotifications]);
+  }, [userNotifications])
+
+  useEffect(() => {
+    const tempMessageNotifications = userNotifications.filter(notification => notification.notificationType === "MESSAGE");
+    setMessageNotifications([...tempMessageNotifications]);
+  }, [userNotifications])
+
 
   useEffect(() => {
     console.log("Updated notifications state:", userNotifications); // Logs whenever sampleUsers changes
@@ -132,7 +155,7 @@ function App() {
 
       <div className='grid grid-cols-12 h-screen w-screen'>
         <div className='flex bg-black h-screen flex-col col-span-3'>
-          <LeftFeed currentUser={currentUser} setCurrentUser={setCurrentUser} userNotifications={userNotifications} setPosts={setPosts} setUserNotifications={setUserNotifications}/>
+          <LeftFeed currentUser={currentUser} setCurrentUser={setCurrentUser} nonMessageNotifications={nonMessageNotifications} setPosts={setPosts} setUserNotifications={setUserNotifications}/>
         </div>
         <div className='flex bg-black h-full flex-col col-span-5 overflow-y-auto scrollbar-none pb-10'>
         <Routes>
@@ -151,7 +174,7 @@ function App() {
             <Route 
               path="/notifications/:profileUserId" 
               element={
-              <NotificationFeed userNotifications={userNotifications} currentUser={currentUser}/>}
+              <NotificationFeed nonMessageNotifications={nonMessageNotifications} currentUser={currentUser}/>}
             />
 
             <Route
@@ -169,14 +192,14 @@ function App() {
             <Route 
               path="/messages/:userId"
               element={
-                <MessageComponent currentUser={currentUser}/>
+                <MessageComponent currentUser={currentUser} messageNotifications={messageNotifications} refreshNotifications={refreshNotifications} userNotifications={userNotifications}/>
               }
             />
 
             <Route 
               path="/messages/:userId/:otherUserId"
               element={
-                <MessageComponent currentUser={currentUser}/>
+                <MessageComponent currentUser={currentUser} messageNotifications={messageNotifications} refreshNotifications={refreshNotifications} userNotifications={userNotifications}/>
               }
             />
 
