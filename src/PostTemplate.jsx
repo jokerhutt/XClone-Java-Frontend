@@ -255,7 +255,7 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
             <div className="w-full h-fit flex pl-4 pr-4 pt-3 flex-grow">
 
             {isReplyingToggle ? (
-                <ReplyingModal postUser={postUser} currentUser={currentUser} post={post}/>
+                <ReplyingModal setIsReplyingToggle={setIsReplyingToggle} postUser={postUser} currentUser={currentUser} post={post}/>
             ) : (
                 null
             )}

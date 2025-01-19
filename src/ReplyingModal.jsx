@@ -4,7 +4,7 @@ import { MdOutlineGifBox } from "react-icons/md";
 import { BsEmojiSmile } from "react-icons/bs";
 import "./App.css"
 
-function ReplyingModal ({post, postUser, currentUser}) {
+function ReplyingModal ({post, postUser, currentUser, setIsReplyingToggle}) {
 
     const [replyText, setReplyText] = useState("");
     const [characterLength, setCharacterLength] = useState(1);
@@ -44,7 +44,8 @@ function ReplyingModal ({post, postUser, currentUser}) {
         .then((data) => {
                 reply('New Reply Upload successful!');
                 console.log(data);
-        });
+        })
+        .then(setIsReplyingToggle(false));
 
     }
 
@@ -52,7 +53,8 @@ function ReplyingModal ({post, postUser, currentUser}) {
         <div className="fixed inset-0 h-full z-60 w-screen bg-opacity-55 bg-gray-700 flex flex-col justify-center flex-grow items-center">
             {post && postUser && currentUser ? (
             <div className="h-2/3 w-2/5 mb-20 rounded-3xl bg-black text-white flex flex-col px-4 gap-6">
-            <div className="h-10 w-full">
+            <div className="h-10 w-full pt-4 pl-4">
+                <p className="hover:cursor-pointer text-white text-xl" onClick={() => setIsReplyingToggle(false)}>X</p>
             </div>
             <div className="flex w-full">
                 <div className="w-16 flex-col justify-center h-full mb-0 pb-0">
