@@ -22,6 +22,7 @@ function App() {
   const [userFollowing, setUserFollowing] = useState([]);
   const [userFollowers, setUserFollowers] = useState([]);
   const [doubleParamMessage, setDoubleParamMessage] = useState(true);
+  const [userFollowingPosts, setUserFollowingPosts] = useState([]);
   const [nonMessageNotifications, setNonMessageNotifications] = useState([]);
   const [messageNotifications, setMessageNotifications] = useState([]);
 
@@ -36,6 +37,31 @@ function App() {
   useEffect(() => {
     console.log("User notifs is really: " + JSON.stringify(userNotifications));
   }, [userNotifications])
+
+  function fetchUserFollowingPosts() {
+
+    if (userFollowing) {
+      const userFollowingIds = userFollowing.map((following) => following.followedId);
+      
+      fetch('http://localhost:6790/api/grabuserfollowingposts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userFollowingIds: userFollowingIds })  // Send the array in the request body
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Fetched following users posts data:", JSON.stringify(data)); // Check the response here
+        setUserFollowingPosts([...data]);
+    })
+      .then(console.log("user following posts is " + JSON.stringify(userFollowingPosts)))
+      .catch(error => console.error(error));
+
+    }
+  }
+
+  useEffect(() => {
+    fetchUserFollowingPosts()
+  }, [userFollowing])
 
   useEffect(() => {
     if (currentUser) {
@@ -162,7 +188,7 @@ function App() {
             <Route 
               path="/" 
               element={
-              <MainFeed currentUser={currentUser} setCurrentUser={setCurrentUser} posts={posts} setPosts={setPosts}/>}
+              <MainFeed fetchUserFollowingPosts={fetchUserFollowingPosts} userFollowingPosts={userFollowingPosts} currentUser={currentUser} setCurrentUser={setCurrentUser} posts={posts} setPosts={setPosts}/>}
             />
 
             <Route 

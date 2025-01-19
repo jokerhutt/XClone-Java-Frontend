@@ -2,7 +2,15 @@
 import { useState } from "react";
 import '../../App.css'
 import NewPost from "./NewPost";
-function TopMainFeed ({currentUser, setCurrentUser, setPosts, mainFeedTab, setMainFeedTab}) {
+function TopMainFeed ({currentUser, setCurrentUser, setPosts, mainFeedTab, setMainFeedTab, fetchUserFollowingPosts}) {
+
+    function handleTabChange(tabType) {
+
+        fetchUserFollowingPosts();
+        setMainFeedTab(tabType)
+
+    }
+
     return(
         <div className="flex flex-col flex-grow h-full">
             
@@ -10,14 +18,28 @@ function TopMainFeed ({currentUser, setCurrentUser, setPosts, mainFeedTab, setMa
                 <div className="flex flex-row justify-center h-full border-s-twitterBorder">
                     <div
                     className="px-4 flex flex-row justify-center items-end h-full w-full" >
-                        <p 
-                        onClick={() => setMainFeedTab("FORYOU")}
-                        className="hover:cursor-pointer  text-white py-4 font-bold border-b-4 border-b-twitterBlue text-sm">For You</p>
+                        {mainFeedTab === "FORYOU" ? (
+                            <p 
+                            onClick={() => handleTabChange("FORYOU")}
+                            className="hover:cursor-pointer  text-white py-4 font-bold border-b-4 border-b-twitterBlue text-sm">For You</p>
+                        ) : (
+                            <p 
+                            onClick={() => handleTabChange("FORYOU")}
+                            className="hover:cursor-pointer text-white py-4 font-bold text-sm">For You</p>
+                        )}
+
                     </div>
                     <div className="px-4 flex flex-row justify-center items-end h-full w-full">
+                        {mainFeedTab === "FOLLOWING" ? (
                         <p 
-                        onClick={() => setMainFeedTab("FOLLOWING")}
+                        onClick={() => handleTabChange("FOLLOWING")}
+                        className="hover:cursor-pointer  text-white py-4 font-bold border-b-4 border-b-twitterBlue text-sm">Following</p>
+                        ) : (
+                        <p 
+                        onClick={() => handleTabChange("FOLLOWING")}
                         className="hover:cursor-pointer text-white py-4 font-bold text-sm">Following</p>
+                        )}
+
                     </div>
                 </div>
             </div>
