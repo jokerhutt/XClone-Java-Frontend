@@ -120,7 +120,7 @@ function ProfileFeed ({handleNewFollow, posts, currentUser, setCurrentUser, setP
 
     return(
         <div className="flex flex-col flex-grow">
-            {profileUser && profileUserFollowers && profileUserFollowing && userFollowing && userFollowers ? (
+            {profileUser && profileUserFollowers && profileUserFollowing && userFollowing && userFollowers && posts ? (
                 <>
             <div className="flex-[526] flex flex-col flex-grow bg-black h-full w-full text-white pt-3">
 

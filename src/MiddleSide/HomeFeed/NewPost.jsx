@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import '../../App.css'
+import imageCompression from 'browser-image-compression';
 import { CiImageOn } from "react-icons/ci";
 import { MdOutlineGifBox } from "react-icons/md";
 import { BsEmojiSmile } from "react-icons/bs";
@@ -11,8 +12,6 @@ function NewPost ({currentUser, setCurrentUser, setPosts, isPosting, refreshPost
 
     const [postTitle, setPostTitle] = useState("");
     const [postMedia, setPostMedia] = useState([]);
-
-    const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
     useEffect(() => {
         console.log("Is posting is: " + isPosting)
@@ -28,26 +27,31 @@ function NewPost ({currentUser, setCurrentUser, setPosts, isPosting, refreshPost
         document.getElementById('imageInput').click();
       };
 
-    const handleImageChange = (event) => {
-    const files = Array.from(event.target.files);
-    const imagePreviews = [];
-
-    files.forEach((file) => {
-        if (file.size <= MAX_IMAGE_SIZE) {
+    const handleImageUpload = async (event) => {
+        const files = Array.from(event.target.files);
+        const compressedImages = [];
+      
+        for (const file of files) {
+          try {
+            const options = {
+              maxSizeMB: 5,
+              useWebWorker: true,
+            };
+            const compressedFile = await imageCompression(file, options);
+      
             const reader = new FileReader();
             reader.onload = () => {
-              imagePreviews.push(reader.result); // Add each image preview to the array
-              if (imagePreviews.length === files.length) {
-                setPostMedia((prevImages) => [...prevImages, ...imagePreviews]); // Append new images to the existing state
+              compressedImages.push(reader.result);
+              if (compressedImages.length === files.length) {
+                setPostMedia((prevMedia) => [...prevMedia, ...compressedImages]);
               }
             };
-            reader.readAsDataURL(file); 
-        } else {
-            alert("Needs file under 5mb.");
+            reader.readAsDataURL(compressedFile);
+          } catch (error) {
+            console.error("Image compression failed:", error.message);
+          }
         }
-
-      });
-    };
+      };
 
     function handleNewPost (e) {
 
@@ -153,14 +157,15 @@ function NewPost ({currentUser, setCurrentUser, setPosts, isPosting, refreshPost
                                     <div className="flex-[3] flex justify-between">
                                         <div className="h-1/2 flex gap-4 pt-2 text-twitterBlue items-center">
                                         <div>
-                                            <input
+                                            {/* <input
                                                 id="imageInput"
                                                 type="file"
                                                 accept=".png,.jpg,.jpeg"
                                                 multiple
                                                 onChange={handleImageChange} // Handle file change
                                                 style={{ display: 'none' }} // Hide the file input
-                                            />
+                                            /> */}
+                                            <input type="file" id="imageInput" accept="image/*" style={{ display: 'none' }} onChange={(event) => handleImageUpload(event)}></input>
                                             <CiImageOn onClick={handleImageClick} className="hover:cursor-pointer text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300"/>
                                         </div>
                                             <MdOutlineGifBox className="text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>

@@ -13,7 +13,7 @@ import ReplyPostTemplate from "./ReplyPostTemplate";
 
 
 
-function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObject, isInZoomedMode}) {
+function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObject, isInZoomedMode, disableMedia}) {
 
     const [postUser, setPostUser] = useState(null);
     const [postLikes, setPostLikes] = useState([]);
@@ -47,9 +47,8 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
             .catch(error => console.error(error))
         }
         else (
-            alert("Broooo")
+            console.log("error")
         )
-
     }, [post])
 
     const handleNavigation = () => {
@@ -72,6 +71,7 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
     }, [post])
 
     function grabPostMedia () {
+        if (!disableMedia) {
             const postID = post.postId
             fetch(`http://localhost:6790/api/grabpostmedia/${postID}`)
             .then(response => response.json())
@@ -80,6 +80,7 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
                 setCurrentPostMedia([...data])
             })
             .catch(error => console.error(error))
+        }
     }
 
     useEffect(() => {
@@ -321,14 +322,15 @@ function PostTemplate ({post, currentUser, profileUser, isAReplyParent, replyObj
                     <p>{post.postText}</p>
                 </div>
 
-                {currentPostMedia && currentPostMedia.length > 0 ? (
+                {currentPostMedia && currentPostMedia.length > 0 && !disableMedia ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
                         {currentPostMedia.map((image, index) => {
                             return (
                                 <div key={index} className="col-span-1">
                                     <img
+                                        onClick={() => navigate(`/imagepreview/${post.postId}/${image.position}`)}
                                         src={image.mediaFile}
-                                        className="w-full h-48 object-cover rounded-lg "
+                                        className="hover:cursor-pointer w-full h-48 object-cover rounded-lg "
                                     />
                                 </div>
                             )

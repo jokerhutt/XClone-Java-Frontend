@@ -7,6 +7,7 @@ import LeftFeed from './LeftSide/LeftFeed'
 import MainFeed from './MiddleSide/MainFeed'
 import ZoomedPost from './ZoomedPost';
 import ProfileFeed from './MiddleSide/ProfileFeed';
+import MediaPreviewModal from './MediaPreviewModal';
 import './App.css'
 import MessageComponent from './MessageComponent';
 import BookMarks from './BookMarks';
@@ -103,7 +104,6 @@ function App() {
     .then(data => setPosts([...data]))
     .catch(error => console.error(error));
   }
-
   useEffect(() => {
     refreshPosts();
   }, [currentUser]);
@@ -211,6 +211,12 @@ function App() {
               path="/post/:postId"
               element={
               <ZoomedPost currentUser={currentUser}/>
+              }/>
+
+            <Route
+              path="/imagepreview/:postId/:position"
+              element={
+              <MediaPreviewModal currentUser={currentUser}/>
               }/>
 
             <Route
