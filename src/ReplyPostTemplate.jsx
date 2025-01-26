@@ -1,7 +1,6 @@
 import "./App.css"
 
 import { useState, useEffect } from "react";
-import ReplyingModal from "./ReplyingModal";
 import { FaRegComment, FaRegHeart, FaRegChartBar, FaRegBookmark } from "react-icons/fa";
 import { FaRetweet } from "react-icons/fa6";
 import { Link } from "react-router-dom";
@@ -9,20 +8,16 @@ import { Link } from "react-router-dom";
 
 
 
-function ReplyPostTemplate ({post, ogPostUser}) {
+function ReplyPostTemplate ({tempReplies, tempPostReplies, cachedAddedReplies, post, ogPostUser}) {
 
     const [postLikes, setPostLikes] = useState([]);
     const [postReposts, setPostReposts] = useState([]);
     const [replyPostUser, setReplyPostUser] = useState(null);
 
-
-    //postuser is sender
-    //ogpostuser is receiver
-
     useEffect(() => {
         if (post) {
-            const postID = post.replySenderId
-            fetch(`http://localhost:6790/api/users/${postID}`)
+            const profileUserId = post.replySenderId
+            fetch(`http://localhost:6790/api/grabusers/${profileUserId}`)
             .then(response => response.json())
             .then(data => setReplyPostUser(data))
             .catch(error => console.error(error))
@@ -30,7 +25,7 @@ function ReplyPostTemplate ({post, ogPostUser}) {
         else {
             console.log("Epic fail")
         }
-    }, [post])
+    }, [post, cachedAddedReplies])
 
     useEffect(() => {
         console.log("post is: " + JSON.stringify(post));

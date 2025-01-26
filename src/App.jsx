@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import viteLogo from '/vite.svg'
+import { useMemo } from 'react';
 import RightFeed from './RightFeed/RightFeed'
 import LeftFeed from './LeftSide/LeftFeed'
 import MainFeed from './MiddleSide/MainFeed'
@@ -12,21 +13,136 @@ import './App.css'
 import MessageComponent from './MessageComponent';
 import BookMarks from './BookMarks';
 import NotificationFeed from './MiddleSide/NotificationFeed';
+import { cache } from 'react';
 
 function App() {
   const [count, setCount] = useState(0)
 
   const [currentUser, setCurrentUser] = useState(null);
-  const [sampleUsers, setSampleUsers] = useState(null);
   const [posts, setPosts] = useState([]);
-  const [userNotifications, setUserNotifications] = useState([]);
+
+
   const [userFollowing, setUserFollowing] = useState([]);
   const [userFollowers, setUserFollowers] = useState([]);
-  const [doubleParamMessage, setDoubleParamMessage] = useState(true);
   const [userFollowingPosts, setUserFollowingPosts] = useState([]);
+
+  const [forYouPage, setForYouPage] = useState(0);
+  const [forYouFeedContent, setForYouFeedContent] = useState([]);
+  const [forYouMedia, setForYouMedia] = useState([]);
+  const [userLikedPosts, setUserLikedPosts] = useState([]);
+
+  const [cachedLikedPosts, setCachedLikedPosts] = useState({})
+  const [cachedBookMarks, setCachedBookMarks] = useState({})
+  const [cachedReposts, setCachedReposts] = useState({})
+  const [cachedAddedReplies, setCachedAddedReplies] = useState([]);
+
+  const [userNotifications, setUserNotifications] = useState([]);
   const [nonMessageNotifications, setNonMessageNotifications] = useState([]);
   const [messageNotifications, setMessageNotifications] = useState([]);
 
+  const [sampleUsers, setSampleUsers] = useState(null);
+
+
+  function getForYouFeed () {
+    console.log("Fetching!!")
+    // fetch(`http://localhost:6790/api/foryoufeed?page=${forYouPage}&size=20`)
+    fetch(`http://localhost:6790/api/foryoufeed?page=0&size=10`)
+    .then(response => response.json())
+
+    .then(data => {
+      const newPosts = data.content;
+      setForYouFeedContent([...newPosts]);
+    })
+    .catch(error => console.error(error));
+  }
+
+  useEffect(() => {
+    console.log("Usercached is: " + JSON.stringify(cachedLikedPosts))
+  }, [cachedLikedPosts])
+
+  useEffect(() => {
+    getForYouFeed();
+  }, []) 
+
+  useEffect(() => {
+    console.log("Important is: " + JSON.stringify(forYouFeedContent))
+  }, [forYouFeedContent])
+
+  function grabUserLiked () {
+    if (currentUser) {
+      const profileUserId = currentUser.id;
+      fetch(`http://localhost:6790/api/grabuserlikedpostslist/${profileUserId}`)
+      .then(response => response.json())
+      .then((data) => {
+        const likedPostsCache = data.reduce((acc, like) => {
+          if (!acc[like.postId]) {
+            acc[like.postId] = [];
+          }
+          acc[like.postId].push(like); 
+          return acc;
+        }, {});
+
+        setCachedLikedPosts(likedPostsCache);
+      })
+      .catch(error => console.error(error));
+    }
+  }
+
+  function grabUserReposts () {
+    if (currentUser) {
+      const profileUserId = currentUser.id;
+      fetch(`http://localhost:6790/api/userreposts/${profileUserId}`)
+      .then(response => response.json())
+      .then((data) => {
+        const repostsCache = data.reduce((acc, repost) => {
+          if (!acc[repost.postId]) {
+            acc[repost.postId] = [];
+          }
+          acc[repost.postId].push(repost); 
+          return acc;
+        }, {});
+
+        setCachedReposts(repostsCache);
+      })
+      .catch(error => console.error(error));
+    }
+  }
+
+  function grabUserBookMarked () {
+    if (currentUser) {
+      const profileUserId = currentUser.id;
+      fetch(`http://localhost:6790/api/grabuserbookmarked/${profileUserId}`)
+      .then(response => response.json())
+      .then((data) => {
+        const bookmarkedPostsCache = data.reduce((acc, bookmark) => {
+          if (!acc[bookmark.postId]) {
+            acc[bookmark.postId] = [];
+          }
+          acc[bookmark.postId].push(bookmark); 
+          return acc;
+        }, {});
+        setCachedBookMarks(bookmarkedPostsCache);
+      })
+      .catch(error => console.error(error));
+    }
+  }
+
+  useEffect(() => {
+    if (currentUser) {
+      grabUserBookMarked()
+    }
+  }, [currentUser])
+
+  useEffect(() => {
+    console.log("user bookmarked is " + JSON.stringify(cachedBookMarks))
+  }, [cachedBookMarks])
+
+
+
+
+
+
+  // SAMPLEPOSTS
   useEffect(() => {
     fetch('http://localhost:6790/api/sampleusers')
     .then(response => response.json())
@@ -35,48 +151,8 @@ function App() {
     .catch(error => console.error(error));
   }, []);
 
-  useEffect(() => {
-    console.log("User notifs is really: " + JSON.stringify(userNotifications));
-  }, [userNotifications])
 
-  function fetchUserFollowingPosts() {
-
-    if (userFollowing) {
-      const userFollowingIds = userFollowing.map((following) => following.followedId);
-      
-      fetch('http://localhost:6790/api/grabuserfollowingposts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userFollowingIds: userFollowingIds })  // Send the array in the request body
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log("Fetched following users posts data:", JSON.stringify(data)); // Check the response here
-        setUserFollowingPosts([...data]);
-    })
-      .then(console.log("user following posts is " + JSON.stringify(userFollowingPosts)))
-      .catch(error => console.error(error));
-
-    }
-  }
-
-  useEffect(() => {
-    fetchUserFollowingPosts()
-  }, [userFollowing])
-
-  useEffect(() => {
-    if (currentUser) {
-      const profileUserId = currentUser.id;
-      fetch(`http://localhost:6790/api/grabuserfollowing/${profileUserId}`)
-      .then(response => response.json())
-      .then(data => {
-        console.log("Fetched following data:", data); // Check the response here
-        setUserFollowing([...data]);
-    })
-      .then(console.log("user following is " + userFollowing))
-      .catch(error => console.error(error));
-    }
-  }, [currentUser]);
+// //FOLLOW SECTION
 
   useEffect(() => {
     if (currentUser) {
@@ -91,26 +167,6 @@ function App() {
       .catch(error => console.error(error));
     }
   }, [currentUser])
-
-
-
-  useEffect(() => {
-    console.log("Updated sampleUsers state:", sampleUsers); // Logs whenever sampleUsers changes
-  }, [sampleUsers]);
-
-  function refreshPosts () {
-    fetch('http://localhost:6790/api/getallposts')
-    .then(response => response.json())
-    .then(data => setPosts([...data]))
-    .catch(error => console.error(error));
-  }
-  useEffect(() => {
-    refreshPosts();
-  }, [currentUser]);
-
-  useEffect(() => {
-    console.log("Updated posts state:", posts); // Logs whenever sampleUsers changes
-  }, [posts]);
 
   function handleNewFollow(followedId, followingId) {
     const newFollowInformation = {
@@ -144,6 +200,34 @@ function App() {
   });
   }
 
+  useEffect(() => {
+    if (currentUser) {
+      const profileUserId = currentUser.id;
+      fetch(`http://localhost:6790/api/grabuserfollowing/${profileUserId}`)
+      .then(response => response.json())
+      .then(data => {
+        console.log("Fetched following data:", data); // Check the response here
+        setUserFollowing([...data]);
+    })
+      .then(console.log("user following is " + userFollowing))
+      .catch(error => console.error(error));
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    grabUserLiked()
+  }, [currentUser])
+
+  const likedPostIdsSet = useMemo(() => {
+    return new Set(userLikedPosts.map(post => post.postId));
+  }, [userLikedPosts]);
+
+  // useEffect(() => {
+  //   fetchUserFollowingPosts()
+  // }, [userFollowing])
+  
+  
+//   //NOTIFICATIONS SECTION
   function refreshNotifications () {
     if (currentUser) {
       const profileUserId = currentUser.id;
@@ -161,21 +245,12 @@ function App() {
   }, [currentUser])
 
 
-
   useEffect(() => {
     const tempNonMessageNotifications = userNotifications.filter(notification => notification.notificationType !== "MESSAGE");
-    setNonMessageNotifications([...tempNonMessageNotifications]);
-  }, [userNotifications])
-
-  useEffect(() => {
     const tempMessageNotifications = userNotifications.filter(notification => notification.notificationType === "MESSAGE");
+    setNonMessageNotifications([...tempNonMessageNotifications]);
     setMessageNotifications([...tempMessageNotifications]);
   }, [userNotifications])
-
-
-  useEffect(() => {
-    console.log("Updated notifications state:", userNotifications); // Logs whenever sampleUsers changes
-  }, [userNotifications]);
 
   
   return (
@@ -192,7 +267,7 @@ function App() {
             <Route 
               path="/" 
               element={
-              <MainFeed refreshPosts={refreshPosts} fetchUserFollowingPosts={fetchUserFollowingPosts} userFollowingPosts={userFollowingPosts} currentUser={currentUser} setCurrentUser={setCurrentUser} posts={posts} setPosts={setPosts}/>}
+              <MainFeed cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={forYouFeedContent}/>}
             />
 
             <Route 
@@ -210,7 +285,7 @@ function App() {
             <Route
               path="/post/:postId"
               element={
-              <ZoomedPost currentUser={currentUser}/>
+              <ZoomedPost cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} currentUser={currentUser} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>
               }/>
 
             <Route
@@ -222,7 +297,7 @@ function App() {
             <Route
               path="/bookmarks/:userId"
               element={
-              <BookMarks currentUser={currentUser}/>
+              <BookMarks cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} currentUser={currentUser} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>
               }/>
             
             <Route 

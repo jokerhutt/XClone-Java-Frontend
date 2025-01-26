@@ -8,7 +8,7 @@ import { FaGlobeAmericas } from "react-icons/fa";
 
 
 
-function NewPost ({currentUser, setCurrentUser, setPosts, isPosting, refreshPosts}) {
+function NewPost ({currentUser, setCurrentUser, isPosting, setForYouFeedContent, forYouFeedContent}) {
 
     const [postTitle, setPostTitle] = useState("");
     const [postMedia, setPostMedia] = useState([]);
@@ -77,13 +77,15 @@ function NewPost ({currentUser, setCurrentUser, setPosts, isPosting, refreshPost
         })
         .then((data) => {
                 alert('Post Upload successful!');
-                setPosts(prevPosts => [data, ...prevPosts]);
+                const tempPosts = [...forYouFeedContent]
+                tempPosts.push(data);
+                setForYouFeedContent([...tempPosts]);
         })
-        .then(() => {
-            setTimeout(() => {
-                refreshPosts();
-            }, 10);
-        })
+        // .then(() => {
+        //     setTimeout(() => {
+        //         refreshPosts();
+        //     }, 10);
+        // })
     }
     
     useEffect(() => {
@@ -101,7 +103,7 @@ function NewPost ({currentUser, setCurrentUser, setPosts, isPosting, refreshPost
         
         <div className=" w-full h-full pt-1 z-50">
 
-            {setPosts ? (
+            {setForYouFeedContent ? (
                             <div className="flex flex-row flex-grow  w-full h-full">
 
                             {isPosting && currentUser ? (

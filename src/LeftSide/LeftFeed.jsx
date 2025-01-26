@@ -9,28 +9,17 @@ import { useEffect, useState } from "react";
 
 
 
-function LeftFeed ({currentUser, setPosts}) {
+function LeftFeed ({currentUser}) {
 
     const [isPosting, setIsPosting] = useState(false);
 
-    useEffect(() => {
-        console.log(isPosting)
-    }, [isPosting])
-
-    useEffect(() => {
-        if (currentUser) {
-            console.log("Current User is is: " + JSON.stringify(currentUser))
-        }
-
-    }, [currentUser])
-
     return(
         <>
-        {isPosting && currentUser && setPosts ? (
+        {/* {isPosting && currentUser && setPosts ? (
             <PostModal setPosts={setPosts} currentUser={currentUser} isPosting={isPosting} setIsPosting={setIsPosting}/>
         ) : (
                 null
-            )}
+            )} */}
 <div className="flex flex-col flex-grow h-full w-full ml-20">
 
 <div className="flex-[1] h-full w-full bg-black flex items-center">

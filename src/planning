@@ -1,0 +1,110 @@
+import { useEffect, useState } from "react"
+
+
+
+
+function planning () {
+
+    const [mainFeedPosts, setMainFeedPosts] = useState([]);
+    const [followingPosts, setFollowingPosts] = useState([]);
+    const [currentUser, setCurrentUser] = useState(null);
+    const [cachedLikedPosts, setCachedLikedPosts] = useState({})
+
+    function grabUserLiked () {
+        if (currentUser) {
+          const profileUserId = currentUser.id;
+          fetch(`http://localhost:6790/api/grabuserlikes/${profileUserId}`)
+          .then(response => response.json())
+          .then(data => {
+            console.log("Fetched User likes data:", data); // Check the response here
+            setCachedLikedPosts([...data]);
+        })
+          .then(console.log("user liked posts is " + cachedLikedPosts))
+          .catch(error => console.error(error));
+        }
+      }
+
+    useEffect(() => {
+        callUserLikedPosts()
+    }, [currentUser])
+
+    return (
+
+        <div>
+
+            {mainFeedPosts.map((post) => {
+                <postTemplate post={post} media={post.media} likes={post.likes} postUser={post.user} setUserLiked={userLiked}/>
+            })}
+            
+        </div>
+
+
+    )
+
+
+}
+
+
+function postTemplate ({post, media, likes, postUser, currentUser}) {
+
+    const [currentLikes, setCurrentLikes] = useState(likes)
+    const [isLiked, setIsLiked] = useState(false);
+
+    useEffect(() => {
+
+        if (cachedLikedPosts[post.postId]){
+            setCurrentLikes(cachedLikedPosts[post.postId])
+            setIsLiked(true);
+        } else {
+            setCurrentLikes(likes);
+        }
+
+    }, [])
+
+
+        // function handleNewLike () {
+    //     const likeInformation = {
+    //         postId: post.postId,
+    //         likerId: currentUser.id,
+    //         notificationType: "LIKE",
+    //         notificationObject: post.postId, //TODO
+    //         receiverId: postCreator.id,
+    //         senderId: currentUser.id 
+    //     };
+
+    //     const decryptedPayload = JSON.stringify(likeInformation)
+
+    //     console.log("Super Secret Like Information is being sent..." + decryptedPayload)
+
+    //     fetch('http://localhost:6790/api/newlike', {
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify(likeInformation),
+    //       })
+    //       .then(response => {
+    //         if (response.ok) {
+    //             return response.json();
+    //         } else {
+    //             throw new Error('Failed to sign up');
+    //         }
+    //     })
+    //     .then((data) => {
+    //           alert('Like added successfully!');
+    //           console.log("Response is " + JSON.stringify(data));
+    //           const tempPostLikes = [...data]
+    //           setCurrentPostsLikes(tempPostLikes);  
+    //           console.log(data);
+    //     })
+    // }
+
+
+
+    return(
+
+        <div>
+            //Post Details
+            
+        </div>
+
+    )
+}

@@ -5,27 +5,25 @@ import PostTemplate from './PostTemplate';
 import { useState, useEffect } from 'react';
 import { FaArrowLeft } from "react-icons/fa";
 
-function ZoomedPost ({currentUser}) {
+function ZoomedPost ({cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, currentUser}) {
 
     const navigate = useNavigate();
-    const {postId} = useParams();
-    const [post, setPost] = useState(null);
+    const { postId } = useParams();
+    const [fetchedPost, setFetchedPost] = useState(null);
     const [isInZoomedMode, setIsInZoomedMode] = useState(true); 
 
+    const [tempReplies, setTempReplies] = useState([]);
 
     useEffect(() => {
-        if (postId) {
-            fetch(`http://localhost:6790/api/posts/${postId}`)
-            .then(response => response.json())
-            .then(data => setPost(data))
-            .catch(error => console.error(error))
-        }
-    }, [postId, currentUser])
+        fetch(`http://localhost:6790/api/posts/${postId}`)
+        .then(response => response.json())
+        .then(data => setFetchedPost(data))
+        .catch(error => console.error(error));
+      }, []);
 
-    useEffect(() => {
-        console.log("Post id is: " + postId)
-        console.log("POST IS: " + JSON.stringify(post))
-    }, [post, postId])
+      useEffect(() => {
+        console.log("Fetched Post users is " + JSON.stringify(fetchedPost))
+      }, fetchedPost)
 
     return (
         <>
@@ -39,10 +37,11 @@ function ZoomedPost ({currentUser}) {
                 </div>
             </div>
             <div className='flex-[3] flex flex-col-reverse justify-end h-full w-full border-l-2  border-r-2 border-twitterBorder'>
-                    {post && currentUser ? (
+                    {fetchedPost ? (
                 <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
                     <div className="flex-col w-full h-full">
-                        <PostTemplate post={post} currentUser={currentUser} isInZoomedMode={isInZoomedMode}/>
+                        <PostTemplate tempReplies={tempReplies} setTempReplies={setTempReplies} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} isInZoomedMode={isInZoomedMode} postReplies={fetchedPost.replyList} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={fetchedPost.repostList} postBookMarks={fetchedPost.bookMarkList} postLikes={fetchedPost.likeList} post={fetchedPost} postCreator={fetchedPost.creator} postMedia={fetchedPost.mediaList} currentUser={currentUser}
+                        />
                     </div>
                 </div>
                     ) : (

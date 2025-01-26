@@ -81,34 +81,6 @@ function ProfileFeed ({handleNewFollow, posts, currentUser, setCurrentUser, setP
     }, [profileUser])
 
     useEffect(() => {
-        if (userFollowing) {
-          console.log("Fetched user following:", JSON.stringify(userFollowing));
-        } else {
-          console.log("No user following data available");
-        }
-      }, [userFollowing]);
-      
-      useEffect(() => {
-        if (userFollowers) {
-          console.log("Fetched user followers:", JSON.stringify(userFollowers));
-        } else {
-          console.log("No user followers data available");
-        }
-      }, [userFollowers]);
-
-    useEffect(() => {
-        console.log("userdata is: " + JSON.stringify(profileUser));
-    }, [profileUser])
-
-    useEffect(() => {
-        console.log("userpost is: " + JSON.stringify(userPostsAndReposts));
-    }, [userPostsAndReposts])
-
-    useEffect(() => {
-        console.log("user replies is: " + JSON.stringify(userReplies));
-    }, [userReplies])
-
-    useEffect(() => {
         fetch(`http://localhost:6790/api/grabuserlikes/${profileUserId}`)
         .then(response => response.json())
         .then((data) => setUserLikedPosts([...data]))
@@ -120,7 +92,7 @@ function ProfileFeed ({handleNewFollow, posts, currentUser, setCurrentUser, setP
 
     return(
         <div className="flex flex-col flex-grow">
-            {profileUser && profileUserFollowers && profileUserFollowing && userFollowing && userFollowers && posts ? (
+            {profileUser && profileUserFollowers && profileUserFollowing && userFollowing && userFollowers && posts && userLikedPosts && userPostsAndReposts && userReplies ? (
                 <>
             <div className="flex-[526] flex flex-col flex-grow bg-black h-full w-full text-white pt-3">
 
@@ -237,35 +209,30 @@ function ProfileFeed ({handleNewFollow, posts, currentUser, setCurrentUser, setP
 
         </div>
 
-        {userPosts && tabState == "posts" ? (
-            <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder">
+
+            <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder" style={{ display: tabState === "posts" ? "block" : "none" }}>
                 {userPostsAndReposts.map((post) => 
                     <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
                         <PostTemplate profileUser={profileUser} currentUser={currentUser} post={post} posts={posts}/>
                     </div>
                 )}
             </div>
-        ) : userLikedPosts && tabState == "likes" ? (
-            <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder">
+
+            <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder" style={{ display: tabState === "likes" ? "block" : "none" }}>
                 {userLikedPosts.map((post) => 
                     <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
                         <PostTemplate currentUser={currentUser} post={post} posts={posts}/>
                     </div>
                 )}
             </div>
-        ) : tabState == "replies" && userReplies && profileUser ? (
-            <div>
+
+            <div style={{ display: tabState === "replies" ? "block" : "none" }}>
                 {userReplies.map((reply) => 
                     <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
                         <ReplyTemplate posts={posts} currentUser={currentUser} replyObject={reply} profileUser={profileUser} isAReplyParent={isAReplyParent}/>
                     </div>
                 )}
             </div>
-        ) : (
-            <div className="text-twitterBlue h-full w-full flex justify-center items-center text-3xl animate-pulse">
-                <p>Loading...</p>
-            </div>
-        )}
 
         </>
             ) : (

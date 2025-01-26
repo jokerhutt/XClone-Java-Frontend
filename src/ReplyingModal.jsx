@@ -4,7 +4,7 @@ import { MdOutlineGifBox } from "react-icons/md";
 import { BsEmojiSmile } from "react-icons/bs";
 import "./App.css"
 
-function ReplyingModal ({post, postUser, currentUser, setIsReplyingToggle}) {
+function ReplyingModal ({tempPostReplies, setTempPostReplies, post, postUser, currentUser, setIsReplyingToggle, setCachedAddedReplies}) {
 
     const [replyText, setReplyText] = useState("");
     const [characterLength, setCharacterLength] = useState(1);
@@ -19,13 +19,13 @@ function ReplyingModal ({post, postUser, currentUser, setIsReplyingToggle}) {
         console.log("Reply text is: " + replyText);
 
         const newReplyPayload = {
-            replyObjectId: post.postId,
+            postId: post.postId,
             replyText: replyText,
             replySenderId: currentUser.id,
             replyReceiverId: postUser.id,
             notificationType: "REPLY",
             notificationObject: post.postId, //TODO
-            receiverId: post.creatorId,
+            receiverId: postUser.id,
             senderId: currentUser.id 
         };
 
@@ -41,12 +41,16 @@ function ReplyingModal ({post, postUser, currentUser, setIsReplyingToggle}) {
                 throw new Error('Failed to upload post');
             }
         })
-        .then((data) => {
-                reply('New Reply Upload successful!');
-                console.log(data);
+        .then(data => {
+            console.log("New reply is " + JSON.stringify(data));
+            setCachedAddedReplies(prev => [...prev, data]);
+            setIsReplyingToggle(false);
+            if (tempPostReplies) {
+                setTempPostReplies(prev => [...prev, data]);
+            }
+            alert("Reply Added!");
         })
-        .then(setIsReplyingToggle(false));
-
+        .catch(error => console.error(error));
     }
 
     return (
@@ -108,7 +112,7 @@ function ReplyingModal ({post, postUser, currentUser, setIsReplyingToggle}) {
                             className="stroke-blue-500"
                             strokeWidth="3"
                             fill="transparent"
-                            strokeDasharray="60.2"  // Circumference of the circle (2 * π * radius)
+                            strokeDasharray="60.2" 
                             style={{ strokeDashoffset: `${60.2 - (60.2 * (characterLength / 180))}` }}
                         />
                     </svg>

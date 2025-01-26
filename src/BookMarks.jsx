@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import './App.css'
 import { useParams } from "react-router"
+import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import PostTemplate from './PostTemplate';
 
-function BookMarks ({currentUser}) {
+function BookMarks ({cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, currentUser}) {
 
     const navigate = useNavigate();
     const [userBookMarkedPosts, setUserBookMarkedPosts] = useState([])
@@ -26,7 +27,7 @@ function BookMarks ({currentUser}) {
                     <>
                     {userBookMarkedPosts.map((post) => 
                         <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
-                            <PostTemplate currentUser={currentUser} post={post}/>
+                            <PostTemplate cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} postReplies={post.replyList} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} post={post} postCreator={post.creator} postMedia={post.mediaList} currentUser={currentUser}/>
                         </div>
                     )}
                     </>
@@ -35,6 +36,14 @@ function BookMarks ({currentUser}) {
                     <p>Loading...</p>
                 </div>
                 )}
+            <div className='h-14 w-full border-l-2 px-4 justify-start gap-5 flex border-r-2 border-b-2 border-twitterBorder text-white'>
+                <div className="w-8 ml-2 h-full flex justify-start text-lg items-center">
+                    <FaArrowLeft onClick={() => navigate(-1)} className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
+                </div>
+                <div className="flex items-center justify-start">
+                    <h2 className='font-bold'>All Bookmarks</h2>
+                </div>
+            </div>
 
             </div>
 
