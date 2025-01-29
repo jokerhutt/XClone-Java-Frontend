@@ -132,7 +132,7 @@ function MessageComponent ({currentUser, messageNotifications, refreshNotificati
     return (
         <div className="flex w-full h-full bg-none">
 
-            <div className="flex-[40] w-full h-full border-x-2 border-twitterBorder">
+            <div className="flex-[40] w-full h-full border-x-2 border-twitterBorder overflow-y-auto">
             {userConvos && currentUser && messageNotifications ? (
                     <>
                         {userConvos.map((convo) => 

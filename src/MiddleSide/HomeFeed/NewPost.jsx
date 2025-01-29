@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import '../../App.css'
+import EmojiPicker from 'emoji-picker-react';
 import imageCompression from 'browser-image-compression';
 import { CiImageOn } from "react-icons/ci";
 import { MdOutlineGifBox } from "react-icons/md";
@@ -12,6 +13,7 @@ function NewPost ({currentUser, setCurrentUser, isPosting, setForYouFeedContent,
 
     const [postTitle, setPostTitle] = useState("");
     const [postMedia, setPostMedia] = useState([]);
+    const [emojiToggle, setEmojiToggle] = useState(false);
 
     useEffect(() => {
         console.log("Is posting is: " + isPosting)
@@ -52,6 +54,10 @@ function NewPost ({currentUser, setCurrentUser, isPosting, setForYouFeedContent,
           }
         }
       };
+
+      function handleEmojiAdd(emoji) {
+        setPostTitle((prevTitle) => prevTitle + emoji.emoji);
+      }
 
     function handleNewPost (e) {
 
@@ -122,7 +128,7 @@ function NewPost ({currentUser, setCurrentUser, isPosting, setForYouFeedContent,
             
             
                             <div className="flex-[12] flex flex-col w-full">
-                                <input placeholder="What is happening?!" onChange={(e) => setPostTitle(e.target.value)} className="text-xl flex-[5] flex py-3 h-6 bg-transparent text-gray-100 border-none focus:outline-none"/>
+                                <input value={postTitle} placeholder="What is happening?!" onChange={(e) => setPostTitle(e.target.value)} className="text-xl flex-[5] flex py-3 h-6 bg-transparent text-gray-100 border-none focus:outline-none"/>
 
                                 {postMedia.length > 0 ? (
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
@@ -171,7 +177,14 @@ function NewPost ({currentUser, setCurrentUser, isPosting, setForYouFeedContent,
                                             <CiImageOn onClick={handleImageClick} className="hover:cursor-pointer text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300"/>
                                         </div>
                                             <MdOutlineGifBox className="text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
-                                            <BsEmojiSmile className="text-l hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
+                                            <div className="relative">
+                                            <BsEmojiSmile
+                                            onClick={() => setEmojiToggle(!emojiToggle)}
+                                            className="text-l hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
+                                            <div className="absolute z-70 translate-y-5">
+                                                <EmojiPicker open={emojiToggle} onEmojiClick={handleEmojiAdd} theme={"dark"} height={340} width={280}/>
+                                            </div>
+                                            </div>
                                         </div>
                                         <div className='h-full w-full text-black flex-[3] flex justify-end items-center py-4'>
                                             <div className='h-full w-1/4 bg-white flex justify-center items-center py-1 rounded-l-full rounded-r-full hover:bg-gray-200'

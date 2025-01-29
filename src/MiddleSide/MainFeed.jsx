@@ -15,7 +15,7 @@ function MainFeed ({changeForYouFeed, cachedAddedReplies, setCachedAddedReplies,
                 <TopMainFeed currentUser={currentUser} mainFeedTab={mainFeedTab} setMainFeedTab={setMainFeedTab} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>
             </div>
 
-            <div className="flex-[3] flex flex-col-reverse justify-end h-full w-full border-l-2  border-r-2 border-twitterBorder">
+            <div className="flex-[3] flex flex-col-reverse justify-end h-full w-full border-l  border-r border-twitterBorder">
             {forYouFeedContent ? (
                 <>
                 {forYouFeedContent.map((post) => 

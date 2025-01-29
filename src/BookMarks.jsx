@@ -22,7 +22,7 @@ function BookMarks ({cachedAddedReplies, setCachedAddedReplies, cachedReposts, s
     }, [currentUser]);
 
     return (
-            <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder">
+            <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l border-r border-twitterBorder">
                 {userBookMarkedPosts ? (
                     <>
                     {userBookMarkedPosts.map((post) => 
@@ -36,7 +36,7 @@ function BookMarks ({cachedAddedReplies, setCachedAddedReplies, cachedReposts, s
                     <p>Loading...</p>
                 </div>
                 )}
-            <div className='h-14 w-full border-l-2 px-4 justify-start gap-5 flex border-r-2 border-b-2 border-twitterBorder text-white'>
+            <div className='h-14 w-full px-4 justify-start gap-5 flex border-b border-twitterBorder text-white'>
                 <div className="w-8 ml-2 h-full flex justify-start text-lg items-center">
                     <FaArrowLeft onClick={() => navigate(-1)} className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
                 </div>

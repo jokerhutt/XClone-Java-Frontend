@@ -306,10 +306,10 @@ function App() {
       <div>
 
       <div className='grid grid-cols-12 h-screen w-screen'>
-        <div className='flex bg-black h-screen flex-col col-span-3'>
+        <div className='flex bg-black max-h-screen h-screen flex-col col-span-3'>
           <LeftFeed currentUser={currentUser} setCurrentUser={setCurrentUser} nonMessageNotifications={nonMessageNotifications} setPosts={setPosts} setUserNotifications={setUserNotifications}/>
         </div>
-        <div className='flex bg-black h-full flex-col col-span-5 overflow-y-auto scrollbar-none pb-10'>
+        <div className='flex bg-black h-full flex-col col-span-5 pb-10 overflow-auto scrollable-none'>
         <Routes>
             <Route 
               path="/" 
@@ -368,7 +368,7 @@ function App() {
             /> */}
         </Routes>
         </div>
-        <div className='flex bg-black h-screen flex-col col-span-4'>
+        <div className='flex bg-black h-screen max-h-screen flex-col col-span-4'>
           <RightFeed sampleUsers={sampleUsers} currentUser={currentUser} setCurrentUser={setCurrentUser} userFollowing={userFollowing} handleNewFollow={handleNewFollow}/>
         </div>
       </div>

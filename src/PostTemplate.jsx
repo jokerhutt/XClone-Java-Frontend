@@ -62,7 +62,7 @@ function PostTemplate ({tempReplies, setTempReplies, cachedAddedReplies, setCach
                     <img src={postCreator.profilePic} className="rounded-full"/>
                 </Link>
                 <div className="flex items-center justify-center h-full bg-none w-full ml-1">
-                    <div className="bg-none border-r-0.5 border-l-0.5 border-twitterBorder w-0.5 mr-2 border h-4 max-h-20 mb-2 mt-0">
+                    <div className="bg-none border-r border-l border-twitterBorder w-0.5 mr-2 border h-4 max-h-20 mb-2 mt-0">
                     </div> 
                 </div>
                 </div>

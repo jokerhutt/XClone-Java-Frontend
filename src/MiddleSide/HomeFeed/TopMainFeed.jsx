@@ -43,7 +43,7 @@ function TopMainFeed ({mainFeedTab, setMainFeedTab, forYouFeedContent, setForYou
                     </div>
                 </div>
             </div>
-            <div className="flex-[6] bg-black h-full px-4 border-2 border-twitterBorder" >
+            <div className="flex-[6] bg-black h-full px-4 border border-twitterBorder" >
                 <NewPost forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent} setCurrentUser={setCurrentUser} currentUser={currentUser}/>
             </div>
         </div>
