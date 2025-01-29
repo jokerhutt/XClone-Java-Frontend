@@ -10,38 +10,31 @@ import { FaCircleArrowLeft } from "react-icons/fa6";
 
 
 
-function MediaPreviewModal ({currentUser}) {
+function MediaPreviewModal ({cachedLikedPosts, setCachedLikedPosts, setCachedBookMarks, cachedBookMarks, cachedMediaPosts, cachedAddedReplies, setCachedReposts, setCachedAddedReplies, cachedReposts, currentUser}) {
     const { postId, position } = useParams();
     const navigate = useNavigate();
     const [previewedPost, setPreviewedPost] = useState(null);
     const [previewedPostMedia, setPreviewedPostMedia] = useState(null);
-    const [currentlyPreviewingIndex, setCurrentlyPreviewingIndex] = useState(null);
     const [disableMedia, setDisableMedia] = useState(true);
 
-    useEffect(() => {
-        fetch(`http://localhost:6790/api/posts/${postId}`)
-        .then(response => response.json())
-        .then((data) => setPreviewedPost(data))
-        .then(console.log("PREVIEWCHECK1"))
-        .catch(error => console.error(error));
-    }, [postId, position])
+
 
     useEffect(() => {
-        const postID = postId
-        fetch(`http://localhost:6790/api/grabpostmedia/${postID}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log("Received data from grabbed post media is: " + JSON.stringify(data) + data)
-            setPreviewedPostMedia([...data])
-        })
-        .catch(error => console.error(error))
-    }, [postId, position])
+        const foundPost = cachedMediaPosts[postId]; 
+        setPreviewedPost(foundPost);
+        setPreviewedPostMedia(foundPost.mediaList)
+    }, [])
+
+
 
     return (
         <>
         <div className="fixed inset-0 h-full z-70 w-screen bg-black bg-opacity-50 backdrop-blur-lg backdrop-brightness-75 flex justify-center items-center">
 
-            <div className="flex-[80] h-full w-full ">
+            <div className="flex-[80] h-full w-full flex-col relative">
+                <div className='text-white h-10 absolute py-16 px-16 z-65 text-xl'>
+                    <p onClick={() => navigate(-1)} className='hover:cursor-pointer'>X</p>
+                </div>
                 {position && previewedPostMedia && previewedPost ? (
                 <div className="w-full h-full flex justify-center items-center px-2">
 
@@ -49,7 +42,7 @@ function MediaPreviewModal ({currentUser}) {
                             <div className='rounded-full hover:bg-twitterBlue hover:cursor-pointer p-1'>
                             {position > 1 ? (
                                     <FaArrowLeft 
-                                    onClick={() => navigate(`/imagepreview/${postId}/${parseInt(position) - 1}`)}
+                                    onClick={() => navigate(`/imagepreview/${postId}/${parseInt(position) - 1}`, { replace: true })}
                                     className='text-xl text-white'/>
                                 ) : (
                                     null
@@ -65,7 +58,7 @@ function MediaPreviewModal ({currentUser}) {
                             <div className='rounded-full hover:bg-twitterBlue hover:cursor-pointer p-1'>
                                 {position < previewedPostMedia.length ? (
                                     <FaArrowRight 
-                                    onClick={() => navigate(`/imagepreview/${postId}/${parseInt(position) + 1}`)}
+                                    onClick={() => navigate(`/imagepreview/${postId}/${parseInt(position) + 1}`, { replace: true })}
                                     className='text-xl text-white'/>
                                 ) : (
                                     null
@@ -82,10 +75,17 @@ function MediaPreviewModal ({currentUser}) {
                 )}
 
             </div>
-
+            {previewedPost ? (
             <div className="flex-[25] bg-black h-full w-full pr-6 flex-col">
-                <PostTemplate post={previewedPost} currentUser={currentUser} disableMedia={disableMedia}/>
-            </div>  
+                <PostTemplate post={previewedPost} cachedMediaPosts={cachedMediaPosts} currentUser={currentUser} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} disableMedia={disableMedia}
+                isInZoomedMode={true}
+                postReposts={previewedPost.repostList} postBookMarks={previewedPost.bookMarkList} postLikes={previewedPost.likeList} postCreator={previewedPost.creator} postMedia={previewedPost.mediaList} postReplies={previewedPost.replyList}
+                />
+            </div> 
+            ) : (
+                null
+            )}
+ 
 
             
         </div>

@@ -23,31 +23,20 @@ function PostActions ({tempPostReplies, isInZoomedMode, currentPostReplies, setI
             if (currentUser) {
                 const userLikedArray = cachedLikedPosts[post.postId] || [];
                 const isPostLikedByUser = postLikes.some((like) => like.likerId === currentUser.id)
-
-                if (post.postId === 8) {
-                    console.log("number 8 User liked array is " + JSON.stringify(userLikedArray));
-                    console.log("number 8 Is post liked is " + JSON.stringify(isPostLikedByUser));
-                }
           
-              if (isPostLikedByUser && userLikedArray && userLikedArray.length != 0) {
-                setIsLiked(true);
-                setLikesLength(postLikes.length);
-
-
-              } else if (userLikedArray && userLikedArray.length != 0 && !isPostLikedByUser) {
-                setIsLiked(true);
-                setLikesLength(postLikes.length + 1);
-
-
-              } else if (isPostLikedByUser && userLikedArray.length <= 0) {
-                setIsLiked(false)
-                setLikesLength(postLikes.length - 1)
-
-
-              } else {
-                setIsLiked(false);
-                setLikesLength(postLikes.length);
-              }
+                if (isPostLikedByUser && userLikedArray && userLikedArray.length != 0) {
+                    setIsLiked(true);
+                    setLikesLength(postLikes.length);
+                } else if (userLikedArray && userLikedArray.length != 0 && !isPostLikedByUser) {
+                    setIsLiked(true);
+                    setLikesLength(postLikes.length + 1);
+                } else if (isPostLikedByUser && userLikedArray.length <= 0) {
+                    setIsLiked(false)
+                    setLikesLength(postLikes.length - 1)
+                } else {
+                    setIsLiked(false);
+                    setLikesLength(postLikes.length);
+                }
             } else {
                 setIsLiked(false);
                 setLikesLength(postLikes.length);
@@ -136,7 +125,6 @@ function PostActions ({tempPostReplies, isInZoomedMode, currentPostReplies, setI
     }, [cachedLikedPosts, postLikes])
 
 
-    //IMPORTANT
     function handleLike() {
 
         const likeInformation = {
@@ -153,11 +141,11 @@ function PostActions ({tempPostReplies, isInZoomedMode, currentPostReplies, setI
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(likeInformation),
           })
-          .then(response => {
+        .then(response => {
             if (response.ok) {
                 return response.json();
             } else {
-                throw new Error('Failed to do shit up');
+                throw new Error('Failed to Add or Remove Like');
             }
         })
         .then((data) => {
@@ -166,7 +154,7 @@ function PostActions ({tempPostReplies, isInZoomedMode, currentPostReplies, setI
                     ...prev,
                     [post.postId]: data,
                 }));
-                alert('Like added successfully!');
+                alert('Like added');
             }
             else {
                 setCachedLikedPosts((prev) => {
@@ -174,11 +162,10 @@ function PostActions ({tempPostReplies, isInZoomedMode, currentPostReplies, setI
                     delete updatedCache[post.postId];
                     return updatedCache;
                 });
-                alert('Like Removed successfully!');
+                alert('Like Removed');
                 }
         })
         .then(handleLikeUpdate());
-        
     }
 
 
@@ -225,7 +212,7 @@ function PostActions ({tempPostReplies, isInZoomedMode, currentPostReplies, setI
     function handleNewRepost () {
         const repostInformation = {
             postId: post.postId,
-            reposterId: postCreator.id,
+            reposterId: currentUser.id,
             notificationType: "REPOST",
             notificationObject: post.postId,
             receiverId: postCreator.id,

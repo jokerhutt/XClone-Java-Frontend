@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 import PostTemplate from "../PostTemplate";
 import '../App.css'
 
-function MainFeed ({cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, currentUser, setUserLikedPosts, setCurrentUser, forYouFeedContent, setForYouFeedContent}) {
+function MainFeed ({changeForYouFeed, cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, currentUser, setUserLikedPosts, setCurrentUser, forYouFeedContent, setForYouFeedContent}) {
 
     const [mainFeedTab, setMainFeedTab] = useState("FORYOU");
 
@@ -41,7 +41,9 @@ function MainFeed ({cachedAddedReplies, setCachedAddedReplies, cachedReposts, se
                 )}
             </div> */}
 
-        <div className="text-twitterBlue h-full w-full flex justify-center items-center text-3xl animate-pulse">
+        <div 
+        onClick={changeForYouFeed}
+        className="hover:cursor-pointer text-twitterBlue h-full w-full flex justify-center items-center text-3xl animate-pulse">
             <p>Load More Posts</p>
         </div>
 

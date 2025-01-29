@@ -20,16 +20,22 @@ function App() {
 
   const [currentUser, setCurrentUser] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [cachedProfiles, setCachedProfiles] = useState({});
 
 
   const [userFollowing, setUserFollowing] = useState([]);
   const [userFollowers, setUserFollowers] = useState([]);
-  const [userFollowingPosts, setUserFollowingPosts] = useState([]);
+
+
 
   const [forYouPage, setForYouPage] = useState(0);
   const [forYouFeedContent, setForYouFeedContent] = useState([]);
-  const [forYouMedia, setForYouMedia] = useState([]);
+  const [followingFeedContent, setFollowingFeedContent] = useState([]);
   const [userLikedPosts, setUserLikedPosts] = useState([]);
+
+  const [cachedMediaPosts, setCachedMediaPosts] = useState({});
+
+  
 
   const [cachedLikedPosts, setCachedLikedPosts] = useState({})
   const [cachedBookMarks, setCachedBookMarks] = useState({})
@@ -43,18 +49,58 @@ function App() {
   const [sampleUsers, setSampleUsers] = useState(null);
 
 
+  function sortMediaCachedPosts (passedPosts) {
+    console.log("PASSED POSTS IS " + JSON.stringify(passedPosts) + " AND ITS LENGTH IS " + passedPosts.length);
+    for (let i = 0; i < passedPosts.length; i++){
+      const currPost = passedPosts[i];
+      console.log("ITERATING POST IS " + JSON.stringify(currPost));
+      if (currPost.mediaList.length > 0 && !cachedMediaPosts[currPost.id]) {
+        setCachedMediaPosts(prevCache => ({
+          ...prevCache,
+          [currPost.postId]: currPost
+        }));
+      }
+    }
+  }
+
   function getForYouFeed () {
     console.log("Fetching!!")
-    // fetch(`http://localhost:6790/api/foryoufeed?page=${forYouPage}&size=20`)
-    fetch(`http://localhost:6790/api/foryoufeed?page=0&size=10`)
+    fetch(`http://localhost:6790/api/foryoufeed?page=${forYouPage}&size=20`)
+    // fetch(`http://localhost:6790/api/foryoufeed?page=0&size=10`)
     .then(response => response.json())
-
     .then(data => {
       const newPosts = data.content;
       setForYouFeedContent([...newPosts]);
+      console.log("NEWPOSTS IS " + JSON.stringify(newPosts));
+      sortMediaCachedPosts(newPosts);
     })
     .catch(error => console.error(error));
   }
+
+  useEffect(() => {
+    console.log("CACHED MEDIA POSTS IS " + JSON.stringify(cachedMediaPosts))
+  }, [cachedMediaPosts])
+
+  function changeForYouFeed () {
+    console.log("For you feed stuff")
+    setForYouPage(prev => prev + 1);
+  }
+
+  function getFollowingFeed () {
+    console.log("Fetching following feed")
+    if (currentUser) {
+      const profileUserId = currentUser.id;
+      fetch(`http://localhost:6790/api/followingfeed/${profileUserId}/?page=0&size=10`)
+      .then(response => response.json())
+      .then(data => {
+        const newFollowingPosts = data.content;
+        setFollowingFeedContent([...newFollowingPosts]);
+      })
+      .catch(error => console.error(error));
+    }
+    
+  }
+
 
   useEffect(() => {
     console.log("Usercached is: " + JSON.stringify(cachedLikedPosts))
@@ -216,6 +262,7 @@ function App() {
 
   useEffect(() => {
     grabUserLiked()
+    grabUserReposts()
   }, [currentUser])
 
   const likedPostIdsSet = useMemo(() => {
@@ -267,13 +314,13 @@ function App() {
             <Route 
               path="/" 
               element={
-              <MainFeed cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={forYouFeedContent}/>}
+              <MainFeed changeForYouFeed={changeForYouFeed} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={forYouFeedContent}/>}
             />
 
             <Route 
               path="/:profileUserId" 
               element={
-              <ProfileFeed handleNewFollow={handleNewFollow} userFollowing={userFollowing} userFollowers={userFollowers} currentUser={currentUser} setCurrentUser={setCurrentUser} posts={posts} setPosts={setPosts}/>}
+              <ProfileFeed cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} handleNewFollow={handleNewFollow} userFollowing={userFollowing} userFollowers={userFollowers} currentUser={currentUser} setCurrentUser={setCurrentUser} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>}
             />
 
             <Route 
@@ -291,7 +338,7 @@ function App() {
             <Route
               path="/imagepreview/:postId/:position"
               element={
-              <MediaPreviewModal currentUser={currentUser}/>
+              <MediaPreviewModal cachedMediaPosts={cachedMediaPosts} currentUser={currentUser} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>
               }/>
 
             <Route
