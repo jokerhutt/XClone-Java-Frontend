@@ -9,7 +9,7 @@ import { FaGlobeAmericas } from "react-icons/fa";
 
 
 
-function NewPost ({currentUser, setCurrentUser, isPosting, setForYouFeedContent, forYouFeedContent}) {
+function NewPost ({setCurrentUserProfileData, currentUserProfileData, currentUser, setIsPosting, setCurrentUser, isPosting, setForYouFeedContent, forYouFeedContent}) {
 
     const [postTitle, setPostTitle] = useState("");
     const [postMedia, setPostMedia] = useState([]);
@@ -83,9 +83,26 @@ function NewPost ({currentUser, setCurrentUser, isPosting, setForYouFeedContent,
         })
         .then((data) => {
                 alert('Post Upload successful!');
+                const destructuredPost = data;
                 const tempPosts = [...forYouFeedContent]
                 tempPosts.push(data);
-                setForYouFeedContent([...tempPosts]);
+                setForYouFeedContent(tempPosts);
+
+                setCurrentUserProfileData((prev) => {
+                    const updatedUserPostsAndReposts = [...prev.userPostsAndReposts, destructuredPost];
+                    const updatedUserPosts = [...prev.userPosts, destructuredPost];
+
+                    return {
+                        ...prev,
+                        userPostsAndReposts: updatedUserPostsAndReposts,
+                        userPosts: updatedUserPosts,
+                    };
+                });
+
+                if (isPosting) {
+                    setIsPosting(false);
+                }
+
         })
         // .then(() => {
         //     setTimeout(() => {
@@ -109,7 +126,7 @@ function NewPost ({currentUser, setCurrentUser, isPosting, setForYouFeedContent,
         
         <div className=" w-full h-full pt-1 z-50">
 
-            {setForYouFeedContent ? (
+            {forYouFeedContent ? (
                             <div className="flex flex-row flex-grow  w-full h-full">
 
                             {isPosting && currentUser ? (
@@ -187,7 +204,7 @@ function NewPost ({currentUser, setCurrentUser, isPosting, setForYouFeedContent,
                                             </div>
                                         </div>
                                         <div className='h-full w-full text-black flex-[3] flex justify-end items-center py-4'>
-                                            <div className='h-full w-1/4 bg-white flex justify-center items-center py-1 rounded-l-full rounded-r-full hover:bg-gray-200'
+                                            <div className='hover:cursor-pointer h-full w-1/4 bg-white flex justify-center items-center py-1 rounded-l-full rounded-r-full hover:bg-gray-200'
                                             onClick={(e) => handleNewPost(e)}
                                             >
                                                 <p>Post</p>

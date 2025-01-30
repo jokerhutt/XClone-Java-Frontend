@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaRegComment, FaRegHeart, FaRegChartBar, FaRegBookmark, FaRetweet } from "react-icons/fa";
 
-function PostActions ({tempPostReplies, isInZoomedMode, currentPostReplies, setIsReplyingToggle, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, postLikes, post, currentUser, postReplies, postCreator, postBookMarks}) {
+function PostActions ({currentProfileUserData, setCurrentUserProfileData, tempPostReplies, isInZoomedMode, currentPostReplies, setIsReplyingToggle, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, postLikes, post, currentUser, postReplies, postCreator, postBookMarks}) {
 
     //LOCAL CACHE STATE STUFF
     const [currentLikes, setCurrentLikes] = useState(null);
@@ -154,6 +154,10 @@ function PostActions ({tempPostReplies, isInZoomedMode, currentPostReplies, setI
                     ...prev,
                     [post.postId]: data,
                 }));
+                setCurrentUserProfileData((prev) => ({
+                    ...prev,
+                    userLiked: [...prev.userLiked, post],
+                }));
                 alert('Like added');
             }
             else {
@@ -162,8 +166,14 @@ function PostActions ({tempPostReplies, isInZoomedMode, currentPostReplies, setI
                     delete updatedCache[post.postId];
                     return updatedCache;
                 });
+                setCurrentUserProfileData((prev) => ({
+                    ...prev,
+                    userLiked: prev.userLiked.filter((likedPost) => likedPost.postId !== post.postId),
+                }));
+
                 alert('Like Removed');
                 }
+            
         })
         .then(handleLikeUpdate());
     }
@@ -239,6 +249,10 @@ function PostActions ({tempPostReplies, isInZoomedMode, currentPostReplies, setI
                     ...prev,
                     [post.postId]: data,
                 }));
+                setCurrentUserProfileData((prev) => ({
+                    ...prev,
+                    userPostsAndReposts: [...prev.userPostsAndReposts, post],
+                }));
                 alert('Repost added successfully!');
             }
             else {
@@ -247,6 +261,10 @@ function PostActions ({tempPostReplies, isInZoomedMode, currentPostReplies, setI
                     delete updatedCache[post.postId];
                     return updatedCache;
                 });
+                setCurrentUserProfileData((prev) => ({
+                    ...prev,
+                    userPostsAndReposts: prev.userPostsAndReposts.filter((repost) => repost.postId !== post.postId),
+                }));
                 alert('Like Removed successfully!');
                 }
         })

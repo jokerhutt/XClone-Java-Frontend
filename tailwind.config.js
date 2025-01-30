@@ -13,7 +13,32 @@ export default {
       },
     },
   },
-  plugins: [require('tailwind-scrollbar-hide'),
+  plugins: [
+    
+    require('tailwind-scrollbar-hide'),
+    function ({ addUtilities }) {
+      const newUtilities = {
+        '.scrollbar-thin': {
+          scrollbarWidth: 'thin', 
+          scrollbarColor: '#1C9BF0 transparent', 
+        },
+
+        '.scrollbar-thin::-webkit-scrollbar': {
+          width: '2px', 
+          height: '2px', 
+        },
+        '.scrollbar-thin::-webkit-scrollbar-thumb': {
+          backgroundColor: '#1C9BF0', 
+          borderRadius: '1px', 
+        },
+        '.scrollbar-thin::-webkit-scrollbar-track': {
+          background: 'transparent', 
+        },
+      };
+      addUtilities(newUtilities, ['responsive', 'hover']);
+    }
+
+
     
   ],
 }

@@ -21,6 +21,10 @@ function ZoomedPost ({cachedAddedReplies, setCachedAddedReplies, cachedReposts, 
         .catch(error => console.error(error));
       }, []);
 
+    useEffect(() => {
+        setTempReplies([])
+    }, [fetchedPost])
+
       useEffect(() => {
         console.log("Fetched Post users is " + JSON.stringify(fetchedPost))
       }, fetchedPost)

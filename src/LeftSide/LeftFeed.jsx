@@ -9,22 +9,22 @@ import { useEffect, useState } from "react";
 
 
 
-function LeftFeed ({currentUser}) {
+function LeftFeed ({currentUser, forYouFeedContent, setForYouFeedContent}) {
 
     const [isPosting, setIsPosting] = useState(false);
 
     return(
         <>
-        {/* {isPosting && currentUser && setPosts ? (
-            <PostModal setPosts={setPosts} currentUser={currentUser} isPosting={isPosting} setIsPosting={setIsPosting}/>
+        {isPosting && currentUser && forYouFeedContent ? (
+            <PostModal setForYouFeedContent={setForYouFeedContent} forYouFeedContent={forYouFeedContent} currentUser={currentUser} isPosting={isPosting} setIsPosting={setIsPosting}/>
         ) : (
                 null
-            )} */}
+            )}
 <div className="flex flex-col flex-grow h-full w-full ml-20">
 
-<div className="flex-[1] h-full w-full bg-black flex items-center">
+<Link to="/" className="flex-[1] h-full w-full bg-black flex items-center">
     <img src="/X.png" className="h-8 w-8"/>
-</div>
+</Link>
 
 <div className="flex-[10] h-full w-full bg-black text-white mt-4 flex flex-col gap-6">
     <Link to="/"className="flex gap-4 items-center text-2xl font-bold">
@@ -52,7 +52,7 @@ function LeftFeed ({currentUser}) {
         <p>Messages</p>
     </Link> 
     ) : (
-        <Link to={`/messages}`} className="flex gap-4 items-center text-2xl font-bold">
+    <Link to={`/messages}`} className="flex gap-4 items-center text-2xl font-bold">
         <IoMdMail/>
         <p>Messages</p>
     </Link> 
@@ -88,7 +88,6 @@ function LeftFeed ({currentUser}) {
         <p>Profile</p>
     </div>
     )}
-
     <div className="flex gap-4 items-center text-2xl font-bold">
         <FaUserGroup/>
         <p>More</p>

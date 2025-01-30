@@ -30,6 +30,9 @@ function App() {
 
   const [forYouPage, setForYouPage] = useState(0);
   const [forYouFeedContent, setForYouFeedContent] = useState([]);
+
+  const [currentUserProfileData, setCurrentUserProfileData] = useState({})
+
   const [followingFeedContent, setFollowingFeedContent] = useState([]);
   const [userLikedPosts, setUserLikedPosts] = useState([]);
 
@@ -62,6 +65,60 @@ function App() {
       }
     }
   }
+
+  useEffect(() => {
+    console.log("CURRENT USER DATA POSTS IS: " + JSON.stringify(currentUserProfileData.userPostsAndReposts))
+  }, [currentUserProfileData])
+
+  function getUserProfile () {
+    if (currentUser) {
+      const profileUserId = currentUser.id
+      if (cachedProfiles[profileUserId]) {
+          console.log("Using cached data for user", profileUserId);
+          setCurrentUserProfileData(cachedProfiles[profileUserId]);
+          return;
+      }
+  
+      console.log("Fetching fresh data for user", profileUserId);
+  
+      Promise.all([
+          fetch(`http://localhost:6790/api/grabuserrepliedPosts/${profileUserId}`).then(res => res.json()),
+          fetch(`http://localhost:6790/api/grabposts/${profileUserId}`).then(res => res.json()),
+          fetch(`http://localhost:6790/api/grabpostsandreposts/${profileUserId}`).then(res => res.json()),
+          fetch(`http://localhost:6790/api/grabuserlikes/${profileUserId}`).then(res => res.json()),
+          fetch(`http://localhost:6790/api/grabusers/${profileUserId}`).then(res => res.json()),
+          fetch(`http://localhost:6790/api/grabuserfollowing/${profileUserId}`).then(res => res.json()),
+          fetch(`http://localhost:6790/api/grabuserfollowers/${profileUserId}`).then(res => res.json())
+      ])
+      .then(([replies, posts, postsAndReposts, likes, user, following, followers]) => {
+          const userData = {
+              userReplies: replies,
+              userPosts: posts,
+              userPostsAndReposts: postsAndReposts,
+              userProfile: user,
+              userLiked: likes,
+              userFollowing: following,
+              userFollowers: followers
+      };
+
+      cachedProfiles[profileUserId] = userData;
+
+      setCurrentUserProfileData(userData);
+  })
+  .catch(error => {
+      console.error("Error fetching profile data:", error);
+  });
+
+  }
+  }
+
+  useEffect(() => {
+    if (currentUser) {
+      getUserProfile();
+    }
+  }, [currentUser])
+
+
 
   function getForYouFeed () {
     console.log("Fetching!!")
@@ -307,20 +364,20 @@ function App() {
 
       <div className='grid grid-cols-12 h-screen w-screen'>
         <div className='flex bg-black max-h-screen h-screen flex-col col-span-3'>
-          <LeftFeed currentUser={currentUser} setCurrentUser={setCurrentUser} nonMessageNotifications={nonMessageNotifications} setPosts={setPosts} setUserNotifications={setUserNotifications}/>
+          <LeftFeed setForYouFeedContent={setForYouFeedContent} forYouFeedContent={forYouFeedContent} currentUser={currentUser} setCurrentUser={setCurrentUser} nonMessageNotifications={nonMessageNotifications} setPosts={setPosts} setUserNotifications={setUserNotifications}/>
         </div>
         <div className='flex bg-black h-full flex-col col-span-5 pb-10 overflow-auto scrollable-none'>
         <Routes>
             <Route 
               path="/" 
               element={
-              <MainFeed changeForYouFeed={changeForYouFeed} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={forYouFeedContent}/>}
+              <MainFeed setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} changeForYouFeed={changeForYouFeed} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>}
             />
 
             <Route 
               path="/:profileUserId" 
               element={
-              <ProfileFeed cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} handleNewFollow={handleNewFollow} userFollowing={userFollowing} userFollowers={userFollowers} currentUser={currentUser} setCurrentUser={setCurrentUser} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>}
+              <ProfileFeed setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} handleNewFollow={handleNewFollow} userFollowing={userFollowing} userFollowers={userFollowers} currentUser={currentUser} setCurrentUser={setCurrentUser} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>}
             />
 
             <Route 

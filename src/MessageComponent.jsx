@@ -132,7 +132,8 @@ function MessageComponent ({currentUser, messageNotifications, refreshNotificati
     return (
         <div className="flex w-full h-full bg-none">
 
-            <div className="flex-[40] w-full h-full border-x-2 border-twitterBorder overflow-y-auto">
+            <div className="flex-[40] w-full h-full border-x-2 border-twitterBorder flex flex-col">
+                <div className="flex-1 overflow-y-auto">
             {userConvos && currentUser && messageNotifications ? (
                     <>
                         {userConvos.map((convo) => 
@@ -146,12 +147,12 @@ function MessageComponent ({currentUser, messageNotifications, refreshNotificati
                         <p>Loading Convo Previews...</p>
                     </div>
                 )}
- 
+                </div>
             </div>
 
-            <div className="flex-[60] w-full h-full border-l-2 border-white flex-col">
+            <div className="flex-[60] w-full h-full border-l-2 border-white flex flex-col">
                 
-                <div className="w-full flex-col flex-[80] h-full bg-black overflow-y-scroll">
+                <div className="flex-1 overflow-y-auto bg-black scrollbar-thin">
                 {convoMessages && currentUser ? (
                     <>
                         {convoMessages.map((message) => 
@@ -159,14 +160,13 @@ function MessageComponent ({currentUser, messageNotifications, refreshNotificati
                         )}   
                     </>
                 ) : (
-                    <div className="text-twitterBlue h-full w-full flex justify-center items-center text-3xl animate-pulse">
-                        <p>Loading Messages...</p>
+                    <div className="text-twitterBlue bg-red-50 h-full w-full flex justify-center items-center text-2xl animate-pulse">
+                        <p>Select a Conversation</p>
                     </div>
                 )}
-
                 </div>
 
-                <div className="h-full w-full  flex-[20] px-2">
+                <div className="h-10 w-full px-2">
                     <div className="h-10 w-full p-2 flex bg-twitterBorder rounded-2xl">
 
                         <div className="flex w-full h-full flex-[25]">

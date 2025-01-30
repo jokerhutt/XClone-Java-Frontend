@@ -13,10 +13,11 @@ import ProfileFeedTabState from "./HomeFeed/ProfileFeedTabState";
 import ReplyTemplate from "../ReplyTemplate";
 import { CiMail } from "react-icons/ci";
 import '../App.css'
+import { startTransition } from "react";
 import PostTemplate from "../PostTemplate";
 import { use } from "react";
 
-function ProfileFeed ({cachedMediaPosts, cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, cachedProfiles, setCachedProfiles, handleNewFollow, posts, currentUser, setCurrentUser, setCachedBookMarks, setPosts, setCachedLikedPosts, cachedLikedPosts, userFollowers, userFollowing}) {
+function ProfileFeed ({setCurrentUserProfileData, currentUserProfileData, cachedMediaPosts, cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, cachedProfiles, setCachedProfiles, handleNewFollow, posts, currentUser, setCurrentUser, setCachedBookMarks, setPosts, setCachedLikedPosts, cachedLikedPosts, userFollowers, userFollowing}) {
 
     const {profileUserId} = useParams();
     const [profileUser, setProfileUser] = useState(null);
@@ -26,6 +27,7 @@ function ProfileFeed ({cachedMediaPosts, cachedAddedReplies, setCachedAddedRepli
     const [userLikedPosts, setUserLikedPosts] = useState(null);
     const [tabState, setTabState] = useState("posts");
     const [userReplies, setUserReplies] = useState([]);
+    
     const [profileUserFollowers, setProfileUserFollowers] = useState([]);
     const [profileUserFollowing, setProfileUserFollowing] = useState([]);
     const [isAReplyParent, setIsAReplyParent] = useState(true);
@@ -34,12 +36,19 @@ function ProfileFeed ({cachedMediaPosts, cachedAddedReplies, setCachedAddedRepli
 
     useEffect(() => {
         if (profileUserId) {
+            if (currentUser && currentUserProfileData && profileUserId == currentUser.id) {
+                console.log("Using cached data for current user", currentUser.id);
+                console.log(JSON.stringify(currentUserProfileData))
+                setProfileUserData(currentUserProfileData);
+                return
+            }
+        
             if (cachedProfiles[profileUserId]) {
                 console.log("Using cached data for user", profileUserId);
                 setProfileUserData(cachedProfiles[profileUserId]);
                 return;
             }
-        
+
             console.log("Fetching fresh data for user", profileUserId);
         
             Promise.all([
@@ -61,28 +70,34 @@ function ProfileFeed ({cachedMediaPosts, cachedAddedReplies, setCachedAddedRepli
                     userFollowing: following,
                     userFollowers: followers
             };
-    
             cachedProfiles[profileUserId] = userData;
-    
             setProfileUserData(userData);
         })
         .catch(error => {
             console.error("Error fetching profile data:", error);
         });
-    
         }
 
 }, [profileUserId]);
 
     useEffect(() => {
+        if (currentUser && currentUserProfileData && profileUserId == currentUser.id) {
+            console.log("Using cached data for current user", currentUser.id);
+            console.log(JSON.stringify(currentUserProfileData))
+            setProfileUserData(currentUserProfileData);
+        }
+    }, [currentUserProfileData])
+
+    useEffect(() => {
         if (profileUserData) {
+            startTransition(() => {
             setUserPosts(profileUserData.userPosts)
             setProfileUserFollowers(profileUserData.userFollowers)
             setProfileUserFollowing(profileUserData.userFollowing)
             setUserLikedPosts(profileUserData.userLiked)
             setUserPostsAndReposts(profileUserData.userPostsAndReposts)
             setProfileUser(profileUserData.userProfile)
-
+            })
         }
     }, [profileUserData])
 
@@ -167,7 +182,7 @@ function ProfileFeed ({cachedMediaPosts, cachedAddedReplies, setCachedAddedRepli
                 <>
             <div className="flex-[526] flex flex-col flex-grow bg-black h-full w-full text-white pt-3">
 
-            <div className="flex-[45] flex h-full w-full px-4">
+            <div className="flex-[45] flex h-full w-full px-4 border border-twitterBorder sticky top-0 z-20 backdrop-blur-md bg-black bg-opacity-70">
                 <div className="w-8 mr-2 h-full flex justify-start text-lg items-center">
                     <FaArrowLeft onClick={() => navigate(-1)} className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
                 </div>
@@ -178,7 +193,8 @@ function ProfileFeed ({cachedMediaPosts, cachedAddedReplies, setCachedAddedRepli
                 <p className="text-twitterBorder">22 posts</p>
                 </div>
             </div>
-            <div className="flex-[240] h-full w-full relative">
+
+            <div className="flex-[240] h-full w-full relative border-x border-x-twitterBorder">
                 <div>
                     <img className="h-52 w-full" src={profileUser.backGround}/>
                 </div>
@@ -186,7 +202,7 @@ function ProfileFeed ({cachedMediaPosts, cachedAddedReplies, setCachedAddedRepli
                     <img className="rounded-full h-32 w-32 object-cover border-4 border-black" src={profileUser.profilePic}/>
                 </div>
             </div>
-            <div className="flex-[200] flex-col h-full w-full flex px-4 py-3">
+            <div className="flex-[200] flex-col h-full w-full flex px-4 py-3 border-x border-x-twitterBorder">
 
                 <div className="flex-[69] h-full w-full flex">
                     <ProfileFeedFollow currentUser={currentUser} profileUser={profileUser} userFollowing={userFollowing} handleNewFollow={handleNewFollow}/>
@@ -209,13 +225,13 @@ function ProfileFeed ({cachedMediaPosts, cachedAddedReplies, setCachedAddedRepli
                         </div>
                     </div>
                     <div className="flex gap-8 mb-3 text-twitterBorder">
-                        <p> <span className="text-white font-bold">{profileUserFollowing.length}</span> Following</p>
-                        <p> <span className="text-white font-bold">{profileUserFollowers.length}</span> Followers</p>
+                        <p> <span className="text-white font-bold">{profileUserData.userFollowing.length}</span> Following</p>
+                        <p> <span className="text-white font-bold">{profileUserData.userFollowers.length}</span> Followers</p>
                     </div>
                 </div>
 
             </div>
-            <div className="flex-[55] h-full w-full border-b-2 border-twitterBorder pb-0.5 justify-evenly px-4 flex">
+            <div className="flex-[55] h-full w-full border-b-2 border-twitterBorder pb-0.5 border-x border-x-twitterBorder justify-evenly px-4 flex">
                 <ProfileFeedTabState setTabState={setTabState} tabState={tabState}/>
             </div>
 
@@ -226,17 +242,17 @@ function ProfileFeed ({cachedMediaPosts, cachedAddedReplies, setCachedAddedRepli
 
 
             <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder" style={{ display: tabState === "posts" ? "block" : "none" }}>
-                {userPostsAndReposts.map((post) => 
+                {profileUserData.userPostsAndReposts.map((post) => 
                     <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
-                        <PostTemplate profileUser={profileUser} currentUser={currentUser} post={post} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} postCreator={post.creator} postMedia={post.mediaList} postReplies={post.replyList}/>
+                        <PostTemplate setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} profileUser={profileUser} currentUser={currentUser} post={post} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} postCreator={post.creator} postMedia={post.mediaList} postReplies={post.replyList}/>
                     </div>
                 )}
             </div>
 
             <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder" style={{ display: tabState === "likes" ? "block" : "none" }}>
-                {userLikedPosts.map((post) => 
+                {profileUserData.userLiked.map((post) => 
                     <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
-                        <PostTemplate currentUser={currentUser} post={post} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} postCreator={post.creator} postMedia={post.mediaList} postReplies={post.replyList}/>
+                        <PostTemplate setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} currentUser={currentUser} post={post} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} postCreator={post.creator} postMedia={post.mediaList} postReplies={post.replyList}/>
                     </div>
                 )}
             </div>

@@ -13,7 +13,7 @@ import ReplyPostTemplate from "./ReplyPostTemplate";
 
 
 
-function PostTemplate ({tempReplies, setTempReplies, cachedAddedReplies, setCachedAddedReplies, isInZoomedMode, postReplies, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, setUserLikedPosts, postBookMarks, postLikes, replyObject, isAReplyParent, post, postCreator, postMedia, currentUser, disableMedia, profileUser}) {
+function PostTemplate ({currentUserProfileData, setCurrentUserProfileData, tempReplies, setTempReplies, cachedAddedReplies, setCachedAddedReplies, isInZoomedMode, postReplies, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, setUserLikedPosts, postBookMarks, postLikes, replyObject, isAReplyParent, post, postCreator, postMedia, currentUser, disableMedia, profileUser}) {
 
     const [isReplyingToggle, setIsReplyingToggle] = useState(false);
     const [currentPostReplies, setCurrentPostReplies] = useState(postReplies);
@@ -26,10 +26,19 @@ function PostTemplate ({tempReplies, setTempReplies, cachedAddedReplies, setCach
     }
 
     useEffect(() => {
-        console.log("Replies thing is " + JSON.stringify(cachedAddedReplies))
-        console.log("Post Replies thing is " + JSON.stringify(postReplies))
-        const checkReplyList = cachedAddedReplies.filter((reply) => reply.postId === post.postId);
-        setCurrentPostReplies([...postReplies, ...checkReplyList]);
+        if (postReplies) {
+            console.log("Replies thing is " + JSON.stringify(cachedAddedReplies))
+            console.log("Post Replies thing is " + JSON.stringify(postReplies))
+            const checkReplyList = cachedAddedReplies.filter((reply) => reply.postId === post.postId);
+    
+            //Checks for duplicates by making a filtered array
+            const uniqueReplies = [...postReplies, ...checkReplyList].filter(
+                (reply, index, self) =>
+                    index === self.findIndex((r) => r.id === reply.id)
+            );
+            
+            setCurrentPostReplies(uniqueReplies);
+        }
     }, [postReplies, cachedAddedReplies])
 
     useEffect(() => {
@@ -116,6 +125,7 @@ function PostTemplate ({tempReplies, setTempReplies, cachedAddedReplies, setCach
 
             <div className="pl-4 pr-4">
                 <PostActions 
+                setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData}
                 isInZoomedMode={isInZoomedMode} tempPostReplies={tempPostReplies}
                 currentPostReplies={currentPostReplies}
                 cachedAddedReplies={cachedAddedReplies}
