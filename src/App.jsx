@@ -160,32 +160,11 @@ function App() {
     console.log("FORYOUFEEDCONTENT UPDATED IS: " + JSON.stringify(forYouFeedContent))
   }, [forYouFeedContent])
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   function getFollowingFeed () {
     console.log("Fetching following feed")
     if (currentUser) {
       const profileUserId = currentUser.id;
-      fetch(`http://localhost:6790/api/followingfeed/${profileUserId}/?page=0&size=10`)
+      fetch(`http://localhost:6790/api/followingfeed/${profileUserId}?page=0&size=10`)
       .then(response => response.json())
       .then(data => {
         const newFollowingPosts = data.content;
@@ -364,9 +343,11 @@ function App() {
     return new Set(userLikedPosts.map(post => post.postId));
   }, [userLikedPosts]);
 
-  // useEffect(() => {
-  //   fetchUserFollowingPosts()
-  // }, [userFollowing])
+  useEffect(() => {
+    if (currentUser) {
+      getFollowingFeed()
+    }
+  }, [userFollowing])
   
   
 //   //NOTIFICATIONS SECTION
@@ -527,7 +508,7 @@ function App() {
             <Route 
               path="/" 
               element={
-              <MainFeed cachedMediaPosts={cachedMediaPosts} setCachedMediaPosts={setCachedMediaPosts} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} changeForYouFeed={changeForYouFeed} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>}
+              <MainFeed followingFeedContent={followingFeedContent} cachedMediaPosts={cachedMediaPosts} setCachedMediaPosts={setCachedMediaPosts} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} changeForYouFeed={changeForYouFeed} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>}
             />
 
             <Route 
