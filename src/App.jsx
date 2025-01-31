@@ -391,12 +391,38 @@ function App() {
             tempNotificationCache[notification.id] = {
               notification: notification,
               notificationPost: null,
+              notificationSender: null,
             };
           });
-  
-          fetchAssociatedPosts(notifications, tempNotificationCache);
+          fetchAssociatedSender(notifications, tempNotificationCache);
         });
     }
+  }
+
+  function fetchAssociatedSender(notifications, tempNotificationCache) {
+
+    const userIds = notifications.map((notification) => notification.senderId);
+    console.log("USERIDS IS " + JSON.stringify(userIds))
+
+    fetch("http://localhost:6790/api/getallusersbyuserids", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userIds: userIds }),
+    })
+    .then((response) => response.json())
+    .then((users) => {
+      users.forEach((user) => {
+        const matchingNotifications = Object.values(tempNotificationCache).filter(
+          (n) => n.notification.senderId === user.id
+        );
+        matchingNotifications.forEach((notification) => {
+          notification.notificationSender = user;
+        });
+      });
+      fetchAssociatedPosts(notifications, tempNotificationCache);
+    });
+    
+
   }
 
   useEffect(() => {
@@ -404,26 +430,68 @@ function App() {
       fetchNotifications();
     }
   }, [currentUser])
+  
 
   function fetchAssociatedPosts(notifications, tempNotificationCache) {
-    const postIds = notifications.map((n) => n.notificationObject);
+    const postIds = [];
+    const replyIds = [];
   
-    fetch("http://localhost:6790/api/getallpostsbypostids", {
+    notifications.forEach((n) => {
+      if (n.notificationType === "REPLY") {
+        replyIds.push(n.notificationObject);
+      } else {
+        postIds.push(n.notificationObject);
+      }
+    });
+
+    console.log("REPLY IDS IS " + JSON.stringify(replyIds))
+
+    if (postIds.length > 0) {
+      fetch("http://localhost:6790/api/getallpostsbypostids", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ postIds: postIds }),
+      })
+        .then((response) => response.json())
+        .then((posts) => {
+          posts.forEach((post) => {
+            const notification = Object.values(tempNotificationCache).find(
+              (n) => n.notification.notificationObject === post.postId
+            );
+            if (notification) {
+              notification.notificationPost = post;
+            }
+          });
+          if (replyIds.length > 0) {
+            fetchReplies(replyIds, tempNotificationCache);
+          } else {
+            setNotificationCache(tempNotificationCache);
+          }
+        });
+    } else if (replyIds.length > 0) {
+      fetchReplies(replyIds, tempNotificationCache);
+    }
+  }
+
+  function fetchReplies(replyIds, tempNotificationCache) {
+    console.log("Fetching them replies")
+    fetch("http://localhost:6790/api/getallreplypostsbyreplyids", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ postIds: postIds }),
+      body: JSON.stringify({ replyIds: replyIds }),
     })
       .then((response) => response.json())
       .then((posts) => {
+        console.log("RESPONSE IS " + JSON.stringify(posts))
         posts.forEach((post) => {
           const notification = Object.values(tempNotificationCache).find(
-            (n) => n.notification.notificationObject === post.postId
+            (n) => n.notification.notificationObject === post.replyList.find(r => replyIds.includes(r.id))?.id
           );
+  
           if (notification) {
             notification.notificationPost = post;
           }
         });
-  
         setNotificationCache(tempNotificationCache);
       });
   }

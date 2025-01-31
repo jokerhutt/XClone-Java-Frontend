@@ -7,10 +7,8 @@ import { FaMessage } from "react-icons/fa6";
 
 import '../App.css'
 
-function NotificationTemplate ({notification, currentUser, notificationPost}) {
+function NotificationTemplate ({notification, currentUser, notificationObject, notificationSender}) {
 
-    const [notificationObject, setNotificationObject] = useState(notificationPost);
-    const [notificationSender, setNotificationSender] = useState(notificationPost.creator);
     const [notificationReply, setNotificationReply] = useState(null);
     const [notificationMessage, setNotificationMessage] = useState(null);
     const navigate = useNavigate();
@@ -27,13 +25,41 @@ function NotificationTemplate ({notification, currentUser, notificationPost}) {
         }
     }
 
+    function findNotificationReplyObject () {
+        if (notification.notificationType === "REPLY") {
+            const notifReplyId = notification.notificationObject;
+            const postReplyList = notificationObject.replyList;
+            console.log("NOTIFICATION REPLY LIST POST IS " + JSON.stringify(postReplyList))
+            const foundReplyObject = postReplyList.find((reply) => reply.id === notifReplyId)
+            setNotificationReply(foundReplyObject);
+        }
+    }
+
+    useEffect(() => {
+        console.log("NOTIFICATION ITSELF IS " + JSON.stringify(notification))
+        console.log("NOTIFICATION POST OBJECT IS " + JSON.stringify(notificationObject))
+        if (notificationReply) {
+            console.log("NOTIFICATION REPLY IS " + JSON.stringify(notificationReply))
+        }
+    }, [notificationReply])
+
+    useEffect(() => {
+        console.log("NOTIFICATION SENDER OBJECT IS " + JSON.stringify(notificationSender))
+    }, [notificationSender])
+
+    useEffect(() => {
+        if (notification && notification.notificationType === "REPLY" && notificationObject && notificationObject.replyList) {
+            findNotificationReplyObject();
+        }
+    }, [notification])
+
 
 
     return (
         <>
-        {currentUser && notification && notificationObject && notificationSender? (
+        {currentUser && notification && notificationSender && notificationObject? (
             <div>
-            {notification.notificationType === "LIKE" && notificationObject ? (
+            {notification.notificationType === "LIKE" ? (
                 <div
                 onClick={() => handlePostNavigation()}
                 className="hover:bg-twitterBorder hover:bg-opacity-50 hover:cursor-pointer w-full h-full flex pl-4 pr-4 pt-3 pb-3 flex-grow">
@@ -55,7 +81,7 @@ function NotificationTemplate ({notification, currentUser, notificationPost}) {
                     </div>
 
                 </div>
-            ) : notification.notificationType === "REPOST" && notificationReply ? (
+            ) : notification.notificationType === "REPOST" && notificationObject ? (
                 <div onClick={() => handlePostNavigation()} className="w-full h-full flex pl-4 pr-4 pt-3 pb-3 flex-grow">
 
                     <div className="pr-4">
@@ -96,7 +122,6 @@ function NotificationTemplate ({notification, currentUser, notificationPost}) {
                 </div>
             ) : notification.notificationType === "FOLLOW" && notificationSender ? (
                 <div onClick={() => handleProfileNavigation()} className="hover:bg-twitterBorder hover:bg-opacity-50 hover:cursor-pointer w-full h-full text-white flex pl-4 pr-4 pt-3 pb-3 flex-grow">
-                    
                     <div className="pr-4">
                         <FaUser className="text-3xl text-twitterBlue"/>
                     </div>
