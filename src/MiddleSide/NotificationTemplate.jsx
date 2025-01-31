@@ -7,81 +7,13 @@ import { FaMessage } from "react-icons/fa6";
 
 import '../App.css'
 
-function NotificationTemplate ({notification, currentUser}) {
+function NotificationTemplate ({notification, currentUser, notificationPost}) {
 
-    const [notificationObject, setNotificationObject] = useState(null);
-    const [notificationSender, setNotificationSender] = useState(null);
+    const [notificationObject, setNotificationObject] = useState(notificationPost);
+    const [notificationSender, setNotificationSender] = useState(notificationPost.creator);
     const [notificationReply, setNotificationReply] = useState(null);
     const [notificationMessage, setNotificationMessage] = useState(null);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if (currentUser && notification) {
-            if (notification.notificationType === "LIKE" || notification.notificationType == "REPOST"){
-                const notificationPostId = notification.notificationObject;
-                fetch(`http://localhost:6790/api/grabnotificationpost/${notificationPostId}`)
-                .then(response => response.json())
-                .then(data => setNotificationObject(data))
-                .catch(error => console.error(error)); 
-            } 
-            else if (notification.notificationType === "REPLY") {
-                const replyID = notification.notificationObject;
-                fetch(`http://localhost:6790/api/grabreply/${replyID}`)
-                .then(response => response.json())
-                .then(data => setNotificationReply(data))
-                .catch(error => console.error(error)); 
-            } else if (notification.notificationType === "MESSAGE") {
-                const messageId = notification.notificationObject;
-                fetch(`http://localhost:6790/api/grabmessagebymessageid/${messageId}`)
-                .then(response => response.json())
-                .then(data => setNotificationMessage(data))
-                .catch(error => console.error(error)); 
-            }
-        }
-    },[currentUser, notification])
-
-    function fetchReplyObject () {
-        if (notificationReply) {
-            const notificationPostId = notificationReply.replyObjectId;
-            fetch(`http://localhost:6790/api/grabnotificationpost/${notificationPostId}`)
-            .then(response => response.json())
-            .then(data => setNotificationObject(data))
-            .catch(error => console.error(error)); 
-        }
-    }
-
-    useEffect(() => {
-        if (notificationReply) {
-            fetchReplyObject();
-        }
-    }, [notificationReply])
-
-    useEffect(() => {
-
-        if (notification) {
-                const profileUserId = notification.senderId;
-                fetch(`http://localhost:6790/api/grabusers/${profileUserId}`)
-                .then(response => response.json())
-                .then(data => setNotificationSender(data))
-                .catch(error => console.error(error)); 
-        }
-    },[notificationObject, notification])
-
-    useEffect(() => {
-        console.log("Notifications object is: " + notificationObject)
-    }, [notificationObject])
-
-    useEffect(() => {
-        console.log("Notifications sender user is: " + JSON.stringify(notificationSender))
-    }, [notificationSender])
-
-    useEffect(() => {
-        console.log("Notification is: " + notificationObject)
-    }, [notification])
-
-    useEffect(() => {
-        console.log("Notification Reply is: " + JSON.stringify(notificationReply))
-    }, [notificationReply])
 
     const handlePostNavigation = () => {
         const postId = notificationObject.postId;
@@ -99,7 +31,7 @@ function NotificationTemplate ({notification, currentUser}) {
 
     return (
         <>
-        {currentUser && notification && notificationSender ? (
+        {currentUser && notification && notificationObject && notificationSender? (
             <div>
             {notification.notificationType === "LIKE" && notificationObject ? (
                 <div
@@ -177,25 +109,6 @@ function NotificationTemplate ({notification, currentUser}) {
                         </div>
                     </div>
 
-                </div>
-            ) : notification.notificationType === "MESSAGE" && notificationSender && notificationMessage ? (
-                <div className="w-full h-full flex pl-4 pr-4 pt-3 pb-3 flex-grow">
-
-                    <div className="pr-4">
-                        <FaMessage className="text-green-400 text-3xl"/>
-                    </div>
-
-                    <div className="flex flex-col text-white flex-[12] gap-3">
-                        <div>
-                            <img src={notificationSender.profilePic} className="h-8 rounded-full"/>
-                        </div>
-                        <div>
-                            <p> {notificationSender.displayName} Sent you a Message</p>
-                        </div>
-                        <div>
-                            <p className="text-twitterBorder"> {notificationMessage.messageText} </p>
-                        </div>
-                    </div>
                 </div>
             ) : (
                 null

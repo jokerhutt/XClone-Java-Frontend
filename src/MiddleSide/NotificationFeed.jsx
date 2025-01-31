@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import NotificationTemplate from "./NotificationTemplate";
 import '../App.css'
 
-function NotificationFeed ({nonMessageNotifications, currentUser}) {
+function NotificationFeed ({notificationCache, nonMessageNotifications, currentUser}) {
 
     return (
     
@@ -14,7 +14,7 @@ function NotificationFeed ({nonMessageNotifications, currentUser}) {
             <div className="flex-[3] flex flex-col-reverse justify-end h-full w-full border-l-2  border-r-2 border-twitterBorder">
                 {nonMessageNotifications.map((notification) => 
                 <div className="border-b-2 border-twitterBorder">
-                    <NotificationTemplate notification={notification}currentUser={currentUser}/>
+                    <NotificationTemplate notificationPost={notificationCache[notification.id]?.notificationPost} notification={notification} currentUser={currentUser}/>
                 </div>
                 )}
             </div>

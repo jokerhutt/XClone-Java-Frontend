@@ -25,6 +25,7 @@ function App() {
 
   const [userFollowing, setUserFollowing] = useState([]);
   const [userFollowers, setUserFollowers] = useState([]);
+  const [notificationCache, setNotificationCache] = useState({});
 
 
 
@@ -351,6 +352,10 @@ function App() {
   }, [currentUser]);
 
   useEffect(() => {
+    console.log("BADASS CACHE NOTIFICATIONS IS" + JSON.stringify(notificationCache))
+  }, [notificationCache])
+
+  useEffect(() => {
     grabUserLiked()
     grabUserReposts()
   }, [currentUser])
@@ -375,7 +380,55 @@ function App() {
     }
   }
 
+  function fetchNotifications() {
+    if (currentUser) {
+      const tempNotificationCache = {};
   
+      fetch(`http://localhost:6790/api/nonmessagenotifications/${currentUser.id}`)
+        .then((response) => response.json())
+        .then((notifications) => {
+          notifications.forEach((notification) => {
+            tempNotificationCache[notification.id] = {
+              notification: notification,
+              notificationPost: null,
+            };
+          });
+  
+          fetchAssociatedPosts(notifications, tempNotificationCache);
+        });
+    }
+  }
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchNotifications();
+    }
+  }, [currentUser])
+
+  function fetchAssociatedPosts(notifications, tempNotificationCache) {
+    const postIds = notifications.map((n) => n.notificationObject);
+  
+    fetch("http://localhost:6790/api/getallpostsbypostids", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ postIds: postIds }),
+    })
+      .then((response) => response.json())
+      .then((posts) => {
+        posts.forEach((post) => {
+          const notification = Object.values(tempNotificationCache).find(
+            (n) => n.notification.notificationObject === post.postId
+          );
+          if (notification) {
+            notification.notificationPost = post;
+          }
+        });
+  
+        setNotificationCache(tempNotificationCache);
+      });
+  }
+
+
 
   useEffect(() => {
     if (currentUser) {
@@ -418,7 +471,7 @@ function App() {
             <Route 
               path="/notifications/:profileUserId" 
               element={
-              <NotificationFeed nonMessageNotifications={nonMessageNotifications} currentUser={currentUser}/>}
+              <NotificationFeed notificationCache={notificationCache} nonMessageNotifications={nonMessageNotifications} currentUser={currentUser}/>}
             />
 
             <Route
