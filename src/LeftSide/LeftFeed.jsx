@@ -4,6 +4,7 @@ import { FaUserGroup } from "react-icons/fa6";
 import { FaGlobeAmericas } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
 import PostModal from "../PostModal";
+import LogOutModal from "../../LogOutModal";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useEffect, useState } from "react";
 
@@ -103,23 +104,8 @@ function LeftFeed ({currentUser, forYouFeedContent, setForYouFeedContent}) {
     </div>
 </div>
 
-<div className="flex-[1] w-full h-full mb-4">
-    <div className="bg-transparent w-3/5 h-12 p-2 flex justify-center items-center rounded-l-full rounded-r-full hover:bg-twitterBorder hover:cursor-pointer">
-        <div className="flex-[1] flex justify-start items-center">
-            <img src={currentUser.profilePic} className="h-2/3 w-2/3 rounded-full"/>
-        </div>
-        <div className="flex-[2] flex flex-col text-white w-full h-full pl-4">
-            <div>
-            <p>{currentUser.displayName}</p>
-            </div>
-            <div>
-                <p>{currentUser.username}</p>
-            </div>
-        </div>
-        <div className="text-white text-2xl">
-            <HiOutlineDotsHorizontal />
-        </div>
-    </div>
+<div className="flex-[2] w-3/5 h-full mb-4">
+    <LogOutModal currentUser={currentUser}/>
 </div>
 </>
 ) : (

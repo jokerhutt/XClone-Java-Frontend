@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 import RightFeed from './RightFeed/RightFeed'
 import LeftFeed from './LeftSide/LeftFeed'
 import MainFeed from './MiddleSide/MainFeed'
+import LogOutPage from '../LogOutPage';
 import ZoomedPost from './ZoomedPost';
 import ProfileFeed from './MiddleSide/ProfileFeed';
 import MediaPreviewModal from './MediaPreviewModal';
@@ -168,7 +169,8 @@ function App() {
       .then(response => response.json())
       .then(data => {
         const newFollowingPosts = data.content;
-        setFollowingFeedContent([...newFollowingPosts]);
+        setFollowingFeedContent((prevPosts) => [...prevPosts, ...newFollowingPosts]);
+        sortMediaCachedPosts(newFollowingPosts)
       })
       .catch(error => console.error(error));
     }
@@ -545,6 +547,13 @@ function App() {
               path="/messages/:userId"
               element={
                 <MessageComponent currentUser={currentUser} messageNotifications={messageNotifications} refreshNotifications={refreshNotifications} userNotifications={userNotifications}/>
+              }
+            />
+
+            <Route 
+              path="/logout"
+              element={
+                <LogOutPage currentUser={currentUser} setCurrentUser={setCurrentUser}/>
               }
             />
 
