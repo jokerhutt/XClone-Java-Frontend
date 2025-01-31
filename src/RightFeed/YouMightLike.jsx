@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Link } from "react-router-dom";
 import '../App.css'
 
 function YouMightLike ({sampleuser, userFollowing, handleNewFollow, currentUser}) {
@@ -11,9 +12,9 @@ function YouMightLike ({sampleuser, userFollowing, handleNewFollow, currentUser}
     return(
 
         <div className='px-4 py-3 flex w-full h-full hover:cursor-pointer'>
-            <div className='flex-[1]'>
+            <Link to={`/${sampleuser.id}`} className='flex-[1]'>
             <img src={sampleuser.profilePic} className='rounded-full h-full w-full'/>
-            </div>
+            </Link>
             <div className='flex flex-col text-white flex-[3] pl-3'>
                 <p className="font-bold">{sampleuser.displayName}</p>
                 <p className="text-twitterBorder">@{sampleuser.username}</p>
