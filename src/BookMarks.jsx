@@ -5,7 +5,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import PostTemplate from './PostTemplate';
 
-function BookMarks ({cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, currentUser}) {
+function BookMarks ({cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, setCurrentUserProfileData, currentUserProfileData, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, currentUser}) {
 
     const navigate = useNavigate();
     const [userBookMarkedPosts, setUserBookMarkedPosts] = useState([])
@@ -27,7 +27,7 @@ function BookMarks ({cachedAddedReplies, setCachedAddedReplies, cachedReposts, s
                     <>
                     {userBookMarkedPosts.map((post) => 
                         <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
-                            <PostTemplate cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} postReplies={post.replyList} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} post={post} postCreator={post.creator} postMedia={post.mediaList} currentUser={currentUser}/>
+                            <PostTemplate setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} postReplies={post.replyList} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} post={post} postCreator={post.creator} postMedia={post.mediaList} currentUser={currentUser}/>
                         </div>
                     )}
                     </>

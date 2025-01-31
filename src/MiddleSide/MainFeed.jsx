@@ -5,14 +5,14 @@ import { Outlet } from "react-router-dom";
 import PostTemplate from "../PostTemplate";
 import '../App.css'
 
-function MainFeed ({changeForYouFeed, setCurrentUserProfileData, currentUserProfileData, cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, currentUser, setUserLikedPosts, setCurrentUser, forYouFeedContent, setForYouFeedContent}) {
+function MainFeed ({cachedMediaPosts, setCachedMediaPosts, changeForYouFeed, setCurrentUserProfileData, currentUserProfileData, cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, currentUser, setUserLikedPosts, setCurrentUser, forYouFeedContent, setForYouFeedContent}) {
 
     const [mainFeedTab, setMainFeedTab] = useState("FORYOU");
 
     return(
         <div className="flex flex-col flex-grow">
             <div className="flex-[1] bg-black">
-                <TopMainFeed setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} currentUser={currentUser} mainFeedTab={mainFeedTab} setMainFeedTab={setMainFeedTab} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>
+                <TopMainFeed cachedMediaPosts={cachedMediaPosts} setCachedMediaPosts={setCachedMediaPosts} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} currentUser={currentUser} mainFeedTab={mainFeedTab} setMainFeedTab={setMainFeedTab} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>
             </div>
 
             <div className="flex-[3] flex flex-col-reverse justify-end h-full w-full border-l  border-r border-twitterBorder">

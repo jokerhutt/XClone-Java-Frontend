@@ -20,8 +20,14 @@ function ProfileFeedTabState({setTabState, tabState}) {
                     <p>Replies</p>
                 )}
             </div>
-            <div className="flex justify-center items-center w-full h-full hover:bg-twitterBorder hover:cursor-pointer">
-                <p>Media</p>
+            <div 
+            onClick={() => setTabState("media")}
+            className="flex justify-center items-center w-full h-full hover:bg-twitterBorder hover:cursor-pointer">
+                {tabState == "media" ? (
+                    <p className="border-b-2 font-bold border-twitterBlue">Media</p>
+                ) : (
+                    <p>Media</p>
+                )}      
             </div>
             <div 
             onClick={() => setTabState("likes")}

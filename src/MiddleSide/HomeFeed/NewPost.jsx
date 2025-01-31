@@ -9,7 +9,7 @@ import { FaGlobeAmericas } from "react-icons/fa";
 
 
 
-function NewPost ({setCurrentUserProfileData, currentUserProfileData, currentUser, setIsPosting, setCurrentUser, isPosting, setForYouFeedContent, forYouFeedContent}) {
+function NewPost ({cachedMediaPosts, setCachedMediaPosts, setCurrentUserProfileData, currentUserProfileData, currentUser, setIsPosting, setCurrentUser, isPosting, setForYouFeedContent, forYouFeedContent}) {
 
     const [postTitle, setPostTitle] = useState("");
     const [postMedia, setPostMedia] = useState([]);
@@ -98,6 +98,11 @@ function NewPost ({setCurrentUserProfileData, currentUserProfileData, currentUse
                         userPosts: updatedUserPosts,
                     };
                 });
+
+                setCachedMediaPosts(prevCache => ({
+                    ...prevCache,
+                    [destructuredPost.postId]: destructuredPost
+                  }));
 
                 if (isPosting) {
                     setIsPosting(false);

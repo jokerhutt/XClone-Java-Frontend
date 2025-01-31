@@ -22,11 +22,10 @@ function ProfileFeed ({setCurrentUserProfileData, currentUserProfileData, cached
     const {profileUserId} = useParams();
     const [profileUser, setProfileUser] = useState(null);
     const [profileUserData, setProfileUserData] = useState(null);
-    const [userPosts, setUserPosts] = useState(null);
-    const [userPostsAndReposts, setUserPostsAndReposts] = useState([]);
     const [userLikedPosts, setUserLikedPosts] = useState(null);
     const [tabState, setTabState] = useState("posts");
-    const [userReplies, setUserReplies] = useState([]);
+
+    const [postMediaArray, setPostMediaArray] = useState([]);
     
     const [profileUserFollowers, setProfileUserFollowers] = useState([]);
     const [profileUserFollowing, setProfileUserFollowing] = useState([]);
@@ -38,81 +37,97 @@ function ProfileFeed ({setCurrentUserProfileData, currentUserProfileData, cached
         if (profileUserId) {
             if (currentUser && currentUserProfileData && profileUserId == currentUser.id) {
                 console.log("Using cached data for current user", currentUser.id);
-                console.log(JSON.stringify(currentUserProfileData))
                 setProfileUserData(currentUserProfileData);
                 return
             }
         
             if (cachedProfiles[profileUserId]) {
-                console.log("Using cached data for user", profileUserId);
                 setProfileUserData(cachedProfiles[profileUserId]);
                 return;
             }
 
+            fetchUserProfileData();
+
             console.log("Fetching fresh data for user", profileUserId);
         
-            Promise.all([
-                fetch(`http://localhost:6790/api/grabuserrepliedPosts/${profileUserId}`).then(res => res.json()),
-                fetch(`http://localhost:6790/api/grabposts/${profileUserId}`).then(res => res.json()),
-                fetch(`http://localhost:6790/api/grabpostsandreposts/${profileUserId}`).then(res => res.json()),
-                fetch(`http://localhost:6790/api/grabuserlikes/${profileUserId}`).then(res => res.json()),
-                fetch(`http://localhost:6790/api/grabusers/${profileUserId}`).then(res => res.json()),
-                fetch(`http://localhost:6790/api/grabuserfollowing/${profileUserId}`).then(res => res.json()),
-                fetch(`http://localhost:6790/api/grabuserfollowers/${profileUserId}`).then(res => res.json())
-            ])
-            .then(([replies, posts, postsAndReposts, likes, user, following, followers]) => {
-                const userData = {
-                    userReplies: replies,
-                    userPosts: posts,
-                    userPostsAndReposts: postsAndReposts,
-                    userProfile: user,
-                    userLiked: likes,
-                    userFollowing: following,
-                    userFollowers: followers
-            };
-            cachedProfiles[profileUserId] = userData;
-            setProfileUserData(userData);
-        })
-        .catch(error => {
-            console.error("Error fetching profile data:", error);
-        });
+
         }
 
 }, [profileUserId]);
 
     useEffect(() => {
+
+        if (profileUserData) {
+
+            const tempUserPosts = profileUserData.userPosts;
+            const tempArray = [];
+            for (let i = 0; i < tempUserPosts.length; i++) {
+    
+                const post = tempUserPosts[i];
+    
+                if (post.mediaList.length > 0) {
+                    for (let i = 0; i < post.mediaList.length; i++) {
+                        const currentMedia = post.mediaList[i]
+                        tempArray.push(currentMedia);
+                    }
+                }
+    
+            }
+
+            setPostMediaArray([...tempArray]);
+
+        }
+
+
+    }, [profileUserData])
+
+    function fetchUserProfileData () {
+
+        console.log("LADY GAGA")
+
+        Promise.all([
+            fetch(`http://localhost:6790/api/grabuserrepliedPosts/${profileUserId}`).then(res => res.json()),
+            fetch(`http://localhost:6790/api/grabposts/${profileUserId}`).then(res => res.json()),
+            fetch(`http://localhost:6790/api/grabpostsandreposts/${profileUserId}`).then(res => res.json()),
+            fetch(`http://localhost:6790/api/grabuserlikes/${profileUserId}`).then(res => res.json()),
+            fetch(`http://localhost:6790/api/grabusers/${profileUserId}`).then(res => res.json()),
+            fetch(`http://localhost:6790/api/grabuserfollowing/${profileUserId}`).then(res => res.json()),
+            fetch(`http://localhost:6790/api/grabuserfollowers/${profileUserId}`).then(res => res.json())
+        ])
+        .then(([replies, posts, postsAndReposts, likes, user, following, followers]) => {
+            const userData = {
+                userReplies: replies,
+                userPosts: posts,
+                userPostsAndReposts: postsAndReposts,
+                userProfile: user,
+                userLiked: likes,
+                userFollowing: following,
+                userFollowers: followers
+        };
+        cachedProfiles[profileUserId] = userData;
+        setProfileUserData(userData);
+    })
+    .catch(error => {
+        console.error("Error fetching profile data:", error);
+    });
+    }
+
+    useEffect(() => {
+        if (profileUserData) {
+            setProfileUser(profileUserData.userProfile)
+        }
+
+    }, [profileUserData])
+
+    useEffect(() => {
         if (currentUser && currentUserProfileData && profileUserId == currentUser.id) {
-            console.log("Using cached data for current user", currentUser.id);
-            console.log(JSON.stringify(currentUserProfileData))
             setProfileUserData(currentUserProfileData);
         }
     }, [currentUserProfileData])
 
-    useEffect(() => {
-        if (profileUserData) {
-            startTransition(() => {
-            setUserPosts(profileUserData.userPosts)
-            setProfileUserFollowers(profileUserData.userFollowers)
-            setProfileUserFollowing(profileUserData.userFollowing)
-            setUserLikedPosts(profileUserData.userLiked)
-            setUserPostsAndReposts(profileUserData.userPostsAndReposts)
-            setProfileUser(profileUserData.userProfile)
-            })
-        }
-    }, [profileUserData])
 
 
-    useEffect(() => {
-        console.log("USER POSTS IS " + JSON.stringify(userPosts))
-    }, [userPosts])
 
-    useEffect(() => {
-        console.log("USER POSTS AND REPOSTS IS IS " + JSON.stringify(userPostsAndReposts))
-    }, [userPostsAndReposts])
-
-    useEffect(() => {
-        console.log("CACHED USER VIEWEING IS " + JSON.stringify(profileUserData))
-    }, [profileUserData])    
 
 
     // useEffect(() => {
@@ -178,7 +193,7 @@ function ProfileFeed ({setCurrentUserProfileData, currentUserProfileData, cached
 
     return(
         <div className="flex flex-col flex-grow">
-            {profileUser ? (
+            {profileUserData && profileUser ? (
                 <>
             <div className="flex-[526] flex flex-col flex-grow bg-black h-full w-full text-white pt-3">
 
@@ -255,6 +270,20 @@ function ProfileFeed ({setCurrentUserProfileData, currentUserProfileData, cached
                         <PostTemplate setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} currentUser={currentUser} post={post} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} postCreator={post.creator} postMedia={post.mediaList} postReplies={post.replyList}/>
                     </div>
                 )}
+            </div>
+
+            <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder" style={{ display: tabState === "media" ? "block" : "none" }}>
+                <div className="grid grid-cols-3 gap-1">
+                    {postMediaArray.map((image, index) => 
+                        <div key={index} className="w-full aspect-square bg-gray-200">
+                            <img 
+                                onClick={() => navigate(`/imagepreview/${image.postId}/${image.position}`)}
+                                src={image.mediaFile} 
+                                className="hover:cursor-pointer w-full h-full object-cover rounded-md"
+                            />
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* <div style={{ display: tabState === "replies" ? "block" : "none" }}>
