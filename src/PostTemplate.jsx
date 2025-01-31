@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import PostActions from "./PostActions";
 import { useNavigate } from 'react-router-dom';
 import ReplyTemplate from "./ReplyTemplate";
+import LastSeen from "./LastSeen";
 
 import ReplyPostTemplate from "./ReplyPostTemplate";
 
@@ -97,6 +98,7 @@ function PostTemplate ({currentUserProfileData, setCurrentUserProfileData, tempR
                     <div className="flex gap-2">
                         <p className="font-bold">{postCreator.displayName}</p>
                         <p className="text-twitterBorder">@{postCreator.username}</p>
+                        <LastSeen locale="en-US" date={post.createdAt}/>
                     </div>
                 )}
 
