@@ -27,68 +27,68 @@ function LeftFeed ({currentUser, forYouFeedContent, setForYouFeedContent}) {
 </Link>
 
 <div className="flex-[10] h-full w-full bg-black text-white mt-4 flex flex-col gap-6">
-    <Link to="/"className="flex gap-4 items-center text-2xl font-bold">
+    <Link to="/"className="flex gap-4 items-center text-2xl ">
         <FaHome/>
         <p>Home</p>
     </Link>
-    <Link to="/explore" className="flex gap-4 items-center text-2xl font-bold">
+    <Link to="/explore" className="flex gap-4 items-center text-2xl ">
         <FaSearch/>
         <p>Explore</p>
     </Link>
     {currentUser ? (
-    <Link to={`/notifications/${currentUser.id}`} className="flex gap-4 items-center text-2xl font-bold">
+    <Link to={`/notifications/${currentUser.id}`} className="flex gap-4 items-center text-2xl ">
         <FaBell/>
         <p>Notifications</p>
     </Link>
     ) : (
-    <div className="flex gap-4 items-center text-2xl font-bold">
+    <div className="flex gap-4 items-center text-2xl ">
         <FaBell/>
         <p>Notifications</p>
     </div>
     )}
     {currentUser ? (
-    <Link to={`/messages/${currentUser.id}`} className="flex gap-4 items-center text-2xl font-bold">
+    <Link to={`/messages/${currentUser.id}`} className="flex gap-4 items-center text-2xl ">
         <IoMdMail/>
         <p>Messages</p>
     </Link> 
     ) : (
-    <Link to={`/messages}`} className="flex gap-4 items-center text-2xl font-bold">
+    <Link to={`/messages}`} className="flex gap-4 items-center text-2xl ">
         <IoMdMail/>
         <p>Messages</p>
     </Link> 
     )}
 
-    <Link to="/lists" className="flex gap-4 items-center text-2xl font-bold">
+    <Link to="/lists" className="flex gap-4 items-center text-2xl ">
         <FaListAlt/>
         <p>Lists</p>
     </Link>
     {currentUser ? (
-    <Link to={`/bookmarks/${currentUser.id}`} className="flex gap-4 items-center text-2xl font-bold">
+    <Link to={`/bookmarks/${currentUser.id}`} className="flex gap-4 items-center text-2xl ">
         <FaBookmark/>
         <p>Bookmarks</p>
     </Link>
     ) : (
-    <div className="flex gap-4 items-center text-2xl font-bold">
+    <div className="flex gap-4 items-center text-2xl ">
         <FaBookmark/>
         <p>Bookmarks</p>
     </div>  
     )}
-    <Link to="/communities" className="flex gap-4 items-center text-2xl font-bold">
+    <Link to="/communities" className="flex gap-4 items-center text-2xl ">
         <FaUserGroup />
         <p>Communities</p>
     </Link>
     {currentUser ? (
-    <Link to={`/${currentUser.id}`} className="flex gap-4 items-center text-2xl font-bold">
+    <Link to={`/${currentUser.id}`} className="flex gap-4 items-center text-2xl ">
         <FaUser/>
         <p>Profile</p>
     </Link>
     ) : (
-    <div className="flex gap-4 items-center text-2xl font-bold">
+    <div className="flex gap-4 items-center text-2xl ">
         <FaUser/>
         <p>Profile</p>
     </div>
     )}
-    <div className="flex gap-4 items-center text-2xl font-bold">
+    <div className="flex gap-4 items-center text-2xl ">
         <FaUserGroup/>
         <p>More</p>
     </div>

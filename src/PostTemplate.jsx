@@ -97,7 +97,7 @@ function PostTemplate ({currentUserProfileData, setCurrentUserProfileData, tempR
                 ) : (
                     <div className="flex gap-2">
                         <p className="font-bold">{postCreator.displayName}</p>
-                        <p className="text-twitterBorder">@{postCreator.username}</p>
+                        <p className="text-twitterBorder">@{postCreator.username} -</p>
                         <LastSeen locale="en-US" date={post.createdAt}/>
                     </div>
                 )}

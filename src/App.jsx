@@ -375,6 +375,8 @@ function App() {
     }
   }
 
+  
+
   useEffect(() => {
     if (currentUser) {
       refreshNotifications();

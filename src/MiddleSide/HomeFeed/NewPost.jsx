@@ -84,9 +84,7 @@ function NewPost ({cachedMediaPosts, setCachedMediaPosts, setCurrentUserProfileD
         .then((data) => {
                 alert('Post Upload successful!');
                 const destructuredPost = data;
-                const tempPosts = [...forYouFeedContent]
-                tempPosts.push(data);
-                setForYouFeedContent(tempPosts);
+                setForYouFeedContent((prevPosts) => [data, ...prevPosts]);
 
                 setCurrentUserProfileData((prev) => {
                     const updatedUserPostsAndReposts = [...prev.userPostsAndReposts, destructuredPost];
