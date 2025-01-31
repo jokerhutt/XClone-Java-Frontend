@@ -120,28 +120,65 @@ function App() {
 
 
 
-  function getForYouFeed () {
+
+  function changeForYouFeed () {
+    console.log("For you feed stuff")
+    const tempForYouPage = forYouPage + 1;
+    getForYouFeed(tempForYouPage)
+  }
+
+  useEffect(() => {
+    getForYouFeed(forYouPage);
+  }, []) 
+
+
+  function getForYouFeed (tempForYouPage) {
     console.log("Fetching!!")
-    fetch(`http://localhost:6790/api/foryoufeed?page=${forYouPage}&size=20`)
-    // fetch(`http://localhost:6790/api/foryoufeed?page=0&size=10`)
+    fetch(`http://localhost:6790/api/foryoufeed?page=${tempForYouPage}&size=10`)
     .then(response => response.json())
     .then(data => {
       const newPosts = data.content;
-      setForYouFeedContent([...newPosts]);
+      console.log("FRESHLY SERVED DATA FEED IS " + JSON.stringify(newPosts))
+      if (tempForYouPage > 0) {
+        console.log("OVER ZERO")
+        setForYouFeedContent((prevPosts) => [...prevPosts, ...newPosts]);
+      } else {
+        console.log("UNDER ZERO")
+        setForYouFeedContent([...newPosts]);
+      }
+
       console.log("NEWPOSTS IS " + JSON.stringify(newPosts));
       sortMediaCachedPosts(newPosts);
+      setForYouPage(prev => prev + 1);
     })
     .catch(error => console.error(error));
   }
 
-  useEffect(() => {
-    console.log("CACHED MEDIA POSTS IS " + JSON.stringify(cachedMediaPosts))
-  }, [cachedMediaPosts])
 
-  function changeForYouFeed () {
-    console.log("For you feed stuff")
-    setForYouPage(prev => prev + 1);
-  }
+  useEffect(() => {
+    console.log("FORYOUFEEDCONTENT UPDATED IS: " + JSON.stringify(forYouFeedContent))
+  }, [forYouFeedContent])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   function getFollowingFeed () {
     console.log("Fetching following feed")
@@ -162,10 +199,6 @@ function App() {
   useEffect(() => {
     console.log("Usercached is: " + JSON.stringify(cachedLikedPosts))
   }, [cachedLikedPosts])
-
-  useEffect(() => {
-    getForYouFeed();
-  }, []) 
 
   useEffect(() => {
     console.log("Important is: " + JSON.stringify(forYouFeedContent))

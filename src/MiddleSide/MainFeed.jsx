@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 import PostTemplate from "../PostTemplate";
 import '../App.css'
 
-function MainFeed ({cachedMediaPosts, setCachedMediaPosts, changeForYouFeed, setCurrentUserProfileData, currentUserProfileData, cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, currentUser, setUserLikedPosts, setCurrentUser, forYouFeedContent, setForYouFeedContent}) {
+function MainFeed ({getForYouFeed, cachedMediaPosts, setCachedMediaPosts, changeForYouFeed, setCurrentUserProfileData, currentUserProfileData, cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, currentUser, setUserLikedPosts, setCurrentUser, forYouFeedContent, setForYouFeedContent}) {
 
     const [mainFeedTab, setMainFeedTab] = useState("FORYOU");
 
@@ -15,7 +15,7 @@ function MainFeed ({cachedMediaPosts, setCachedMediaPosts, changeForYouFeed, set
                 <TopMainFeed cachedMediaPosts={cachedMediaPosts} setCachedMediaPosts={setCachedMediaPosts} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} currentUser={currentUser} mainFeedTab={mainFeedTab} setMainFeedTab={setMainFeedTab} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>
             </div>
 
-            <div className="flex-[3] flex flex-col-reverse justify-end h-full w-full border-l  border-r border-twitterBorder">
+            <div className="flex-[3] flex flex-col justify-end h-full w-full border-l  border-r border-twitterBorder">
             {forYouFeedContent ? (
                 <>
                 {forYouFeedContent.map((post) => 
