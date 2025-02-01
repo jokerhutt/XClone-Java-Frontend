@@ -28,12 +28,14 @@ function LogOutPage ({currentUser, setCurrentUser}) {
                 <div onClick={() => handleNavigate()} className="bg-white w-3/5 h-12 flex justify-center items-center rounded-l-full rounded-r-full hover:bg-opacity-60 hover:cursor-pointer">
                     <p className="text-black font-bold">Log out</p>
                 </div>
+                <div onClick={() => navigate(-1)} className="bg-white w-3/5 h-12 flex justify-center items-center rounded-l-full rounded-r-full hover:bg-opacity-60 hover:cursor-pointer">
+                    <p className="text-black font-bold">Go back</p>
+                </div>
                 </div>
             </div>
             
         </>
     )
-
 }
 
 export default LogOutPage;

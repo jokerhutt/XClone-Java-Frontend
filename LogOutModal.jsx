@@ -8,15 +8,22 @@ import {
   import { useNavigate } from "react-router-dom";
 
 
-function LogOutModal ({currentUser}) {
+function LogOutModal ({currentUser, isLoggingOut, setIsLoggingOut}) {
 
     const navigate = useNavigate();
 
+    function handleLogOutNavigate() {
+        navigate("/logout")
+        setIsLoggingOut(false);
+    }
+
     return (
-    <>
-    <Popover placement="top">
+    <div onClick={() => setIsLoggingOut(!isLoggingOut)}>
+    <Popover placement="top" open={isLoggingOut}>
         <PopoverHandler>
-            <div className="bg-transparent h-full relative w-full flex-col">
+            <div
+            
+            className="bg-transparent h-full relative w-full flex-col">
                 <div className="p-2 relative flex h-12 w-full justify-center items-center rounded-l-full rounded-r-full hover:bg-twitterHover hover:cursor-pointer">
                 <div className="flex-[1] flex justify-start items-center pl-2">
                     <img src={currentUser.profilePic} className="h-2/3 w-2/3 rounded-full"/>
@@ -35,13 +42,13 @@ function LogOutModal ({currentUser}) {
                 </div>
             </div>
         </PopoverHandler>
-        <PopoverContent onClick={() => navigate("/logout")} className="h-10 bg-transparent w-60 px-4 hover:bg-twitterBorder hover:cursor-pointer">
+        <PopoverContent onClick={() => handleLogOutNavigate()} className="h-10 bg-transparent w-60 px-4 hover:bg-twitterBorder hover:cursor-pointer">
             <div className="text-white font-bold flex items-center justify-center h-full text-base">
                 <p>Log out @{currentUser.username}</p>
             </div>
         </PopoverContent>
     </Popover>
-    </>
+    </div>
     )
 }
 

@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 function LeftFeed ({currentUser, forYouFeedContent, setForYouFeedContent}) {
 
     const [isPosting, setIsPosting] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false)
 
     return(
         <>
@@ -105,7 +106,7 @@ function LeftFeed ({currentUser, forYouFeedContent, setForYouFeedContent}) {
 </div>
 
 <div className="flex-[2] w-3/5 h-full mb-4">
-    <LogOutModal currentUser={currentUser}/>
+    <LogOutModal isLoggingOut={isLoggingOut} setIsLoggingOut={setIsLoggingOut} currentUser={currentUser}/>
 </div>
 </>
 ) : (

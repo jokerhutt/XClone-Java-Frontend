@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { IoMdSend } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
+import { FaArrowLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 import IndividualMessage from "./IndividualMessage";
@@ -130,6 +131,17 @@ function MessageComponent ({currentUser, messageNotifications, refreshNotificati
     }
 
     return (
+    <div className="flex flex-col flex-grow">
+
+        <div className='h-14 w-full px-4 justify-start gap-5 flex border border-twitterBorder text-white sticky top-0 z-20 backdrop-blur-md bg-black bg-opacity-7'>
+                <div className="w-8 ml-2 h-full flex justify-start text-lg items-center">
+                    <FaArrowLeft onClick={() => navigate(-1)} className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
+                </div>
+                <div className="flex items-center justify-start">
+                    <h2 className='font-bold'>Messages</h2>
+                </div>
+            </div>
+
         <div className="flex w-full h-full bg-none">
 
             <div className="flex-[40] w-full h-full border-x-2 border-twitterBorder flex flex-col">
@@ -166,7 +178,7 @@ function MessageComponent ({currentUser, messageNotifications, refreshNotificati
                 )}
                 </div>
 
-                <div className="h-10 w-full px-2">
+                <div className="h-20 w-full px-2 bottom-0 sticky bg-black">
                     <div className="h-10 w-full p-2 flex bg-twitterBorder rounded-2xl">
 
                         <div className="flex w-full h-full flex-[25]">
@@ -186,6 +198,7 @@ function MessageComponent ({currentUser, messageNotifications, refreshNotificati
             </div>
 
         </div>
+    </div>
     )
 }
 
