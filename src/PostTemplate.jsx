@@ -11,13 +11,13 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { TiPin } from "react-icons/ti";
 import { FaRegComment } from "react-icons/fa6";
 
-
 import PostActions from "./PostActions";
 import { useNavigate } from 'react-router-dom';
 import ReplyTemplate from "./ReplyTemplate";
 import LastSeen from "./LastSeen";
 
 import ReplyPostTemplate from "./ReplyPostTemplate";
+import ProfileHoverPopover from "./ProfileHoverPopover";
 
 
 
@@ -78,7 +78,12 @@ function PostTemplate ({currentUserProfileData, setCurrentUserProfileData, tempR
             {isAReplyParent ? (
                 <div className="flex-[1] flex flex-col w-full h-full mr-4 ">
                 <Link to={`/${postCreator.id}`}>
-                    <img src={postCreator.profilePic} className="rounded-full"/>
+                    <div className="relative">
+                        <img src={postCreator.profilePic} className="rounded-full"/>
+                        <div className="absolute top-0 right-0 z-20 mt-2 w-60 bg-black text-white shadow-md rounded-lg py-2 border border-twitterBorder">
+                            <ProfileHoverPopover/>
+                        </div>
+                    </div>
                 </Link>
                 <div className="flex items-center justify-center h-full bg-none w-full ml-1">
                     <div className="bg-none border-r border-l border-twitterBorder w-0.5 mr-2 border h-4 max-h-20 mb-2 mt-0">
@@ -87,7 +92,7 @@ function PostTemplate ({currentUserProfileData, setCurrentUserProfileData, tempR
                 </div>
             ) : (
                 <Link to={`/${postCreator.id}`} className="flex-[1] flex flex-col w-full h-full mr-4 ">
-                    <img src={postCreator.profilePic} className="rounded-full"/>
+                    <ProfileHoverPopover postCreator={postCreator}/>
                 </Link>
             )}
 

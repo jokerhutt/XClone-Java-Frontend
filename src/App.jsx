@@ -43,6 +43,7 @@ function App() {
   
 
   const [cachedLikedPosts, setCachedLikedPosts] = useState({})
+  const [cachedFollows, setCachedFollows] = useState({})
   const [cachedBookMarks, setCachedBookMarks] = useState({})
   const [cachedReposts, setCachedReposts] = useState({})
   const [cachedAddedReplies, setCachedAddedReplies] = useState([]);
@@ -201,6 +202,25 @@ function App() {
         }, {});
 
         setCachedLikedPosts(likedPostsCache);
+      })
+      .catch(error => console.error(error));
+    }
+  }
+
+  function grabUserFollowing () {
+    if (currentUser) {
+      const profileUserId = currentUser.id;
+      fetch(`http://localhost:6790/api/grabuserfollowing/${profileUserId}`)
+      .then(response => response.json())
+      .then((data) => {
+        const followingUsersCache = data.reduce((acc, follow) => {
+          if (!acc[follow.followedId]) {
+            acc[follow.followedId] = [];
+          }
+          acc[follow.followedId].push(follow); 
+          return acc;
+        }, {});
+        setCachedFollows(followingUsersCache);
       })
       .catch(error => console.error(error));
     }
@@ -510,7 +530,7 @@ function App() {
             <Route 
               path="/" 
               element={
-              <MainFeed followingFeedContent={followingFeedContent} cachedMediaPosts={cachedMediaPosts} setCachedMediaPosts={setCachedMediaPosts} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} changeForYouFeed={changeForYouFeed} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>}
+              <MainFeed cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} followingFeedContent={followingFeedContent} cachedMediaPosts={cachedMediaPosts} setCachedMediaPosts={setCachedMediaPosts} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} changeForYouFeed={changeForYouFeed} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>}
             />
 
             <Route 

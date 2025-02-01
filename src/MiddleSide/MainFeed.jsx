@@ -27,10 +27,6 @@ function MainFeed ({followingFeedContent, getForYouFeed, cachedMediaPosts, setCa
             ) : (
                 null
             )}
-
-
-
-
             </div>
 
             <div className="flex-[3] flex flex-col-reverse justify-end h-full w-full border-l-2  border-r-2 border-twitterBorder" style={{ display: mainFeedTab === "FOLLOWING" ? "block" : "none" }}>  
