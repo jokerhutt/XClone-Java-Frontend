@@ -1,5 +1,7 @@
+import FollowersFollowing from "./FollowersFollowing";
 
-function ProfileHoverPopoverContent ({postCreator}) {
+
+function ProfileHoverPopoverContent ({postCreator, cachedFollows, currentUser}) {
     return(
         <>
             <div className="h-full w-full flex flex-col">
@@ -21,7 +23,7 @@ function ProfileHoverPopoverContent ({postCreator}) {
                         <p>@{postCreator.username}</p>
                     </div>
                     <div className="w-full">
-
+                        <FollowersFollowing currentUser={currentUser} cachedFollows={cachedFollows} mainUser={postCreator} />
                     </div>
                     </>
                 ) : (

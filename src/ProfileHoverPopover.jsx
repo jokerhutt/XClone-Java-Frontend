@@ -12,7 +12,7 @@ import {
   import ProfileHoverPopoverContent from "./ProfileHoverPopoverContent";
 import { useEffect, useState } from "react";
 
-function ProfileHoverPopover ({postCreator}) {
+function ProfileHoverPopover ({postCreator, cachedFollows, currentUser}) {
 
     const [isHovering, setIsHovering] = useState(false);
 
@@ -36,7 +36,7 @@ function ProfileHoverPopover ({postCreator}) {
         bg-black text-white shadow-lg rounded-xl p-4 border border-twitterBorder 
         h-60 w-72 mt-2 ring-2 ring-gray-400 ring-opacity-80 shadow-gray-400/70
     ">
-            <ProfileHoverPopoverContent postCreator={postCreator}/>
+            <ProfileHoverPopoverContent currentUser={currentUser} cachedFollows={cachedFollows} postCreator={postCreator}/>
         </PopoverContent>
     </Popover>
 

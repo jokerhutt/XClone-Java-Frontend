@@ -5,6 +5,7 @@ import { MdOutlineVerified } from "react-icons/md";
 import { IoIosCalendar } from "react-icons/io";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { MdCalendarMonth } from "react-icons/md";
+import FollowersFollowing from "../FollowersFollowing";
 import { Link } from "react-router-dom";
 import ProfileFeedFollow from "./ProfileFeedFollow";
 import { useParams } from "react-router"
@@ -16,7 +17,7 @@ import '../App.css'
 import { startTransition } from "react";
 import PostTemplate from "../PostTemplate";
 
-function ProfileFeed ({setCurrentUserProfileData, currentUserProfileData, cachedMediaPosts, cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, cachedProfiles, setCachedProfiles, handleNewFollow, posts, currentUser, setCurrentUser, setCachedBookMarks, setPosts, setCachedLikedPosts, cachedLikedPosts, userFollowers, userFollowing}) {
+function ProfileFeed ({cachedFollows, setCurrentUserProfileData, currentUserProfileData, cachedMediaPosts, cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, cachedProfiles, setCachedProfiles, handleNewFollow, posts, currentUser, setCurrentUser, setCachedBookMarks, setPosts, setCachedLikedPosts, cachedLikedPosts, userFollowers, userFollowing}) {
 
     const {profileUserId} = useParams();
     const [profileUser, setProfileUser] = useState(null);
@@ -239,8 +240,7 @@ function ProfileFeed ({setCurrentUserProfileData, currentUserProfileData, cached
                         </div>
                     </div>
                     <div className="flex gap-8 mb-3 text-twitterBorder">
-                        <p> <span className="text-white font-bold">{profileUserData.userFollowing.length}</span> Following</p>
-                        <p> <span className="text-white font-bold">{profileUserData.userFollowers.length}</span> Followers</p>
+                        <FollowersFollowing cachedFollows={cachedFollows} mainUser={profileUser} currentUser={currentUser}/>
                     </div>
                 </div>
 
@@ -258,7 +258,7 @@ function ProfileFeed ({setCurrentUserProfileData, currentUserProfileData, cached
             <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder" style={{ display: tabState === "posts" ? "block" : "none" }}>
                 {profileUserData.userPostsAndReposts.map((post) => 
                     <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
-                        <PostTemplate setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} profileUser={profileUser} currentUser={currentUser} post={post} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} postCreator={post.creator} postMedia={post.mediaList} postReplies={post.replyList}/>
+                        <PostTemplate cachedFollows={cachedFollows} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} profileUser={profileUser} currentUser={currentUser} post={post} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} postCreator={post.creator} postMedia={post.mediaList} postReplies={post.replyList}/>
                     </div>
                 )}
             </div>
@@ -266,7 +266,7 @@ function ProfileFeed ({setCurrentUserProfileData, currentUserProfileData, cached
             <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder" style={{ display: tabState === "likes" ? "block" : "none" }}>
                 {profileUserData.userLiked.map((post) => 
                     <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
-                        <PostTemplate setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} currentUser={currentUser} post={post} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} postCreator={post.creator} postMedia={post.mediaList} postReplies={post.replyList}/>
+                        <PostTemplate cachedFollows={cachedFollows} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} currentUser={currentUser} post={post} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} postCreator={post.creator} postMedia={post.mediaList} postReplies={post.replyList}/>
                     </div>
                 )}
             </div>

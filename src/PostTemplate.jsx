@@ -10,7 +10,7 @@ import MorePost from "./MorePost";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { TiPin } from "react-icons/ti";
 import { FaRegComment } from "react-icons/fa6";
-
+import FollowersFollowing from "./FollowersFollowing";
 import PostActions from "./PostActions";
 import { useNavigate } from 'react-router-dom';
 import ReplyTemplate from "./ReplyTemplate";
@@ -22,7 +22,7 @@ import ProfileHoverPopover from "./ProfileHoverPopover";
 
 
 
-function PostTemplate ({currentUserProfileData, setCurrentUserProfileData, tempReplies, setTempReplies, cachedAddedReplies, setCachedAddedReplies, isInZoomedMode, postReplies, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, setUserLikedPosts, postBookMarks, postLikes, replyObject, isAReplyParent, post, postCreator, postMedia, currentUser, disableMedia, profileUser}) {
+function PostTemplate ({cachedFollows, currentUserProfileData, setCurrentUserProfileData, tempReplies, setTempReplies, cachedAddedReplies, setCachedAddedReplies, isInZoomedMode, postReplies, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, setUserLikedPosts, postBookMarks, postLikes, replyObject, isAReplyParent, post, postCreator, postMedia, currentUser, disableMedia, profileUser}) {
 
     const [isReplyingToggle, setIsReplyingToggle] = useState(false);
     const [currentPostReplies, setCurrentPostReplies] = useState(postReplies);
@@ -81,7 +81,7 @@ function PostTemplate ({currentUserProfileData, setCurrentUserProfileData, tempR
                     <div className="relative">
                         <img src={postCreator.profilePic} className="rounded-full"/>
                         <div className="absolute top-0 right-0 z-20 mt-2 w-60 bg-black text-white shadow-md rounded-lg py-2 border border-twitterBorder">
-                            <ProfileHoverPopover/>
+                            <ProfileHoverPopover currentUser={currentUser} cachedFollows={cachedFollows}/>
                         </div>
                     </div>
                 </Link>
@@ -92,7 +92,7 @@ function PostTemplate ({currentUserProfileData, setCurrentUserProfileData, tempR
                 </div>
             ) : (
                 <Link to={`/${postCreator.id}`} className="flex-[1] flex flex-col w-full h-full mr-4 ">
-                    <ProfileHoverPopover postCreator={postCreator}/>
+                    <ProfileHoverPopover currentUser={currentUser} cachedFollows={cachedFollows} postCreator={postCreator}/>
                 </Link>
             )}
 

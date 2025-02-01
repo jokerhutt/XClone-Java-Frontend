@@ -121,6 +121,10 @@ function App() {
     }
   }, [currentUser])
 
+  useEffect(() => {
+    console.log("CURRENT USER IS " + JSON.stringify(currentUser))
+  }, [currentUser])
+
 
 
 
@@ -226,6 +230,12 @@ function App() {
     }
   }
 
+  useEffect(() => {
+    if (currentUser) {
+      grabUserFollowing()
+    }
+  }, [currentUser])
+
   function grabUserReposts () {
     if (currentUser) {
       const profileUserId = currentUser.id;
@@ -306,7 +316,7 @@ function App() {
     }
   }, [currentUser])
 
-  function handleNewFollow(followedId, followingId) {
+  function handleNewFollowTwo(followedId, followingId) {
     const newFollowInformation = {
       followedId: followedId,
       followingId: followingId,
@@ -333,10 +343,52 @@ function App() {
   .then((data) => {
         alert('Follow added successfully!');
         console.log("Response is " + JSON.stringify(data));
-        setUserFollowing([...data]);  
+        setUserFollowing([...data]); 
         console.log(JSON.stringify(data));
   });
   }
+
+  function handleNewFollow(followedId, followingId) {
+    const newFollowInformation = {
+      followedId: followedId,
+      followingId: followingId,
+      notificationType: "FOLLOW",
+      notificationObject: followedId,
+      receiverId: followedId,
+      senderId: followingId 
+  };
+  const decryptedPayload = JSON.stringify(newFollowInformation)
+  console.log("Super Secret Repost Information is being sent..." + newFollowInformation)
+
+  fetch('http://localhost:6790/api/newfollow', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newFollowInformation),
+    })
+    .then(response => {
+      if (response.ok) {
+          return response.json();
+      } else {
+          throw new Error('Failed to Follow');
+      }
+  })
+  .then((data) => {
+    console.log("NEW FOLLOW DATA IS: " + JSON.stringify(data))
+      if (data.followedId === followedId) {
+        setCachedFollows((prev) => ({
+          ...prev,
+          [followedId]: data,
+      }));
+      } else {
+        setCachedFollows((prev) => {
+          const updatedCache = { ...prev };
+          delete updatedCache[followedId];
+          return updatedCache;
+      });
+      }
+  });
+  }
+
 
   useEffect(() => {
     if (currentUser) {
@@ -530,13 +582,13 @@ function App() {
             <Route 
               path="/" 
               element={
-              <MainFeed cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} followingFeedContent={followingFeedContent} cachedMediaPosts={cachedMediaPosts} setCachedMediaPosts={setCachedMediaPosts} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} changeForYouFeed={changeForYouFeed} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>}
+              <MainFeed cachedFollows={cachedFollows} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} followingFeedContent={followingFeedContent} cachedMediaPosts={cachedMediaPosts} setCachedMediaPosts={setCachedMediaPosts} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} changeForYouFeed={changeForYouFeed} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>}
             />
 
             <Route 
               path="/:profileUserId" 
               element={
-              <ProfileFeed setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} handleNewFollow={handleNewFollow} userFollowing={userFollowing} userFollowers={userFollowers} currentUser={currentUser} setCurrentUser={setCurrentUser} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>}
+              <ProfileFeed cachedFollows={cachedFollows} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} handleNewFollow={handleNewFollow} userFollowing={userFollowing} userFollowers={userFollowers} currentUser={currentUser} setCurrentUser={setCurrentUser} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>}
             />
 
             <Route 
