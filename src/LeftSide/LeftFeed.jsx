@@ -33,7 +33,7 @@ function LeftFeed ({currentUser, forYouFeedContent, setForYouFeedContent}) {
         <FaHome/>
         <p>Home</p>
     </Link>
-    <Link to="/explore" className="flex gap-4 items-center text-2xl ">
+    <Link className="hover:cursor-not-allowed flex gap-4 items-center text-2xl ">
         <FaSearch/>
         <p>Explore</p>
     </Link>
@@ -60,7 +60,7 @@ function LeftFeed ({currentUser, forYouFeedContent, setForYouFeedContent}) {
     </Link> 
     )}
 
-    <Link to="/lists" className="flex gap-4 items-center text-2xl ">
+    <Link className=" hover:cursor-not-allowed flex gap-4 items-center text-2xl ">
         <FaListAlt/>
         <p>Lists</p>
     </Link>
@@ -75,7 +75,7 @@ function LeftFeed ({currentUser, forYouFeedContent, setForYouFeedContent}) {
         <p>Bookmarks</p>
     </div>  
     )}
-    <Link to="/communities" className="flex gap-4 items-center text-2xl ">
+    <Link className="flex hover:cursor-not-allowed gap-4 items-center text-2xl ">
         <FaUserGroup />
         <p>Communities</p>
     </Link>

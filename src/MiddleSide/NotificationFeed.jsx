@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router"
 import { useState, useEffect } from "react";
 import { FaArrowLeft } from "react-icons/fa";
+import { TbBellRinging } from "react-icons/tb";
 import NotificationTemplate from "./NotificationTemplate";
 import '../App.css'
 
@@ -20,7 +21,7 @@ function NotificationFeed ({notificationCache, nonMessageNotifications, currentU
                     <h2 className='font-bold'>All Notifications</h2>
                 </div>
             </div>
-            {currentUser && nonMessageNotifications ? (
+            {currentUser && nonMessageNotifications && nonMessageNotifications.length > 0 ? (
             <div className="flex-[3] flex flex-col-reverse justify-end h-full w-full border-l-2  border-r-2 border-twitterBorder">
                 {nonMessageNotifications.map((notification) => 
                 <div className="border-b-2 border-twitterBorder">
@@ -28,6 +29,15 @@ function NotificationFeed ({notificationCache, nonMessageNotifications, currentU
                 </div>
                 )}
             </div>
+            ) : nonMessageNotifications ? (
+                <>
+                    <div className='flex flex-col w-full h-full py-10 gap-4 items-center'>
+                        <h1 className='text-2xl text-center text-gray-200 font-bold'>No notifications - yet</h1>
+                        <div className='w-2/3'>
+                        <p className='text-center text-twitterBorder'>From likes to Retweets and a whole lot more, this is where all the action happens.</p>
+                        </div>
+                    </div>
+                </>
             ) : (
             <div className="text-twitterBlue h-full w-full flex justify-center items-center text-3xl animate-pulse">
                 <p>Loading Notifications...</p>

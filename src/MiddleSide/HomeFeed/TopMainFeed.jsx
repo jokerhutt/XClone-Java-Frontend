@@ -34,10 +34,13 @@ function TopMainFeed ({cachedMediaPosts, setCachedMediaPosts, setCurrentUserProf
                         <p 
                         onClick={() => handleTabChange("FOLLOWING")}
                         className="hover:cursor-pointer  text-white py-4 font-bold border-b-4 border-b-twitterBlue text-sm">Following</p>
-                        ) : (
+                        ) : currentUser ?(
                         <p 
                         onClick={() => handleTabChange("FOLLOWING")}
                         className="hover:cursor-pointer text-white py-4 font-bold text-sm">Following</p>
+                        ) : (
+                            <p 
+                        className="hover:cursor-not-allowed text-white py-4 font-bold text-sm">Following</p>
                         )}
 
                     </div>

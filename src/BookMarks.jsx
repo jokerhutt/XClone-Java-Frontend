@@ -3,6 +3,7 @@ import './App.css'
 import { useParams } from "react-router"
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+
 import PostTemplate from './PostTemplate';
 
 function BookMarks ({cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, setCurrentUserProfileData, currentUserProfileData, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, currentUser}) {
@@ -23,13 +24,23 @@ function BookMarks ({cachedAddedReplies, setCachedAddedReplies, cachedReposts, s
 
     return (
             <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l border-r border-twitterBorder">
-                {userBookMarkedPosts ? (
+                {userBookMarkedPosts && userBookMarkedPosts.length > 0 ? (
                     <>
                     {userBookMarkedPosts.map((post) => 
                         <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
                             <PostTemplate setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} postReplies={post.replyList} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} post={post} postCreator={post.creator} postMedia={post.mediaList} currentUser={currentUser}/>
                         </div>
                     )}
+                    </>
+                ) : userBookMarkedPosts ? (
+                    <>
+                    <div className='flex flex-col w-full h-full py-10 gap-4 items-center'>
+                        <img className='w-2/3' src="/no-bookmarks.png"/>
+                        <h1 className='text-2xl text-center text-gray-200 font-bold'>Save Tweets for later</h1>
+                        <div className='w-2/3'>
+                        <p className='text-center text-twitterBorder'>Don’t let the good ones fly away! Bookmark Tweets to easily find them again in the future.</p>
+                        </div>
+                    </div>
                     </>
                 ) : (
                 <div className="text-twitterBlue h-full w-full flex justify-center items-center text-3xl animate-pulse">
