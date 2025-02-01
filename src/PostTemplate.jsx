@@ -4,6 +4,14 @@ import { useState, useEffect } from "react";
 import ReplyingModal from "./ReplyingModal";
 import { FaRetweet } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { BsThreeDots } from "react-icons/bs";
+
+import MorePost from "./MorePost";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { TiPin } from "react-icons/ti";
+import { FaRegComment } from "react-icons/fa6";
+
+
 import PostActions from "./PostActions";
 import { useNavigate } from 'react-router-dom';
 import ReplyTemplate from "./ReplyTemplate";
@@ -19,6 +27,7 @@ function PostTemplate ({currentUserProfileData, setCurrentUserProfileData, tempR
     const [isReplyingToggle, setIsReplyingToggle] = useState(false);
     const [currentPostReplies, setCurrentPostReplies] = useState(postReplies);
     const [tempPostReplies, setTempPostReplies] = useState()
+    const [isMorePost, setIsMorePost] = useState(false);
     const navigate = useNavigate();
 
     const handleNavigation = () => {
@@ -95,11 +104,27 @@ function PostTemplate ({currentUserProfileData, setCurrentUserProfileData, tempR
                     </div>
                 </div>
                 ) : (
-                    <div className="flex gap-2">
-                        <p className="font-bold">{postCreator.displayName}</p>
-                        <p className="text-twitterBorder">@{postCreator.username} -</p>
-                        <LastSeen locale="en-US" date={post.createdAt}/>
+                    <div className="flex justify-between items-center">
+                        <div className="flex gap-2">
+                            <p className="font-bold">{postCreator.displayName}</p>
+                            <p className="text-twitterBorder">@{postCreator.username} -</p>
+                            <LastSeen locale="en-US" date={post.createdAt}/>
+                        </div>
+                        <div className="relative">
+                            <div onClick={() => setIsMorePost(!isMorePost)} className="hover:cursor-pointer rounded-full flex justify-center items-center hover:bg-twitterBlue hover:bg-opacity-40 p-1">
+                                <BsThreeDots />
+                            </div>
+                            {isMorePost ? (
+                            <div className="absolute top-0 right-0 z-20 mt-2 w-60 bg-black text-white shadow-md rounded-lg py-2 border border-twitterBorder">
+                                <MorePost/>
+                            </div>
+                            ) : (
+                                null
+                            )}
+
+                        </div>
                     </div>
+
                 )}
 
                 <div 
