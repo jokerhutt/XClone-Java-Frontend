@@ -174,7 +174,7 @@ function App() {
       .then(response => response.json())
       .then(data => {
         const newFollowingPosts = data.content;
-        setFollowingFeedContent((prevPosts) => [...prevPosts, ...newFollowingPosts]);
+        setFollowingFeedContent([...newFollowingPosts]);
         sortMediaCachedPosts(newFollowingPosts)
       })
       .catch(error => console.error(error));
@@ -379,12 +379,17 @@ function App() {
           ...prev,
           [followedId]: data,
       }));
+      getFollowingFeed();
       } else {
         setCachedFollows((prev) => {
           const updatedCache = { ...prev };
           delete updatedCache[followedId];
           return updatedCache;
       });
+      const newFollowingFeed = followingFeedContent.filter((post) => post.creator.id !== newFollowInformation.followedId)
+      console.log("FFC IS " + JSON.stringify(followingFeedContent))
+      console.log("NFF IS " + JSON.stringify(newFollowingFeed))
+      setFollowingFeedContent([...newFollowingFeed])
       }
   });
   }

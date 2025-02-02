@@ -1,14 +1,24 @@
 import FollowersFollowing from "./FollowersFollowing";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 
 function ProfileHoverPopoverContent ({handleNewFollow, toggleFollowing, setToggleFollowing, postCreator, cachedFollows, currentUser}) {
     
     const [unfollowHover, setUnfollowHover] = useState(false);
+    const [disableNavigation, setDisableNavigation] = useState(false)
+    const navigate = useNavigate();
+
+    function handleNavigation () {
+        if (disableNavigation === false) {
+            navigate(`/${postCreator.id}`)
+        }
+    } 
     
     return(
         <>
-            <div className="h-full w-full flex flex-col">
+            <div 
+            onClick={() => handleNavigation()}
+            className="h-full w-full flex flex-col">
                 {postCreator ? (
                     <>
                     <div className="relative">
@@ -17,7 +27,7 @@ function ProfileHoverPopoverContent ({handleNewFollow, toggleFollowing, setToggl
                             <img className="rounded-full h-16 w-16 object-cover border-4 border-black" src={postCreator.profilePic}/>
                         </div>
                     </div>
-                    <div className="flex w-full justify-end mt-3">
+                    <div className="flex w-full justify-end mt-3" onMouseEnter={() => setDisableNavigation(true)} onMouseLeave={() => setDisableNavigation(false)}>
                         {toggleFollowing ? (
                         <div 
                         onClick={() => handleNewFollow(postCreator.id, currentUser.id)}

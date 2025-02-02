@@ -92,9 +92,9 @@ function PostTemplate ({handleNewFollow, cachedFollows, currentUserProfileData, 
                 </div>
                 </div>
             ) : (
-                <Link to={`/${postCreator.id}`} className="flex-[1] flex flex-col w-full h-full mr-4 ">
+                <div className="flex-[1] flex flex-col w-full h-full mr-4 ">
                     <ProfileHoverPopover handleNewFollow={handleNewFollow} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} currentUser={currentUser} cachedFollows={cachedFollows} postCreator={postCreator}/>
-                </Link>
+                </div>
             )}
 
             <div className="flex flex-col text-white flex-[12]">
