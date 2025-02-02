@@ -41,7 +41,8 @@ function ProfileHoverPopover ({currentUserFollowing, handleNewFollow, postCreato
         <>
     {postCreator ? (
 
-    <Popover open={hoveringDisplayState} placement="bottom">
+    <Popover open={hoveringDisplayState} placement="bottom"
+    >
         <PopoverHandler
                 onMouseEnter={() => handleHoverTrue()}
                 onMouseLeave={() => handleHoverFalse()}
@@ -53,8 +54,9 @@ function ProfileHoverPopover ({currentUserFollowing, handleNewFollow, postCreato
         onMouseEnter={() => handleHoverTrue()}
         onMouseLeave={() => handleHoverFalse()}
         className=" hover:cursor-pointer
-        bg-black text-white shadow-lg rounded-xl p-4 border border-twitterBorder 
-        h-60 w-72 mt-2 ring-2 ring-gray-400 ring-opacity-80 shadow-gray-400/70
+        bg-black text-white shadow-lg rounded-xl border border-twitterBorder 
+        h-60 w-72 ring-2 ring-gray-400 ring-opacity-80 shadow-gray-400/70 overflow-hidden
+        
     ">
             <ProfileHoverPopoverContent currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} currentUser={currentUser} cachedFollows={cachedFollows} postCreator={postCreator}/>
         </PopoverContent>
