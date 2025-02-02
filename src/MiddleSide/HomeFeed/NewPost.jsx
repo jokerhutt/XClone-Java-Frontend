@@ -4,7 +4,9 @@ import EmojiPicker from 'emoji-picker-react';
 import imageCompression from 'browser-image-compression';
 import { CiImageOn } from "react-icons/ci";
 import { MdOutlineGifBox } from "react-icons/md";
+import GifPopover from "../../GifPopover";
 import { BsEmojiSmile } from "react-icons/bs";
+import GifPicker from 'gif-picker-react';
 import { FaGlobeAmericas } from "react-icons/fa";
 
 
@@ -14,6 +16,12 @@ function NewPost ({cachedMediaPosts, setCachedMediaPosts, setCurrentUserProfileD
     const [postTitle, setPostTitle] = useState("");
     const [postMedia, setPostMedia] = useState([]);
     const [emojiToggle, setEmojiToggle] = useState(false);
+
+    function addGifToPost (gifUrl) {
+        const postMediaArray = [...postMedia];
+        postMediaArray.push(gifUrl)
+        setPostMedia(postMediaArray);
+    }
 
     useEffect(() => {
         console.log("Is posting is: " + isPosting)
@@ -63,50 +71,58 @@ function NewPost ({cachedMediaPosts, setCachedMediaPosts, setCurrentUserProfileD
 
         e.preventDefault();
 
-        const newPostPayload = {
-            postTitle: postTitle,
-            userId: currentUser.id,
-            postMedia: postMedia,
-        };
+        if (postMedia.length < 4) {
 
-        fetch('http://localhost:6790/api/newpost', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newPostPayload),
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Failed to upload post');
-            }
-        })
-        .then((data) => {
-                alert('Post Upload successful!');
-                const destructuredPost = data;
-                setForYouFeedContent((prevPosts) => [data, ...prevPosts]);
-
-                setCurrentUserProfileData((prev) => {
-                    const updatedUserPostsAndReposts = [...prev.userPostsAndReposts, destructuredPost];
-                    const updatedUserPosts = [...prev.userPosts, destructuredPost];
-
-                    return {
-                        ...prev,
-                        userPostsAndReposts: updatedUserPostsAndReposts,
-                        userPosts: updatedUserPosts,
-                    };
-                });
-
-                setCachedMediaPosts(prevCache => ({
-                    ...prevCache,
-                    [destructuredPost.postId]: destructuredPost
-                  }));
-
-                if (isPosting) {
-                    setIsPosting(false);
+            const newPostPayload = {
+                postTitle: postTitle,
+                userId: currentUser.id,
+                postMedia: postMedia,
+            };
+    
+            fetch('http://localhost:6790/api/newpost', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newPostPayload),
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Failed to upload post');
                 }
+            })
+            .then((data) => {
+                    alert('Post Upload successful!');
+                    const destructuredPost = data;
+                    setForYouFeedContent((prevPosts) => [data, ...prevPosts]);
+    
+                    setCurrentUserProfileData((prev) => {
+                        const updatedUserPostsAndReposts = [destructuredPost, ...prev.userPostsAndReposts];
+                        const updatedUserPosts = [destructuredPost, ...prev.userPosts];
+    
+                        return {
+                            ...prev,
+                            userPostsAndReposts: updatedUserPostsAndReposts,
+                            userPosts: updatedUserPosts,
+                        };
+                    });
+    
+                    setCachedMediaPosts(prevCache => ({
+                        ...prevCache,
+                        [destructuredPost.postId]: destructuredPost
+                      }));
+    
+                    if (isPosting) {
+                        setIsPosting(false);
+                    }
+    
+            })
 
-        })
+        } else {
+            alert("no more than 4 images")
+        }
+
+        
         // .then(() => {
         //     setTimeout(() => {
         //         refreshPosts();
@@ -196,7 +212,10 @@ function NewPost ({cachedMediaPosts, setCachedMediaPosts, setCurrentUserProfileD
                                             <input type="file" id="imageInput" accept="image/*" style={{ display: 'none' }} onChange={(event) => handleImageUpload(event)}></input>
                                             <CiImageOn onClick={handleImageClick} className="hover:cursor-pointer text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300"/>
                                         </div>
-                                            <MdOutlineGifBox className="text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
+                                            <div className="relative">
+                                                <GifPopover addGifToPost={addGifToPost}/>
+                                            </div>
+                                            
                                             <div className="relative">
                                             <BsEmojiSmile
                                             onClick={() => setEmojiToggle(!emojiToggle)}
