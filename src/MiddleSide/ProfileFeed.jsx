@@ -17,7 +17,7 @@ import '../App.css'
 import { startTransition } from "react";
 import PostTemplate from "../PostTemplate";
 
-function ProfileFeed ({cachedFollows, setCurrentUserProfileData, currentUserProfileData, cachedMediaPosts, cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, cachedProfiles, setCachedProfiles, handleNewFollow, posts, currentUser, setCurrentUser, setCachedBookMarks, setPosts, setCachedLikedPosts, cachedLikedPosts, userFollowers, userFollowing}) {
+function ProfileFeed ({currentUserFollowing, cachedFollows, setCurrentUserProfileData, currentUserProfileData, cachedMediaPosts, cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, cachedProfiles, setCachedProfiles, handleNewFollow, posts, currentUser, setCurrentUser, setCachedBookMarks, setPosts, setCachedLikedPosts, cachedLikedPosts, userFollowers, userFollowing}) {
 
     const {profileUserId} = useParams();
     const [profileUser, setProfileUser] = useState(null);
@@ -241,7 +241,7 @@ function ProfileFeed ({cachedFollows, setCurrentUserProfileData, currentUserProf
                         </div>
                     </div>
                     <div className="flex gap-8 mb-3 text-twitterBorder">
-                        <FollowersFollowing toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} cachedFollows={cachedFollows} mainUser={profileUser} currentUser={currentUser}/>
+                        <FollowersFollowing currentUserFollowing={currentUserFollowing} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} cachedFollows={cachedFollows} mainUser={profileUser} currentUser={currentUser}/>
                     </div>
                 </div>
 

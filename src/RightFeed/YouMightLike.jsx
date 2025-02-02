@@ -4,7 +4,7 @@ import FollowersFollowing from '../FollowersFollowing';
 import ProfileHoverPopover from '../ProfileHoverPopover';
 import '../App.css'
 
-function YouMightLike ({cachedFollows, sampleuser, userFollowing, handleNewFollow, currentUser}) {
+function YouMightLike ({currentUserFollowing, cachedFollows, sampleuser, userFollowing, handleNewFollow, currentUser}) {
 
     const [toggleFollowing, setToggleFollowing] = useState(false);
     const [unfollowHover, setUnfollowHover] = useState(false);
@@ -18,7 +18,7 @@ function YouMightLike ({cachedFollows, sampleuser, userFollowing, handleNewFollo
 
         <div className='px-4 py-3 flex w-full h-full hover:cursor-pointer'>
             <Link to={`/${sampleuser.id}`} className='flex-[1]'>
-                <ProfileHoverPopover handleNewFollow={handleNewFollow} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} cachedFollows={cachedFollows} postCreator={sampleuser} currentUser={currentUser} />
+                <ProfileHoverPopover currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} cachedFollows={cachedFollows} postCreator={sampleuser} currentUser={currentUser} />
             </Link>
             <div className='hidden'>
                 {currentUser ? (

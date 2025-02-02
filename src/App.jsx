@@ -27,6 +27,7 @@ function App() {
   const [userFollowing, setUserFollowing] = useState([]);
   const [userFollowers, setUserFollowers] = useState([]);
   const [notificationCache, setNotificationCache] = useState({});
+  const [currentUserFollowing, setCurrentUserFollowing] = useState([]);
 
 
 
@@ -211,6 +212,18 @@ function App() {
     }
   }
 
+  function updateUserFollowing() {
+    if (currentUser) {
+      const profileUserId = currentUser.id;
+      fetch(`http://localhost:6790/api/grabuserfollowing/${profileUserId}`)
+      .then(response => response.json())
+      .then((data) => {
+        console.log("USER FOLLOWING LENGTH IS: " + data.length)
+        setCurrentUserFollowing(data.length)
+      })
+    }
+}
+
   function grabUserFollowing () {
     if (currentUser) {
       const profileUserId = currentUser.id;
@@ -224,6 +237,8 @@ function App() {
           acc[follow.followedId].push(follow); 
           return acc;
         }, {});
+        console.log("USER FOLLOWING LENGTH IS: " + data.length)
+        setCurrentUserFollowing(data.length)
         setCachedFollows(followingUsersCache);
       })
       .catch(error => console.error(error));
@@ -391,6 +406,7 @@ function App() {
       console.log("NFF IS " + JSON.stringify(newFollowingFeed))
       setFollowingFeedContent([...newFollowingFeed])
       }
+      updateUserFollowing();
   });
   }
 
@@ -587,13 +603,13 @@ function App() {
             <Route 
               path="/" 
               element={
-              <MainFeed handleNewFollow={handleNewFollow} cachedFollows={cachedFollows} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} followingFeedContent={followingFeedContent} cachedMediaPosts={cachedMediaPosts} setCachedMediaPosts={setCachedMediaPosts} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} changeForYouFeed={changeForYouFeed} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>}
+              <MainFeed currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} cachedFollows={cachedFollows} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} followingFeedContent={followingFeedContent} cachedMediaPosts={cachedMediaPosts} setCachedMediaPosts={setCachedMediaPosts} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} changeForYouFeed={changeForYouFeed} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>}
             />
 
             <Route 
               path="/:profileUserId" 
               element={
-              <ProfileFeed cachedFollows={cachedFollows} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} handleNewFollow={handleNewFollow} userFollowing={userFollowing} userFollowers={userFollowers} currentUser={currentUser} setCurrentUser={setCurrentUser} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>}
+              <ProfileFeed currentUserFollowing={currentUserFollowing} cachedFollows={cachedFollows} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} handleNewFollow={handleNewFollow} userFollowing={userFollowing} userFollowers={userFollowers} currentUser={currentUser} setCurrentUser={setCurrentUser} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>}
             />
 
             <Route 
@@ -649,7 +665,7 @@ function App() {
         </Routes>
         </div>
         <div className='flex bg-black h-screen max-h-screen flex-col col-span-4'>
-          <RightFeed cachedFollows={cachedFollows} sampleUsers={sampleUsers} currentUser={currentUser} setCurrentUser={setCurrentUser} userFollowing={userFollowing} handleNewFollow={handleNewFollow}/>
+          <RightFeed currentUserFollowing={currentUserFollowing} cachedFollows={cachedFollows} sampleUsers={sampleUsers} currentUser={currentUser} setCurrentUser={setCurrentUser} userFollowing={userFollowing} handleNewFollow={handleNewFollow}/>
         </div>
       </div>
       

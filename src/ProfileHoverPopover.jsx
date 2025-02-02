@@ -13,7 +13,7 @@ import {
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-function ProfileHoverPopover ({handleNewFollow, postCreator, cachedFollows, currentUser, toggleFollowing, setToggleFollowing}) {
+function ProfileHoverPopover ({currentUserFollowing, handleNewFollow, postCreator, cachedFollows, currentUser, toggleFollowing, setToggleFollowing}) {
 
     const [isHovering, setIsHovering] = useState(false);
     const [hoveringDisplayState, setHoveringDisplayState] = useState(false);
@@ -56,7 +56,7 @@ function ProfileHoverPopover ({handleNewFollow, postCreator, cachedFollows, curr
         bg-black text-white shadow-lg rounded-xl p-4 border border-twitterBorder 
         h-60 w-72 mt-2 ring-2 ring-gray-400 ring-opacity-80 shadow-gray-400/70
     ">
-            <ProfileHoverPopoverContent handleNewFollow={handleNewFollow} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} currentUser={currentUser} cachedFollows={cachedFollows} postCreator={postCreator}/>
+            <ProfileHoverPopoverContent currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} currentUser={currentUser} cachedFollows={cachedFollows} postCreator={postCreator}/>
         </PopoverContent>
     </Popover>
 

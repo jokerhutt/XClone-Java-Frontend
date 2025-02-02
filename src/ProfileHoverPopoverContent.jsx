@@ -2,7 +2,7 @@ import FollowersFollowing from "./FollowersFollowing";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function ProfileHoverPopoverContent ({handleNewFollow, toggleFollowing, setToggleFollowing, postCreator, cachedFollows, currentUser}) {
+function ProfileHoverPopoverContent ({currentUserFollowing, handleNewFollow, toggleFollowing, setToggleFollowing, postCreator, cachedFollows, currentUser}) {
     
     const [unfollowHover, setUnfollowHover] = useState(false);
     const [disableNavigation, setDisableNavigation] = useState(false)
@@ -60,7 +60,7 @@ function ProfileHoverPopoverContent ({handleNewFollow, toggleFollowing, setToggl
                         <p>@{postCreator.username}</p>
                     </div>
                     <div className="w-full mt-2">
-                        <FollowersFollowing toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} currentUser={currentUser} cachedFollows={cachedFollows} mainUser={postCreator} />
+                        <FollowersFollowing currentUserFollowing={currentUserFollowing} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} currentUser={currentUser} cachedFollows={cachedFollows} mainUser={postCreator} />
                     </div>
                     </>
                 ) : (

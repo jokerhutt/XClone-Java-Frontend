@@ -22,7 +22,7 @@ import ProfileHoverPopover from "./ProfileHoverPopover";
 
 
 
-function PostTemplate ({handleNewFollow, cachedFollows, currentUserProfileData, setCurrentUserProfileData, tempReplies, setTempReplies, cachedAddedReplies, setCachedAddedReplies, isInZoomedMode, postReplies, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, setUserLikedPosts, postBookMarks, postLikes, replyObject, isAReplyParent, post, postCreator, postMedia, currentUser, disableMedia, profileUser}) {
+function PostTemplate ({currentUserFollowing, handleNewFollow, cachedFollows, currentUserProfileData, setCurrentUserProfileData, tempReplies, setTempReplies, cachedAddedReplies, setCachedAddedReplies, isInZoomedMode, postReplies, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, setUserLikedPosts, postBookMarks, postLikes, replyObject, isAReplyParent, post, postCreator, postMedia, currentUser, disableMedia, profileUser}) {
 
     const [isReplyingToggle, setIsReplyingToggle] = useState(false);
     const [currentPostReplies, setCurrentPostReplies] = useState(postReplies);
@@ -82,7 +82,7 @@ function PostTemplate ({handleNewFollow, cachedFollows, currentUserProfileData, 
                     <div className="relative">
                         <img src={postCreator.profilePic} className="rounded-full"/>
                         <div className="absolute top-0 right-0 z-20 mt-2 w-60 bg-black text-white shadow-md rounded-lg py-2 border border-twitterBorder">
-                            <ProfileHoverPopover handleNewFollow={handleNewFollow} currentUser={currentUser} cachedFollows={cachedFollows}/>
+                            <ProfileHoverPopover currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} currentUser={currentUser} cachedFollows={cachedFollows}/>
                         </div>
                     </div>
                 </Link>
@@ -93,7 +93,7 @@ function PostTemplate ({handleNewFollow, cachedFollows, currentUserProfileData, 
                 </div>
             ) : (
                 <div className="flex-[1] flex flex-col w-full h-full mr-4 ">
-                    <ProfileHoverPopover handleNewFollow={handleNewFollow} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} currentUser={currentUser} cachedFollows={cachedFollows} postCreator={postCreator}/>
+                    <ProfileHoverPopover currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} currentUser={currentUser} cachedFollows={cachedFollows} postCreator={postCreator}/>
                 </div>
             )}
 
