@@ -24,6 +24,7 @@ function ProfileFeed ({cachedFollows, setCurrentUserProfileData, currentUserProf
     const [profileUserData, setProfileUserData] = useState(null);
     const [userLikedPosts, setUserLikedPosts] = useState(null);
     const [tabState, setTabState] = useState("posts");
+    const [toggleFollowing, setToggleFollowing] = useState(false);
 
     const [postMediaArray, setPostMediaArray] = useState([]);
     
@@ -220,7 +221,7 @@ function ProfileFeed ({cachedFollows, setCurrentUserProfileData, currentUserProf
             <div className="flex-[200] flex-col h-full w-full flex px-4 py-3 border-x border-x-twitterBorder">
 
                 <div className="flex-[69] h-full w-full flex">
-                    <ProfileFeedFollow currentUser={currentUser} profileUser={profileUser} userFollowing={userFollowing} handleNewFollow={handleNewFollow}/>
+                    <ProfileFeedFollow isFollowing={toggleFollowing} currentUser={currentUser} profileUser={profileUser} userFollowing={userFollowing} handleNewFollow={handleNewFollow}/>
                 </div>
 
                 <div className="flex-[47] h-full w-full mt-4">
@@ -240,7 +241,7 @@ function ProfileFeed ({cachedFollows, setCurrentUserProfileData, currentUserProf
                         </div>
                     </div>
                     <div className="flex gap-8 mb-3 text-twitterBorder">
-                        <FollowersFollowing cachedFollows={cachedFollows} mainUser={profileUser} currentUser={currentUser}/>
+                        <FollowersFollowing toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} cachedFollows={cachedFollows} mainUser={profileUser} currentUser={currentUser}/>
                     </div>
                 </div>
 

@@ -28,6 +28,7 @@ function PostTemplate ({cachedFollows, currentUserProfileData, setCurrentUserPro
     const [currentPostReplies, setCurrentPostReplies] = useState(postReplies);
     const [tempPostReplies, setTempPostReplies] = useState()
     const [isMorePost, setIsMorePost] = useState(false);
+    const [toggleFollowing, setToggleFollowing] = useState(false);
     const navigate = useNavigate();
 
     const handleNavigation = () => {
@@ -92,7 +93,7 @@ function PostTemplate ({cachedFollows, currentUserProfileData, setCurrentUserPro
                 </div>
             ) : (
                 <Link to={`/${postCreator.id}`} className="flex-[1] flex flex-col w-full h-full mr-4 ">
-                    <ProfileHoverPopover currentUser={currentUser} cachedFollows={cachedFollows} postCreator={postCreator}/>
+                    <ProfileHoverPopover toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} currentUser={currentUser} cachedFollows={cachedFollows} postCreator={postCreator}/>
                 </Link>
             )}
 

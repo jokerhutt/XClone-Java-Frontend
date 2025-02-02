@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function FollowersFollowing ({mainUser, cachedFollows, currentUser}) {
+function FollowersFollowing ({toggleFollowing, setToggleFollowing, mainUser, cachedFollows, currentUser}) {
 
     const [userFollowerList, setUserFollowerList] = useState(mainUser.followerList);
     const [userFollowingList, setUserFollowingList] = useState(mainUser.followingList);
@@ -29,15 +29,20 @@ function FollowersFollowing ({mainUser, cachedFollows, currentUser}) {
           
                 if (isUserFollowedByUser && userFollowingArray && userFollowingArray.length != 0) {
                     setFollowersLength(userFollowerList.length);
+                    setToggleFollowing(true)
                 } else if (userFollowingArray && userFollowingArray.length != 0 && !isUserFollowedByUser) {
                     setFollowersLength(userFollowerList.length + 1);
+                    setToggleFollowing(true)
                 } else if (isUserFollowedByUser && userFollowingArray.length <= 0) {
                     setFollowersLength(userFollowerList.length - 1)
+                    setToggleFollowing(false)
                 } else {
                     setFollowersLength(userFollowerList.length);
+                    setToggleFollowing(false)
                 }
             } else {
                 setFollowersLength(userFollowerList.length);
+                setToggleFollowing(false)
             }
         }
     }

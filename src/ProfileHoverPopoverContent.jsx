@@ -1,7 +1,7 @@
 import FollowersFollowing from "./FollowersFollowing";
 
 
-function ProfileHoverPopoverContent ({postCreator, cachedFollows, currentUser}) {
+function ProfileHoverPopoverContent ({toggleFollowing, setToggleFollowing, postCreator, cachedFollows, currentUser}) {
     return(
         <>
             <div className="h-full w-full flex flex-col">
@@ -14,16 +14,23 @@ function ProfileHoverPopoverContent ({postCreator, cachedFollows, currentUser}) 
                         </div>
                     </div>
                     <div className="flex w-full justify-end mt-4">
+                        {toggleFollowing ? (
+                        <div className="hover:cursor-pointer bg-white w-1/3 flex justify-center items-center h-6 rounded-l-full rounded-r-full hover:bg-gray-200">
+                            <p className="text-black font-bold">Following</p>
+                        </div>     
+                        ) : (
                         <div className="hover:cursor-pointer bg-white w-1/3 flex justify-center items-center h-6 rounded-l-full rounded-r-full hover:bg-gray-200">
                             <p className="text-black font-bold">Follow</p>
                         </div>
+                        )}
+
                     </div>
                     <div className="w-full">
                         <p className="font-bold text-xl">{postCreator.displayName}</p>
                         <p>@{postCreator.username}</p>
                     </div>
                     <div className="w-full">
-                        <FollowersFollowing currentUser={currentUser} cachedFollows={cachedFollows} mainUser={postCreator} />
+                        <FollowersFollowing toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} currentUser={currentUser} cachedFollows={cachedFollows} mainUser={postCreator} />
                     </div>
                     </>
                 ) : (

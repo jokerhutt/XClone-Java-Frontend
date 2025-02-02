@@ -7,7 +7,7 @@ import YouMightLike from '../YouMightLike';
 
 
 
-function SignupSide ({currentUser, setCurrentUser, sampleUsers, userFollowing, handleNewFollow}) {
+function SignupSide ({ cachedFollows, currentUser, setCurrentUser, sampleUsers, userFollowing, handleNewFollow}) {
 
     const [SigningUp, setSigningup] = useState(false);
     const [signupState, setSignupState] = useState(1);
@@ -249,7 +249,7 @@ function SignupSide ({currentUser, setCurrentUser, sampleUsers, userFollowing, h
             <div className='flex flex-col max-h-13'>
             {sampleUsers ? (
             <>
-            {sampleUsers.map((user) => <YouMightLike sampleuser={user} userFollowing={userFollowing} handleNewFollow={handleNewFollow} currentUser={currentUser}/>)}
+            {sampleUsers.map((user) => <YouMightLike cachedFollows={cachedFollows} sampleuser={user} userFollowing={userFollowing} handleNewFollow={handleNewFollow} currentUser={currentUser}/>)}
             </>
             ) : null}
             </div>

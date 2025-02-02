@@ -644,7 +644,7 @@ function App() {
         </Routes>
         </div>
         <div className='flex bg-black h-screen max-h-screen flex-col col-span-4'>
-          <RightFeed sampleUsers={sampleUsers} currentUser={currentUser} setCurrentUser={setCurrentUser} userFollowing={userFollowing} handleNewFollow={handleNewFollow}/>
+          <RightFeed cachedFollows={cachedFollows} sampleUsers={sampleUsers} currentUser={currentUser} setCurrentUser={setCurrentUser} userFollowing={userFollowing} handleNewFollow={handleNewFollow}/>
         </div>
       </div>
       
