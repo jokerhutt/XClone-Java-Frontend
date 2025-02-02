@@ -60,10 +60,10 @@ function LeftFeed ({currentUser, forYouFeedContent, setForYouFeedContent}) {
     </Link> 
     )}
 
-    <Link className=" hover:cursor-not-allowed flex gap-4 items-center text-2xl ">
+    {/* <Link className=" hover:cursor-not-allowed flex gap-4 items-center text-2xl ">
         <FaListAlt/>
         <p>Lists</p>
-    </Link>
+    </Link> */}
     {currentUser ? (
     <Link to={`/bookmarks/${currentUser.id}`} className="flex gap-4 items-center text-2xl ">
         <FaBookmark/>
@@ -75,10 +75,10 @@ function LeftFeed ({currentUser, forYouFeedContent, setForYouFeedContent}) {
         <p>Bookmarks</p>
     </div>  
     )}
-    <Link className="flex hover:cursor-not-allowed gap-4 items-center text-2xl ">
+    {/* <Link className="flex hover:cursor-not-allowed gap-4 items-center text-2xl ">
         <FaUserGroup />
         <p>Communities</p>
-    </Link>
+    </Link> */}
     {currentUser ? (
     <Link to={`/${currentUser.id}`} className="flex gap-4 items-center text-2xl ">
         <FaUser/>

@@ -7,6 +7,7 @@ import '../App.css'
 function YouMightLike ({cachedFollows, sampleuser, userFollowing, handleNewFollow, currentUser}) {
 
     const [toggleFollowing, setToggleFollowing] = useState(false);
+    const [unfollowHover, setUnfollowHover] = useState(false);
 
     useEffect(() => {
         console.log("SAMPLE USER IS: " + JSON.stringify(sampleuser) + " AND CURRENTUSER IS: " + JSON.stringify(currentUser));
@@ -17,27 +18,42 @@ function YouMightLike ({cachedFollows, sampleuser, userFollowing, handleNewFollo
 
         <div className='px-4 py-3 flex w-full h-full hover:cursor-pointer'>
             <Link to={`/${sampleuser.id}`} className='flex-[1]'>
-                <ProfileHoverPopover toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} cachedFollows={cachedFollows} postCreator={sampleuser} currentUser={currentUser} />
+                <ProfileHoverPopover handleNewFollow={handleNewFollow} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} cachedFollows={cachedFollows} postCreator={sampleuser} currentUser={currentUser} />
             </Link>
             <div className='hidden'>
-                    <FollowersFollowing toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} mainUser={sampleuser} cachedFollows={cachedFollows} currentUser={currentUser}/>
+                {currentUser ? (
+                    <FollowersFollowing setToggleFollowing={setToggleFollowing} currentUser={currentUser} mainUser={sampleuser} cachedFollows={cachedFollows}/>
+                ) : (
+                    null
+                )}
             </div>
             <div className='flex flex-col text-white flex-[3] pl-3'>
                 <p className="font-bold">{sampleuser.displayName}</p>
                 <p className="text-twitterBorder">@{sampleuser.username}</p>
             </div>
             <div className='h-full w-full text-black flex-[3] flex justify-center items-center'>
-                {sampleuser && toggleFollowing ? (
+                {sampleuser ? (
                     <>
                         {toggleFollowing ? (
                             <div 
                             onClick={() => handleNewFollow(sampleuser.id, currentUser.id)}
-                            className='h-3/5 w-full bg-black border-white border text-white border-1 flex justify-center items-center rounded-l-full rounded-r-full hover:cursor-pointer hover:border-twitterBorder  hover:bg-white hover:text-black'>
-                                <p>Following</p>
+                            onMouseEnter={() => setUnfollowHover(true)}
+                            onMouseLeave={() => setUnfollowHover(false)}
+                            className='h-3/5 w-full bg-black text-white border flex justify-center items-center rounded-l-full rounded-r-full hover:cursor-pointer border-twitterBorder'>
+                                {unfollowHover ? (
+                                    <p className='text-red-500'>Unfollow</p>
+                                ) : (
+                                    <p>Following</p>
+                                )}
+                            </div>
+                        ) : currentUser ? (
+                            <div 
+                            onClick={() => handleNewFollow(sampleuser.id, currentUser.id)}
+                            className='h-3/5 hover:cursor-pointer w-full bg-white flex justify-center items-center rounded-l-full rounded-r-full hover:bg-gray-200'>
+                                <p>Follow</p>
                             </div>
                         ) : (
                             <div 
-                            onClick={() => handleNewFollow(sampleuser.id, currentUser.id)}
                             className='h-3/5 hover:cursor-pointer w-full bg-white flex justify-center items-center rounded-l-full rounded-r-full hover:bg-gray-200'>
                                 <p>Follow</p>
                             </div>
