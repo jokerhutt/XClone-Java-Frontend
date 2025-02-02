@@ -10,26 +10,48 @@ import {
   } from "@material-tailwind/react";
 
   import ProfileHoverPopoverContent from "./ProfileHoverPopoverContent";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 function ProfileHoverPopover ({handleNewFollow, postCreator, cachedFollows, currentUser, toggleFollowing, setToggleFollowing}) {
 
     const [isHovering, setIsHovering] = useState(false);
+    const [hoveringDisplayState, setHoveringDisplayState] = useState(false);
+    const timeoutRef = useRef(null);
+    const navigate = useNavigate();
+    
+
+    function handleHoverTrue () {
+        clearTimeout(timeoutRef.current);
+        setIsHovering(true);
+        timeoutRef.current = setTimeout(() => {
+            setHoveringDisplayState(true);
+        }, 1000)
+    }
+
+    function handleHoverFalse () {
+        clearTimeout(timeoutRef.current);
+        setIsHovering(false);
+        timeoutRef.current = setTimeout(() => {
+            setHoveringDisplayState(false);
+        }, 200);
+    }
 
     return (
         <>
     {postCreator ? (
 
-    <Popover open={isHovering} placement="bottom">
+    <Popover open={hoveringDisplayState} placement="bottom">
         <PopoverHandler
-                onMouseEnter={() => setIsHovering(true)}  // Keep open while hovering over content
-                onMouseLeave={() => setIsHovering(false)} // Close when leaving
+                onMouseEnter={() => handleHoverTrue()}
+                onMouseLeave={() => handleHoverFalse()}
         >
-            <img src={postCreator.profilePic} className="rounded-full"/>
+            <img
+            src={postCreator.profilePic} className="hover:cursor-pointer rounded-full"/>
         </PopoverHandler>
         <PopoverContent 
-        onMouseEnter={() => setIsHovering(true)}  // Keep open while hovering over content
-        onMouseLeave={() => setIsHovering(false)} // Close when leaving
+        onMouseEnter={() => handleHoverTrue()}
+        onMouseLeave={() => handleHoverFalse()}
         className=" hover:cursor-pointer
         bg-black text-white shadow-lg rounded-xl p-4 border border-twitterBorder 
         h-60 w-72 mt-2 ring-2 ring-gray-400 ring-opacity-80 shadow-gray-400/70
