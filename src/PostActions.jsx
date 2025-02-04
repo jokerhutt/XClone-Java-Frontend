@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaRegComment, FaRegHeart, FaRegChartBar, FaRegBookmark, FaRetweet } from "react-icons/fa";
 
-function PostActions ({currentProfileUserData, setCurrentUserProfileData, tempPostReplies, isInZoomedMode, currentPostReplies, setIsReplyingToggle, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, postLikes, post, currentUser, postReplies, postCreator, postBookMarks}) {
-
-    //LOCAL CACHE STATE STUFF
-    const [currentLikes, setCurrentLikes] = useState(null);
-    const [currentBookMarks, setCurrentBookMarks] = useState(null);
+function PostActions ({setCurrentUserProfileData, bookMarkContent, setBookMarkContent, tempPostReplies, isInZoomedMode, currentPostReplies, setIsReplyingToggle, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, postLikes, post, currentUser, postReplies, postCreator, postBookMarks}) {
 
     //FLAG VARIABLES FOR INTERACTIONS
     const [isBookMarked, setIsBookMarked] = useState(false);
@@ -204,6 +200,8 @@ function PostActions ({currentProfileUserData, setCurrentUserProfileData, tempPo
                         [post.postId]: data,
                     }));
                     setIsBookMarked(true);
+
+                    filterBookMarkContent(true)
                     alert('BookMark added successfully!');
                 }
                 else {
@@ -213,10 +211,22 @@ function PostActions ({currentProfileUserData, setCurrentUserProfileData, tempPo
                         return updatedCache;
                     });
                     setIsBookMarked(false);
+                    filterBookMarkContent(false);
+                    
                     alert('Bookmark Removed successfully!');
                     }
+
             })
             .then(handleBookMarkUpdate())
+    }
+
+    function filterBookMarkContent (booleanValue) {
+        if (booleanValue === true) {
+            setBookMarkContent((prev) => ([...prev, post]))
+        } else if (booleanValue === false) {
+            const filteredBookMarkContent = bookMarkContent.filter((bookMarkedPost) => bookMarkedPost.postId !== post.postId)
+            setBookMarkContent(filteredBookMarkContent);
+        }
     }
 
     function handleNewRepost () {

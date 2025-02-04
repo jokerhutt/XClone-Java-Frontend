@@ -226,16 +226,22 @@ function NewPost ({cachedMediaPosts, setCachedMediaPosts, setCurrentUserProfileD
                                             </div>
                                         </div>
                                         <div className='h-full w-full text-black flex-[3] flex justify-end items-center py-4'>
-                                            {currentUser ? (
+                                            {currentUser && postTitle.length > 0 || postMedia.length > 0? (
                                                 <div className='hover:cursor-pointer h-full w-1/4 bg-white flex justify-center items-center py-1 rounded-l-full rounded-r-full hover:bg-gray-200'
                                                 onClick={(e) => handleNewPost(e)}
                                                 >
-                                                    <p>Post</p>
+                                                    <p className="font-bold">Post</p>
                                                 </div>
-                                            ) : (
+                                            ) : currentUser ? (
+                                                <div className='h-full w-1/4 bg-gray-400 flex justify-center items-center py-1 rounded-l-full rounded-r-full'
+                                                onClick={(e) => handleNewPost(e)}
+                                                >
+                                                    <p className="font-bold">Post</p>
+                                                </div>
+                                            )  : (
                                                 <div className='hover:cursor-not-allowed h-full w-1/4 bg-white flex justify-center items-center py-1 rounded-l-full rounded-r-full hover:bg-gray-200'
                                                 >
-                                                    <p>Post</p>
+                                                    <p className="font-bold">Post</p>
                                                 </div>
                                             )}
 

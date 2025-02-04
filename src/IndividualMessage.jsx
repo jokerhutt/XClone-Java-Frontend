@@ -2,7 +2,7 @@ function IndividualMessage ({message, currentUser}) {
     return (
         <>
         {currentUser && message ? (
-            <div className="py-4">
+            <div className="pt-4">
                 {message.senderId === currentUser.id ? (
                     <div className="flex justify-end">
                         <div className="max-w-96 bg-twitterBlue rounded-tr-3xl rounded-tl-3xl text-white rounded-bl-3xl px-2 text-right mx-2">

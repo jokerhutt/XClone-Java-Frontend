@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import viteLogo from '/vite.svg'
 import { useMemo } from 'react';
 import RightFeed from './RightFeed/RightFeed'
+import { SocketProvider, useSocket } from './SocketContext';
 import LeftFeed from './LeftSide/LeftFeed'
 import MainFeed from './MiddleSide/MainFeed'
 import LogOutPage from '../LogOutPage';
@@ -11,6 +12,7 @@ import ZoomedPost from './ZoomedPost';
 import ProfileFeed from './MiddleSide/ProfileFeed';
 import MediaPreviewModal from './MediaPreviewModal';
 import './App.css'
+
 import MessageComponent from './MessageComponent';
 import BookMarks from './BookMarks';
 import NotificationFeed from './MiddleSide/NotificationFeed';
@@ -22,68 +24,266 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [posts, setPosts] = useState([]);
   const [cachedProfiles, setCachedProfiles] = useState({});
+  const [currentUserProfileData, setCurrentUserProfileData] = useState({})
 
+  const socket = useSocket();
 
   const [userFollowing, setUserFollowing] = useState([]);
   const [userFollowers, setUserFollowers] = useState([]);
+
+
   const [notificationCache, setNotificationCache] = useState({});
+  const [convoCache, setConvoCache] = useState({});
+  const [messageNotificationCache, setMessageNotificationCache] = useState({});
+  const [userNotifications, setUserNotifications] = useState([]);
+  const [nonMessageNotifications, setNonMessageNotifications] = useState([]);
+  const [messageNotifications, setMessageNotifications] = useState([]);
+  const [hasMessages, setHasMessages] = useState(false);
+  
+
   const [currentUserFollowing, setCurrentUserFollowing] = useState([]);
-
-
-
   const [forYouPage, setForYouPage] = useState(0);
   const [forYouFeedContent, setForYouFeedContent] = useState([]);
-
-  const [currentUserProfileData, setCurrentUserProfileData] = useState({})
-
   const [followingFeedContent, setFollowingFeedContent] = useState([]);
-  const [userLikedPosts, setUserLikedPosts] = useState([]);
 
   const [cachedMediaPosts, setCachedMediaPosts] = useState({});
 
   
-
+  const [userLikedPosts, setUserLikedPosts] = useState([]);
   const [cachedLikedPosts, setCachedLikedPosts] = useState({})
   const [cachedFollows, setCachedFollows] = useState({})
   const [cachedBookMarks, setCachedBookMarks] = useState({})
+  const [bookMarkContent, setBookMarkContent] = useState([])
   const [cachedReposts, setCachedReposts] = useState({})
   const [cachedAddedReplies, setCachedAddedReplies] = useState([]);
-
-  const [userNotifications, setUserNotifications] = useState([]);
-  const [nonMessageNotifications, setNonMessageNotifications] = useState([]);
-  const [messageNotifications, setMessageNotifications] = useState([]);
 
   const [sampleUsers, setSampleUsers] = useState(null);
 
 
-  function sortMediaCachedPosts (passedPosts) {
-    console.log("PASSED POSTS IS " + JSON.stringify(passedPosts) + " AND ITS LENGTH IS " + passedPosts.length);
-    for (let i = 0; i < passedPosts.length; i++){
-      const currPost = passedPosts[i];
-      console.log("ITERATING POST IS " + JSON.stringify(currPost));
-      if (currPost.mediaList.length > 0 && !cachedMediaPosts[currPost.id]) {
-        setCachedMediaPosts(prevCache => ({
-          ...prevCache,
-          [currPost.postId]: currPost
-        }));
-      }
-    }
-  }
+  useEffect(() => {
+    console.log("Current socket state:", socket);
+}, [socket]);
 
   useEffect(() => {
-    console.log("CURRENT USER DATA POSTS IS: " + JSON.stringify(currentUserProfileData.userPostsAndReposts))
-  }, [currentUserProfileData])
+    if (socket) {
+        console.log("✅ Socket connected in App:", socket);
+        socket.onmessage = (msg) => {
+            console.log("App received message:", msg.data);
+        };
+    }
+}, [socket]);
+
+useEffect(() => {
+
+  if (socket) {
+    socket.onmessage = (event) => {
+      const receivedMessage = JSON.parse(event.data);
+      console.log("New message received: " + JSON.stringify(receivedMessage));
+
+      if (!currentUser) {
+        console.warn("Message not relevant for this user, ignoring.");
+        return;
+     }
+
+      if (receivedMessage.receiverId !== currentUser.id && receivedMessage.senderId !== currentUser.id) {
+        console.warn("Message not relevant for this user, ignoring.");
+        return;
+     }
+
+      setConvoCache((prevCache) => {
+
+          const conversationId = receivedMessage.conversationId;
+
+          return {
+            ...prevCache, [conversationId]: {
+                ...prevCache[conversationId],
+
+                messages: [...prevCache[conversationId].messages, receivedMessage],
+
+                convo: {
+                    ...prevCache[conversationId].convo,
+                    lastMessageId: receivedMessage.messageId,
+                    lastMessageText: receivedMessage.messageText,
+                },
+            },
+        };
+      });
+
+      if (currentUser && receivedMessage.receiverId === currentUser.id) {
+        fetchMessageNotifications();
+      }
+
+  };
+  }
+  return () => {
+    if (socket) {
+        socket.onmessage = null;
+    }
+};
+
+}, [socket]);
+
+useEffect(() => {
+  getForYouFeed(forYouPage);
+}, []) 
+
+useEffect(() => {
+  if (currentUser) {
+    fetchUserConvos()
+  }
+}, [currentUser])
+
+useEffect(() => {
+  if (currentUser) {
+    getUserProfile();
+  }
+}, [currentUser])
+
+useEffect(() => {
+  console.log("CURRENT USER IS " + JSON.stringify(currentUser))
+}, [currentUser])
+
+useEffect(() => {
+  if (currentUser) {
+    grabUserBookMarked()
+  }
+}, [currentUser])
+
+useEffect(() => {
+  if (currentUser) {
+    getUserBookMarkedContent()
+  }
+}, [currentUser])
+
+useEffect(() => {
+  fetch('http://localhost:6790/api/sampleusers')
+  .then(response => response.json())
+  .then(data => setSampleUsers([...data]))
+  .then(console.log("Sample users is " + sampleUsers))
+  .catch(error => console.error(error));
+}, []);
+
+useEffect(() => {
+  if (currentUser) {
+    const profileUserId = currentUser.id;
+    fetch(`http://localhost:6790/api/grabuserfollowers/${profileUserId}`)
+    .then(response => response.json())
+    .then(data => {
+      console.log("Fetched followers data: " + data); 
+      setUserFollowers([...data]);
+  })
+    .then(console.log("user userfollowers is " + userFollowers))
+    .catch(error => console.error(error));
+  }
+}, [currentUser])
+
+useEffect(() => {
+  if (currentUser) {
+    const profileUserId = currentUser.id;
+    fetch(`http://localhost:6790/api/grabuserfollowing/${profileUserId}`)
+    .then(response => response.json())
+    .then(data => {
+      console.log("Fetched following data:", data);
+      setUserFollowing([...data]);
+  })
+    .then(console.log("user following is " + userFollowing))
+    .catch(error => console.error(error));
+  }
+}, [currentUser]);
+
+useEffect(() => {
+  console.log("BADASS CACHE NOTIFICATIONS IS" + JSON.stringify(notificationCache))
+}, [notificationCache])
+
+useEffect(() => {
+  grabUserLiked()
+  grabUserReposts()
+}, [currentUser])
+
+useEffect(() => {
+  if (currentUser) {
+    getFollowingFeed()
+  }
+}, [userFollowing])
+
+
+
+function sortMediaCachedPosts (passedPosts) {
+  console.log("PASSED POSTS IS " + JSON.stringify(passedPosts) + " AND ITS LENGTH IS " + passedPosts.length);
+  for (let i = 0; i < passedPosts.length; i++){
+    const currPost = passedPosts[i];
+    if (currPost.mediaList.length > 0 && !cachedMediaPosts[currPost.id]) {
+      setCachedMediaPosts(prevCache => ({
+        ...prevCache,
+        [currPost.postId]: currPost
+      }));
+    }
+  }
+}
+
+  function fetchUserConvos () {
+    fetch(`http://localhost:6790/api/userconversations/${currentUser.id}`)
+    .then(res => res.json())
+        .then(data => {
+            const formattedConvos = data.reduce((acc, convo) => { 
+                acc[convo.id] = {
+                    convo,
+                    messages: [],
+                    otherUser: null,
+                };
+                return acc;
+            }, {});
+            fetchUserConvoMessages(formattedConvos);
+        });
+  }
+
+
+
+  function fetchUserConvoMessages (formattedConvos) {
+    fetch(`http://localhost:6790/api/userconversationsmessages/${currentUser.id}`)
+    .then(res => res.json())
+    .then(messages => {
+      const updatedConvos = { ...formattedConvos };
+      messages.forEach(msg => {
+          if (!updatedConvos[msg.conversationId]) {
+              updatedConvos[msg.conversationId] = { convo: null, messages: [], otherUser: null };
+          }
+          updatedConvos[msg.conversationId].messages.push(msg);
+      });
+      fetchUserConvosUsers(updatedConvos);
+  });
+
+  }
+
+  function fetchUserConvosUsers (updatedConvos) {
+    fetch(`http://localhost:6790/api/userconversationsotherusers/${currentUser.id}`)
+    .then(res => res.json())
+    .then(otherUsers => {
+      otherUsers.forEach(user => {
+          const convoId = Object.keys(updatedConvos).find(convoId => {
+              return updatedConvos[convoId].convo.user1Id === user.id || 
+                     updatedConvos[convoId].convo.user2Id === user.id;
+          });
+          if (convoId) {
+              updatedConvos[convoId].otherUser = user;
+          }
+      });
+
+      setConvoCache(updatedConvos);
+  });
+  }
+
 
   function getUserProfile () {
     if (currentUser) {
       const profileUserId = currentUser.id
       if (cachedProfiles[profileUserId]) {
-          console.log("Using cached data for user", profileUserId);
+          console.log("Using cached data for user " + profileUserId);
           setCurrentUserProfileData(cachedProfiles[profileUserId]);
           return;
       }
   
-      console.log("Fetching fresh data for user", profileUserId);
+      console.log("Fetching fresh data for user " + profileUserId);
   
       Promise.all([
           fetch(`http://localhost:6790/api/grabuserrepliedPosts/${profileUserId}`).then(res => res.json()),
@@ -108,25 +308,12 @@ function App() {
       cachedProfiles[profileUserId] = userData;
 
       setCurrentUserProfileData(userData);
-  })
-  .catch(error => {
-      console.error("Error fetching profile data:", error);
-  });
-
-  }
-  }
-
-  useEffect(() => {
-    if (currentUser) {
-      getUserProfile();
+      })
+      .catch(error => {
+          console.error("Error fetching profile data:", error);
+      });
     }
-  }, [currentUser])
-
-  useEffect(() => {
-    console.log("CURRENT USER IS " + JSON.stringify(currentUser))
-  }, [currentUser])
-
-
+  }
 
 
   function changeForYouFeed () {
@@ -134,11 +321,6 @@ function App() {
     const tempForYouPage = forYouPage + 1;
     getForYouFeed(tempForYouPage)
   }
-
-  useEffect(() => {
-    getForYouFeed(forYouPage);
-  }, []) 
-
 
   function getForYouFeed (tempForYouPage) {
     console.log("Fetching!!")
@@ -162,11 +344,6 @@ function App() {
     .catch(error => console.error(error));
   }
 
-
-  useEffect(() => {
-    console.log("FORYOUFEEDCONTENT UPDATED IS: " + JSON.stringify(forYouFeedContent))
-  }, [forYouFeedContent])
-
   function getFollowingFeed () {
     console.log("Fetching following feed")
     if (currentUser) {
@@ -183,14 +360,20 @@ function App() {
     
   }
 
-
-  useEffect(() => {
-    console.log("Usercached is: " + JSON.stringify(cachedLikedPosts))
-  }, [cachedLikedPosts])
-
-  useEffect(() => {
-    console.log("Important is: " + JSON.stringify(forYouFeedContent))
-  }, [forYouFeedContent])
+  function getUserBookMarkedContent () {
+    console.log("Fetching bookmark feed")
+    if (currentUser) {
+      const profileUserId = currentUser.id;
+      fetch(`http://localhost:6790/api/grabuserbookmarkedposts/${profileUserId}`)
+      .then(response => response.json())
+      .then(data => {
+        console.log("BOOKMARKES DATA IS " + JSON.stringify(data))
+        const newBookMarked = [...data];
+        setBookMarkContent([...newBookMarked]);
+      })
+      .catch(error => console.error(error));
+    }
+  }
 
   function grabUserLiked () {
     if (currentUser) {
@@ -290,79 +473,6 @@ function App() {
     }
   }
 
-  useEffect(() => {
-    if (currentUser) {
-      grabUserBookMarked()
-    }
-  }, [currentUser])
-
-  useEffect(() => {
-    console.log("user bookmarked is " + JSON.stringify(cachedBookMarks))
-  }, [cachedBookMarks])
-
-
-
-
-
-
-  // SAMPLEPOSTS
-  useEffect(() => {
-    fetch('http://localhost:6790/api/sampleusers')
-    .then(response => response.json())
-    .then(data => setSampleUsers([...data]))
-    .then(console.log("Sample users is " + sampleUsers))
-    .catch(error => console.error(error));
-  }, []);
-
-
-// //FOLLOW SECTION
-
-  useEffect(() => {
-    if (currentUser) {
-      const profileUserId = currentUser.id;
-      fetch(`http://localhost:6790/api/grabuserfollowers/${profileUserId}`)
-      .then(response => response.json())
-      .then(data => {
-        console.log("Fetched followers data:", data); // Check the response here
-        setUserFollowers([...data]);
-    })
-      .then(console.log("user userfollowers is " + userFollowers))
-      .catch(error => console.error(error));
-    }
-  }, [currentUser])
-
-  function handleNewFollowTwo(followedId, followingId) {
-    const newFollowInformation = {
-      followedId: followedId,
-      followingId: followingId,
-      notificationType: "FOLLOW",
-      notificationObject: followedId,
-      receiverId: followedId,
-      senderId: followingId 
-  };
-  const decryptedPayload = JSON.stringify(newFollowInformation)
-  console.log("Super Secret Repost Information is being sent..." + newFollowInformation)
-
-  fetch('http://localhost:6790/api/newfollow', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newFollowInformation),
-    })
-    .then(response => {
-      if (response.ok) {
-          return response.json();
-      } else {
-          throw new Error('Failed to Follow');
-      }
-  })
-  .then((data) => {
-        alert('Follow added successfully!');
-        console.log("Response is " + JSON.stringify(data));
-        setUserFollowing([...data]); 
-        console.log(JSON.stringify(data));
-  });
-  }
-
   function handleNewFollow(followedId, followingId) {
     const newFollowInformation = {
       followedId: followedId,
@@ -411,38 +521,10 @@ function App() {
   }
 
 
-  useEffect(() => {
-    if (currentUser) {
-      const profileUserId = currentUser.id;
-      fetch(`http://localhost:6790/api/grabuserfollowing/${profileUserId}`)
-      .then(response => response.json())
-      .then(data => {
-        console.log("Fetched following data:", data); // Check the response here
-        setUserFollowing([...data]);
-    })
-      .then(console.log("user following is " + userFollowing))
-      .catch(error => console.error(error));
-    }
-  }, [currentUser]);
-
-  useEffect(() => {
-    console.log("BADASS CACHE NOTIFICATIONS IS" + JSON.stringify(notificationCache))
-  }, [notificationCache])
-
-  useEffect(() => {
-    grabUserLiked()
-    grabUserReposts()
-  }, [currentUser])
-
   const likedPostIdsSet = useMemo(() => {
     return new Set(userLikedPosts.map(post => post.postId));
   }, [userLikedPosts]);
 
-  useEffect(() => {
-    if (currentUser) {
-      getFollowingFeed()
-    }
-  }, [userFollowing])
   
   
 //   //NOTIFICATIONS SECTION
@@ -455,6 +537,39 @@ function App() {
       .catch(error => console.error(error));  
     }
   }
+
+  function fetchMessageNotifications() {
+    if (currentUser) {
+
+      const tempNotificationCache = {};
+
+      fetch(`http://localhost:6790/api/messagenotifications/${currentUser.id}`)
+      .then((response) => response.json())
+      .then((notifications) => {
+        console.log("FETCHED MESSAGE NOTIFICATIONS IS " + JSON.stringify(notifications));
+
+        if (notifications.length > 0) {
+          setHasMessages(true);
+        }
+        notifications.forEach((notification) => {
+            const convoId = notification.notificationObject;
+
+            if (!tempNotificationCache[convoId]) {
+                tempNotificationCache[convoId] = [];
+            }
+            
+            tempNotificationCache[convoId].push(notification);
+        });
+        setMessageNotificationCache(tempNotificationCache);
+    });
+    }
+  }
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchMessageNotifications();
+    }
+  }, [currentUser])
 
   function fetchNotifications() {
     if (currentUser) {
@@ -497,8 +612,6 @@ function App() {
       });
       fetchAssociatedPosts(notifications, tempNotificationCache);
     });
-    
-
   }
 
   useEffect(() => {
@@ -506,6 +619,17 @@ function App() {
       fetchNotifications();
     }
   }, [currentUser])
+
+  function sendMessage (newMessagePayload) {
+
+    if (!socket) {
+      console.error("Socket is not connected!");
+      return;
+    }
+
+    socket.send(JSON.stringify(newMessagePayload));
+
+  }
   
 
   function fetchAssociatedPosts(notifications, tempNotificationCache) {
@@ -596,20 +720,20 @@ function App() {
 
       <div className='grid grid-cols-12 h-screen w-screen'>
         <div className='flex bg-black max-h-screen h-screen flex-col col-span-3'>
-          <LeftFeed setForYouFeedContent={setForYouFeedContent} forYouFeedContent={forYouFeedContent} currentUser={currentUser} setCurrentUser={setCurrentUser} nonMessageNotifications={nonMessageNotifications} setPosts={setPosts} setUserNotifications={setUserNotifications}/>
+          <LeftFeed hasMessages={hasMessages} setHasMessages={setHasMessages} setForYouFeedContent={setForYouFeedContent} forYouFeedContent={forYouFeedContent} currentUser={currentUser} setCurrentUser={setCurrentUser} nonMessageNotifications={nonMessageNotifications} setPosts={setPosts} setUserNotifications={setUserNotifications}/>
         </div>
-        <div className='flex bg-black h-full flex-col col-span-5 pb-10 overflow-auto scrollable-none'>
+        <div className='flex bg-black h-full flex-col col-span-5 overflow-auto scrollable-none'>
         <Routes>
             <Route 
               path="/" 
               element={
-              <MainFeed currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} cachedFollows={cachedFollows} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} followingFeedContent={followingFeedContent} cachedMediaPosts={cachedMediaPosts} setCachedMediaPosts={setCachedMediaPosts} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} changeForYouFeed={changeForYouFeed} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>}
+              <MainFeed bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} setMessageNotificationCache={setMessageNotificationCache} currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} cachedFollows={cachedFollows} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} followingFeedContent={followingFeedContent} cachedMediaPosts={cachedMediaPosts} setCachedMediaPosts={setCachedMediaPosts} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} changeForYouFeed={changeForYouFeed} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>}
             />
 
             <Route 
               path="/:profileUserId" 
               element={
-              <ProfileFeed currentUserFollowing={currentUserFollowing} cachedFollows={cachedFollows} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} handleNewFollow={handleNewFollow} userFollowing={userFollowing} userFollowers={userFollowers} currentUser={currentUser} setCurrentUser={setCurrentUser} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>}
+              <ProfileFeed bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} currentUserFollowing={currentUserFollowing} cachedFollows={cachedFollows} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} handleNewFollow={handleNewFollow} userFollowing={userFollowing} userFollowers={userFollowers} currentUser={currentUser} setCurrentUser={setCurrentUser} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>}
             />
 
             <Route 
@@ -621,25 +745,25 @@ function App() {
             <Route
               path="/post/:postId"
               element={
-              <ZoomedPost cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} currentUser={currentUser} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>
+              <ZoomedPost bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} currentUser={currentUser} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>
               }/>
 
             <Route
               path="/imagepreview/:postId/:position"
               element={
-              <MediaPreviewModal cachedMediaPosts={cachedMediaPosts} currentUser={currentUser} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>
+              <MediaPreviewModal bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} cachedMediaPosts={cachedMediaPosts} currentUser={currentUser} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>
               }/>
 
             <Route
               path="/bookmarks/:userId"
               element={
-              <BookMarks setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} currentUser={currentUser} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>
+              <BookMarks bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} currentUser={currentUser} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>
               }/>
             
             <Route 
               path="/messages/:userId"
               element={
-                <MessageComponent currentUser={currentUser} messageNotifications={messageNotifications} refreshNotifications={refreshNotifications} userNotifications={userNotifications}/>
+                <MessageComponent hasMessages={hasMessages} setHasMessages={setHasMessages} setMessageNotificationCache={setMessageNotificationCache} messageNotificationCache={messageNotificationCache} sendMessage={sendMessage} socket={socket} convoCache={convoCache} setConvoCache={setConvoCache} currentUser={currentUser} messageNotifications={messageNotifications} refreshNotifications={refreshNotifications} userNotifications={userNotifications}/>
               }
             />
 
@@ -653,7 +777,7 @@ function App() {
             <Route 
               path="/messages/:userId/:otherUserId"
               element={
-                <MessageComponent currentUser={currentUser} messageNotifications={messageNotifications} refreshNotifications={refreshNotifications} userNotifications={userNotifications}/>
+                <MessageComponent hasMessages={hasMessages} setHasMessages={setHasMessages} setMessageNotificationCache={setMessageNotificationCache} messageNotificationCache={messageNotificationCache} sendMessage={sendMessage} socket={socket} currentUser={currentUser} convoCache={convoCache} setConvoCache={setConvoCache} messageNotifications={messageNotifications} refreshNotifications={refreshNotifications} userNotifications={userNotifications}/>
               }
             />
 

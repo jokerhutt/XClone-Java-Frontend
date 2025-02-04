@@ -10,7 +10,7 @@ import { FaCircleArrowLeft } from "react-icons/fa6";
 
 
 
-function MediaPreviewModal ({cachedLikedPosts, setCachedLikedPosts, setCachedBookMarks, cachedBookMarks, cachedMediaPosts, cachedAddedReplies, setCachedReposts, setCachedAddedReplies, cachedReposts, currentUser}) {
+function MediaPreviewModal ({cachedLikedPosts, bookMarkContent, setBookMarkContent, setCachedLikedPosts, setCachedBookMarks, cachedBookMarks, cachedMediaPosts, cachedAddedReplies, setCachedReposts, setCachedAddedReplies, cachedReposts, currentUser}) {
     const { postId, position } = useParams();
     const navigate = useNavigate();
     const [previewedPost, setPreviewedPost] = useState(null);
@@ -77,7 +77,7 @@ function MediaPreviewModal ({cachedLikedPosts, setCachedLikedPosts, setCachedBoo
             </div>
             {previewedPost ? (
             <div className="flex-[25] bg-black h-full w-full pr-6 flex-col">
-                <PostTemplate post={previewedPost} cachedMediaPosts={cachedMediaPosts} currentUser={currentUser} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} disableMedia={disableMedia}
+                <PostTemplate bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} post={previewedPost} cachedMediaPosts={cachedMediaPosts} currentUser={currentUser} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} disableMedia={disableMedia}
                 isInZoomedMode={true}
                 postReposts={previewedPost.repostList} postBookMarks={previewedPost.bookMarkList} postLikes={previewedPost.likeList} postCreator={previewedPost.creator} postMedia={previewedPost.mediaList} postReplies={previewedPost.replyList}
                 />

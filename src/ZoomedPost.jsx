@@ -5,7 +5,7 @@ import PostTemplate from './PostTemplate';
 import { useState, useEffect } from 'react';
 import { FaArrowLeft } from "react-icons/fa";
 
-function ZoomedPost ({cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, currentUser}) {
+function ZoomedPost ({cachedAddedReplies, bookMarkContent, setBookMarkContent, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, currentUser}) {
 
     const navigate = useNavigate();
     const { postId } = useParams();
@@ -44,7 +44,7 @@ function ZoomedPost ({cachedAddedReplies, setCachedAddedReplies, cachedReposts, 
                     {fetchedPost ? (
                 <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
                     <div className="flex-col w-full h-full">
-                        <PostTemplate tempReplies={tempReplies} setTempReplies={setTempReplies} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} isInZoomedMode={isInZoomedMode} postReplies={fetchedPost.replyList} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={fetchedPost.repostList} postBookMarks={fetchedPost.bookMarkList} postLikes={fetchedPost.likeList} post={fetchedPost} postCreator={fetchedPost.creator} postMedia={fetchedPost.mediaList} currentUser={currentUser}
+                        <PostTemplate bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} tempReplies={tempReplies} setTempReplies={setTempReplies} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} isInZoomedMode={isInZoomedMode} postReplies={fetchedPost.replyList} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={fetchedPost.repostList} postBookMarks={fetchedPost.bookMarkList} postLikes={fetchedPost.likeList} post={fetchedPost} postCreator={fetchedPost.creator} postMedia={fetchedPost.mediaList} currentUser={currentUser}
                         />
                     </div>
                 </div>

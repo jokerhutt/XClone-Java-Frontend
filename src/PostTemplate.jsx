@@ -22,7 +22,7 @@ import ProfileHoverPopover from "./ProfileHoverPopover";
 
 
 
-function PostTemplate ({currentUserFollowing, handleNewFollow, cachedFollows, currentUserProfileData, setCurrentUserProfileData, tempReplies, setTempReplies, cachedAddedReplies, setCachedAddedReplies, isInZoomedMode, postReplies, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, setUserLikedPosts, postBookMarks, postLikes, replyObject, isAReplyParent, post, postCreator, postMedia, currentUser, disableMedia, profileUser}) {
+function PostTemplate ({currentUserFollowing, bookMarkContent, setBookMarkContent, handleNewFollow, cachedFollows, currentUserProfileData, setCurrentUserProfileData, tempReplies, setTempReplies, cachedAddedReplies, setCachedAddedReplies, isInZoomedMode, postReplies, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, setUserLikedPosts, postBookMarks, postLikes, replyObject, isAReplyParent, post, postCreator, postMedia, currentUser, disableMedia, profileUser}) {
 
     const [isReplyingToggle, setIsReplyingToggle] = useState(false);
     const [currentPostReplies, setCurrentPostReplies] = useState(postReplies);
@@ -158,6 +158,7 @@ function PostTemplate ({currentUserFollowing, handleNewFollow, cachedFollows, cu
 
             <div className="pl-4 pr-4">
                 <PostActions 
+                bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent}
                 setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData}
                 isInZoomedMode={isInZoomedMode} tempPostReplies={tempPostReplies}
                 currentPostReplies={currentPostReplies}

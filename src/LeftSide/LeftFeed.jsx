@@ -4,13 +4,14 @@ import { FaUserGroup } from "react-icons/fa6";
 import { FaGlobeAmericas } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
 import PostModal from "../PostModal";
+import { GoDotFill } from "react-icons/go";
 import LogOutModal from "../../LogOutModal";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useEffect, useState } from "react";
 
 
 
-function LeftFeed ({currentUser, forYouFeedContent, setForYouFeedContent}) {
+function LeftFeed ({hasMessages, setHasMessages, currentUser, forYouFeedContent, setForYouFeedContent}) {
 
     const [isPosting, setIsPosting] = useState(false);
     const [isLoggingOut, setIsLoggingOut] = useState(false)
@@ -48,16 +49,24 @@ function LeftFeed ({currentUser, forYouFeedContent, setForYouFeedContent}) {
         <p>Notifications</p>
     </div>
     )}
-    {currentUser ? (
-    <Link to={`/messages/${currentUser.id}`} className="flex gap-4 items-center text-2xl ">
-        <IoMdMail/>
-        <p>Messages</p>
-    </Link> 
+    {currentUser && hasMessages === true ? (
+        <Link to={`/messages/${currentUser.id}`} className="flex gap-4 items-center text-2xl ">
+            <IoMdMail/>
+            <p>Messages</p>
+            <div className="mr-6 text-twitterBlue">
+                <GoDotFill />
+            </div>
+            </Link> 
+    ) : currentUser ? (
+        <Link to={`/messages/${currentUser.id}`} className="flex gap-4 items-center text-2xl ">
+            <IoMdMail/>
+            <p>Messages</p>
+        </Link> 
     ) : (
-    <Link to={`/messages}`} className="flex gap-4 items-center text-2xl ">
-        <IoMdMail/>
-        <p>Messages</p>
-    </Link> 
+        <Link className="flex gap-4 items-center text-2xl ">
+            <IoMdMail/>
+            <p>Messages</p>
+        </Link> 
     )}
 
     {/* <Link className=" hover:cursor-not-allowed flex gap-4 items-center text-2xl ">
