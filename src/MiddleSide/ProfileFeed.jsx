@@ -126,91 +126,24 @@ function ProfileFeed ({currentUserFollowing, bookMarkContent, setBookMarkContent
         }
     }, [currentUserProfileData])
 
-
-
-
-
-
-    // useEffect(() => {
-    //     console.log("user ID is " + profileUserId)
-    //     fetch(`http://localhost:6790/api/grabusers/${profileUserId}`)
-    //     .then(response => response.json())
-    //     .then((data) => setProfileUser(data))
-    //     .catch(error => console.error(error));
-    // }, [profileUserId]);
-
-    // useEffect(() => {
-    //     fetch(`http://localhost:6790/api/grabuserreplies/${profileUserId}`)
-    //     .then(response => response.json())
-    //     .then((data) => setUserReplies([...data]))
-    //     .catch(error => console.error(error));
-    // }, [profileUser])
-
-    // useEffect(() => {
-    //     fetch(`http://localhost:6790/api/grabposts/${profileUserId}`)
-    //     .then(response => response.json())
-    //     .then((data) => setUserPosts([...data]))
-    //     .catch(error => console.error(error));
-    // }, [profileUser])
-
-    // useEffect(() => {
-    //     if (profileUser) {
-    //       const profileUserId = profileUser.id;
-    //       fetch(`http://localhost:6790/api/grabuserfollowing/${profileUserId}`)
-    //       .then(response => response.json())
-    //       .then(data => setProfileUserFollowing([...data]))
-    //       .then(console.log("user following is " + profileUserFollowing))
-    //       .catch(error => console.error(error));
-    //     }
-    //   }, [profileUser, userFollowing]);
-    
-    //   useEffect(() => {
-    //     if (profileUser) {
-    //       const profileUserId = profileUser.id;
-    //       fetch(`http://localhost:6790/api/grabuserfollowers/${profileUserId}`)
-    //       .then(response => response.json())
-    //       .then(data => setProfileUserFollowers([...data]))
-    //       .then(console.log("user userfollowers is " + profileUserFollowers))
-    //       .catch(error => console.error(error));
-    //     }
-    //   }, [profileUser, userFollowing])
-
-    // useEffect(() => {
-    //     fetch(`http://localhost:6790/api/grabpostsandreposts/${profileUserId}`)
-    //     .then(response => response.json())
-    //     .then((data) => setUserPostsAndReposts([...data]))
-    //     .catch(error => console.error(error));
-    // }, [profileUser])
-
-    // useEffect(() => {
-    //     fetch(`http://localhost:6790/api/grabuserlikes/${profileUserId}`)
-    //     .then(response => response.json())
-    //     .then((data) => setUserLikedPosts([...data]))
-    //     .catch(error => {
-    //         console.error('Error fetching likes:', error);
-    //         setUserLikedPosts([]);
-    //     });
-    // }, [])
-
     return(
         <div className="flex flex-col flex-grow">
             {profileUserData && profileUser ? (
                 <>
-            <div className="flex-[526] flex flex-col flex-grow bg-black h-full w-full text-white pt-3">
-
-            <div className="flex-[45] flex h-full w-full px-4 border border-twitterBorder sticky top-0 z-20 backdrop-blur-md bg-black bg-opacity-70">
+            <div className="flex h-full w-full px-4 border border-twitterBorder sticky top-0 z-20 backdrop-blur-md bg-black bg-opacity-70">
                 <div className="w-8 mr-2 h-full flex justify-start text-lg items-center">
-                    <FaArrowLeft onClick={() => navigate(-1)} className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
+                    <FaArrowLeft onClick={() => navigate(-1)} className="text-white hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
                 </div>
                 <div>
                     <div className="flex gap-2 items-center">
-                        <h2 className="text-xl font-bold">{profileUser.displayName}</h2> <MdOutlineVerified className="text-twitterBlue"/>
+                        <h2 className="text-xl font-bold text-white">{profileUser.displayName}</h2> <MdOutlineVerified className="text-twitterBlue"/>
                     </div>
                 <p className="text-twitterBorder">22 posts</p>
                 </div>
             </div>
+            <div className="flex-[526] flex flex-col flex-grow bg-black border-x border-x-twitterBorder h-full w-full text-white pt-3">
 
-            <div className="flex-[240] h-full w-full relative border-x border-x-twitterBorder">
+            <div className="flex-[240] h-full w-full relative">
                 <div>
                     <img className="h-52 w-full" src={profileUser.backGround}/>
                 </div>
@@ -218,7 +151,7 @@ function ProfileFeed ({currentUserFollowing, bookMarkContent, setBookMarkContent
                     <img className="rounded-full h-32 w-32 object-cover border-4 border-black" src={profileUser.profilePic}/>
                 </div>
             </div>
-            <div className="flex-[200] flex-col h-full w-full flex px-4 py-3 border-x border-x-twitterBorder">
+            <div className="flex-[200] flex-col h-full w-full flex px-4 py-3">
 
                 <div className="flex-[69] h-full w-full flex">
                     <ProfileFeedFollow isFollowing={toggleFollowing} currentUser={currentUser} profileUser={profileUser} userFollowing={userFollowing} handleNewFollow={handleNewFollow}/>
@@ -246,7 +179,7 @@ function ProfileFeed ({currentUserFollowing, bookMarkContent, setBookMarkContent
                 </div>
 
             </div>
-            <div className="flex-[55] h-full w-full border-b-2 border-twitterBorder pb-0.5 border-x border-x-twitterBorder justify-evenly px-4 flex">
+            <div className="flex-[55] h-full w-full border-b-2 border-twitterBorder pb-0.5 justify-evenly px-4 flex">
                 <ProfileFeedTabState setTabState={setTabState} tabState={tabState}/>
             </div>
 
