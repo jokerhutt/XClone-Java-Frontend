@@ -84,6 +84,8 @@ function MessageComponent ({hasMessages, setHasMessages, setMessageNotificationC
             );
             console.log("FOUND CONVO IS " + JSON.stringify(foundConvo))
             setCurrentConvo(foundConvo)   
+        } else {
+            setCurrentConvo(null)
         }
     }, [userId, otherUserId, convoCache, currentUser])
 
@@ -156,20 +158,19 @@ function MessageComponent ({hasMessages, setHasMessages, setMessageNotificationC
 
 
     return (
-    <div className="flex flex-col max-h-screen flex-grow relative">
-
-            <div className='h-14 py-3 w-full px-4 justify-start gap-5 flex border border-twitterBorder text-white absolute top-0 z-20 backdrop-blur-md bg-black bg-opacity-7'>
-                <div className="w-8 ml-2 h-full flex justify-start text-lg items-center">
-                    <FaArrowLeft onClick={() => navigate(-1)} className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
-                </div>
-                <div className="flex items-center justify-start">
-                    <h2 className='font-bold'>Messages</h2>
-                </div>
-            </div>
+    <div className="flex flex-col max-h-screen flex-grow">
 
         <div className="flex w-full bg-none h-full">
 
-            <div className="flex-[40] w-full border-x-2 border-twitterBorder flex flex-col">
+            <div className="flex-[40] w-full border-x-2 border-twitterBorder flex flex-col relative">
+                <div className='h-14 py-3 w-full px-4 justify-start gap-5 flex border border-twitterBorder text-white absolute top-0 z-20 backdrop-blur-md bg-black bg-opacity-7'>
+                    <div className="w-8 ml-2 h-full flex justify-start text-lg items-center">
+                        <FaArrowLeft onClick={() => navigate(-1)} className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
+                    </div>
+                    <div className="flex items-center justify-start">
+                        <h2 className='font-bold'>Messages</h2>
+                    </div>
+                </div>
                 <div className="mt-14">
                 {userConvos && currentUser ? (
                     <>
@@ -187,15 +188,39 @@ function MessageComponent ({hasMessages, setHasMessages, setMessageNotificationC
                 </div>
             </div>
 
-            <div className="flex-[60] w-full border-l border-r border-twitterBorder flex flex-col">
-                
+            <div className="flex-[60] w-full border-l border-r border-twitterBorder flex flex-col relative">
+                {currentConvo && convoCache? (
+                    <>
+                <div className='h-14 py-3 w-full px-4 justify-start gap-5 flex border border-twitterBorder text-white absolute top-0 z-20 backdrop-blur-md bg-black bg-opacity-7'>
+                    <div className="w-8 ml-2 h-full flex justify-start text-lg items-center">
+                        <img className="rounded-full" src={currentConvo.otherUser.profilePic}/>
+                    </div>
+                    <div className="flex items-center justify-start">
+                        <h2 className='font-bold'>{currentConvo.otherUser.displayName}</h2>
+                    </div>
+                </div>
+                </>
+                ) : (
+                    null
+                )}
+
                 <div className="flex-1 bg-black overflow-y-scroll scrollbar-thin">
                 {currentConvo && currentUser ? (
+                    <>
+                    <div className="w-full flex flex-col py-8 justify-center items-center mt-14 hover:cursor-pointer border-b border-twitterBorder hover:bg-gray-300 hover:bg-opacity-25">
+                        <div className="flex justify-center items-center w-full">
+                            <img className="h-12 rounded-full" src={currentConvo.otherUser.profilePic}/>
+                        </div>
+                        <p className="text-white">{currentConvo.otherUser.displayName}</p>
+                        <p className="text-twitterBorder text-sm">@{currentConvo.otherUser.username}</p>
+                        <p className="text-white text-sm">{currentConvo.otherUser.bio}</p>
+                    </div>
                     <div className="">
                         {currentConvo.messages.map((message) => 
                         <IndividualMessage message={message} currentUser={currentUser}/>
                         )}   
                     </div>
+                    </>
                 ) : (
                     <div className="text-white h-full w-full flex justify-center items-center">
                         <div className="flex h-full flex-col w-3/4 gap-2 justify-center">
@@ -205,7 +230,7 @@ function MessageComponent ({hasMessages, setHasMessages, setMessageNotificationC
                     </div>
                 )}
                 </div>
-
+                {currentConvo ? (
                 <div className="h-14 w-full px-2 bottom-0 flex items-center border-t border-twitterBorder bg-black">
                     <div className="h-10 w-full p-2 flex bg-twitterBorder rounded-2xl">
 
@@ -216,6 +241,10 @@ function MessageComponent ({hasMessages, setHasMessages, setMessageNotificationC
 
                     </div>
                 </div>
+                ) : (
+                    null
+                )}
+
 
 
 
