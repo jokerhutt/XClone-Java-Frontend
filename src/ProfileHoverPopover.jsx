@@ -11,9 +11,10 @@ import {
 
   import ProfileHoverPopoverContent from "./ProfileHoverPopoverContent";
 import { useEffect, useState, useRef } from "react";
+import clsx from 'clsx';
 import { useNavigate } from "react-router-dom";
 
-function ProfileHoverPopover ({currentUserFollowing, handleNewFollow, postCreator, cachedFollows, currentUser, toggleFollowing, setToggleFollowing}) {
+function ProfileHoverPopover ({currentUserFollowing, backGroundColor, buttonColor, handleNewFollow, postCreator, cachedFollows, currentUser, toggleFollowing, setToggleFollowing}) {
 
     const [isHovering, setIsHovering] = useState(false);
     const [hoveringDisplayState, setHoveringDisplayState] = useState(false);
@@ -46,6 +47,7 @@ function ProfileHoverPopover ({currentUserFollowing, handleNewFollow, postCreato
         <PopoverHandler
                 onMouseEnter={() => handleHoverTrue()}
                 onMouseLeave={() => handleHoverFalse()}
+                onClick={() => navigate(`/${postCreator.id}`)}
         >
             <img
             src={postCreator.profilePic} className="hover:cursor-pointer rounded-full"/>
@@ -53,11 +55,10 @@ function ProfileHoverPopover ({currentUserFollowing, handleNewFollow, postCreato
         <PopoverContent 
         onMouseEnter={() => handleHoverTrue()}
         onMouseLeave={() => handleHoverFalse()}
-        className=" hover:cursor-pointer
-        bg-black text-white shadow-lg rounded-xl border border-twitterBorder 
-        h-60 p-4 w-72 ring-2 ring-gray-400 ring-opacity-80 shadow-gray-400/70 overflow-hidden
-        
-    ">
+        className={clsx ("hover:cursor-pointer text-white shadow-lg rounded-xl border border-twitterBorder h-60 p-4 w-72 ring-2 ring-gray-400 ring-opacity-80 shadow-gray-400/70 overflow-hidden", {
+            "bg-dimBackGround": backGroundColor === "dimBackGround",
+            "bg-twitterBlack": backGroundColor === "twitterBlack",
+        })}>
             <ProfileHoverPopoverContent currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} currentUser={currentUser} cachedFollows={cachedFollows} postCreator={postCreator}/>
         </PopoverContent>
     </Popover>

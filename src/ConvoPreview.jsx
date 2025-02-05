@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { GoDotFill } from "react-icons/go";
-
+import LastSeen from "./LastSeen";
 
 function ConvoPreview ({userId, otherUserId, convo, selectedConvo, handleMarkAsRead, currentUser, convoCache, convoOtherUser, messageNotificationCache}) {
 
     const [lastMessage, setLastMessage] = useState(null);
+    const [lastMessageTime, setLastMessageTime] = useState(null)
     const [otherUserFirstName, setOtherUserFirstName] = useState();
     const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
 
@@ -31,6 +32,13 @@ function ConvoPreview ({userId, otherUserId, convo, selectedConvo, handleMarkAsR
             }
         }
     }, [messageNotificationCache])
+
+    useEffect(() => {
+        if (lastMessageTime) {
+            console.log("LAST MESSAGE TIMESTAMP IS " + JSON.stringify(lastMessageTime))
+
+        }
+    }, [lastMessageTime])
 
     useEffect(() => {
         if (messageNotificationCache[convo.id] && selectedConvo && selectedConvo.convo.id === convo.id){
@@ -63,7 +71,23 @@ function ConvoPreview ({userId, otherUserId, convo, selectedConvo, handleMarkAsR
                 setLastMessage(foundMessage.messageText)
             }
         }
+
+        changeLastMessageCreatedAt()
     }, [convoCache, convo])
+
+    function changeLastMessageCreatedAt () {
+            if (convo && convo.lastMessageCreatedAt) {
+                setLastMessageTime(convo.lastMessageCreatedAt)
+            } else {
+                const currentConvo = convoCache[convo.id];
+                const currentConvoMessages = currentConvo.messages
+                const currentLastMessageId = convo.lastMessageId;
+                const foundMessage = currentConvoMessages.find((message) => message.id === currentLastMessageId)
+                if (foundMessage) {
+                    setLastMessageTime(foundMessage.createdAt)
+                }
+            }
+    }
 
 
     //Sets first name of user in preview
@@ -86,7 +110,14 @@ function ConvoPreview ({userId, otherUserId, convo, selectedConvo, handleMarkAsR
 
                     <div className="flex-col flex-[75] text-white">
                         <div className="flex justify-between items-center">
-                            <p className="text-white font-bold">{otherUserFirstName}</p>
+                            <div className="flex gap-2">
+                                <p className="text-white font-bold">{otherUserFirstName}</p>
+                                {lastMessageTime ? (
+                                    <LastSeen locale="en-US" date={lastMessageTime}/>
+                                ) : (
+                                    null
+                                )}
+                            </div>
                             <div className="mr-6 text-twitterBlue">
                                 <GoDotFill />
                             </div>
@@ -122,7 +153,14 @@ function ConvoPreview ({userId, otherUserId, convo, selectedConvo, handleMarkAsR
 
                     <div className="flex-col flex-[75] text-white">
                         <div className="flex justify-between items-center">
+                            <div className="flex gap-2">
                             <p className="text-white font-bold">{otherUserFirstName}</p>
+                            {lastMessageTime ? (
+                                <LastSeen locale="en-US" date={lastMessageTime}/>
+                            ) : (
+                                null
+                            )}
+                            </div>
                         </div>
 
                         {lastMessage ? (
@@ -155,9 +193,14 @@ function ConvoPreview ({userId, otherUserId, convo, selectedConvo, handleMarkAsR
                     </div>
 
                     <div className="flex-col flex-[75] text-white">
-                        <div>
-                            <p className="text-white font-bold">{otherUserFirstName}</p>
-                        </div>
+                            <div className="flex gap-2">
+                                <p className="text-white font-bold">{otherUserFirstName}</p>
+                                {lastMessageTime ? (
+                                    <LastSeen locale="en-US" date={lastMessageTime}/>
+                                ) : (
+                                    null
+                                )}
+                            </div>
 
                         {lastMessage ? (
                             <div>

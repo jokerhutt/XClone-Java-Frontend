@@ -1,5 +1,5 @@
 import "./App.css"
-
+import clsx from 'clsx';
 import { useState, useEffect } from "react";
 import { FaRegComment, FaRegHeart, FaRegChartBar, FaRegBookmark } from "react-icons/fa";
 import { FaRetweet } from "react-icons/fa6";
@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 
 
-function ReplyPostTemplate ({tempReplies, tempPostReplies, cachedAddedReplies, post, ogPostUser}) {
+function ReplyPostTemplate ({tempReplies, buttonColor, tempPostReplies, cachedAddedReplies, post, ogPostUser}) {
 
     const [postLikes, setPostLikes] = useState([]);
     const [postReposts, setPostReposts] = useState([]);
@@ -52,7 +52,12 @@ function ReplyPostTemplate ({tempReplies, tempPostReplies, cachedAddedReplies, p
                         <p className="text-twitterBorder">@{replyPostUser.username}</p>
                     </div>
                     <div>
-                        <p className="text-twitterBorder"> Replying to <span className="text-twitterBlue">@{ogPostUser.username}</span> </p>
+                        <p className="text-twitterBorder"> Replying to <span className={clsx({
+                            "text-twitterRed": buttonColor === "twitterRed",
+                            "text-twitterBlue": buttonColor === "twitterBlue",
+                            "text-twitterYellow": buttonColor === "twitterYellow",
+                            "text-twitterPurple": buttonColor === "twitterPurple",
+                        })}>@{ogPostUser.username}</span> </p>
                     </div>
                     </div>
 

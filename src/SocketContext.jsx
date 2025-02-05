@@ -15,6 +15,13 @@ export const SocketProvider = ({ children }) => {
         ws.onopen = () => {
             console.log("Connected to WebSocket");
             setSocket(ws);
+
+            const heartbeatInterval = setInterval(() => {
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ type: "heartbeat" }));
+                    console.log("💓 Sent heartbeat");
+                }
+            }, 5000);
         };
 
         ws.onerror = (error) => {
@@ -23,6 +30,7 @@ export const SocketProvider = ({ children }) => {
 
         ws.onclose = () => {
             console.log("Disconnected from WebSocket");
+            clearInterval(heartbeatInterval);
         };
 
         return () => ws.close();

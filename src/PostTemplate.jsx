@@ -22,7 +22,7 @@ import ProfileHoverPopover from "./ProfileHoverPopover";
 
 
 
-function PostTemplate ({currentUserFollowing, bookMarkContent, setBookMarkContent, handleNewFollow, cachedFollows, currentUserProfileData, setCurrentUserProfileData, tempReplies, setTempReplies, cachedAddedReplies, setCachedAddedReplies, isInZoomedMode, postReplies, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, setUserLikedPosts, postBookMarks, postLikes, replyObject, isAReplyParent, post, postCreator, postMedia, currentUser, disableMedia, profileUser}) {
+function PostTemplate ({currentUserFollowing, backGroundColor, buttonColor, bookMarkContent, setBookMarkContent, handleNewFollow, cachedFollows, currentUserProfileData, setCurrentUserProfileData, tempReplies, setTempReplies, cachedAddedReplies, setCachedAddedReplies, isInZoomedMode, postReplies, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, likedPostIdsSet, setUserLikedPosts, postBookMarks, postLikes, replyObject, isAReplyParent, post, postCreator, postMedia, currentUser, disableMedia, profileUser}) {
 
     const [isReplyingToggle, setIsReplyingToggle] = useState(false);
     const [currentPostReplies, setCurrentPostReplies] = useState(postReplies);
@@ -71,7 +71,7 @@ function PostTemplate ({currentUserFollowing, bookMarkContent, setBookMarkConten
             <div className="w-full h-fit flex pl-4 pr-4 pt-3 flex-grow">
 
             {isReplyingToggle && postCreator && currentUser ? (
-                <ReplyingModal tempPostReplies={tempPostReplies} setTempPostReplies={setTempPostReplies} setIsReplyingToggle={setIsReplyingToggle} currentUser={currentUser} post={post} postUser={postCreator} setCachedAddedReplies={setCachedAddedReplies}/>
+                <ReplyingModal backGroundColor={backGroundColor} buttonColor={buttonColor} tempPostReplies={tempPostReplies} setTempPostReplies={setTempPostReplies} setIsReplyingToggle={setIsReplyingToggle} currentUser={currentUser} post={post} postUser={postCreator} setCachedAddedReplies={setCachedAddedReplies}/>
             ) : (
                 null
             )}
@@ -82,7 +82,7 @@ function PostTemplate ({currentUserFollowing, bookMarkContent, setBookMarkConten
                     <div className="relative">
                         <img src={postCreator.profilePic} className="rounded-full"/>
                         <div className="absolute top-0 right-0 z-20 mt-2 w-60 bg-black text-white shadow-md rounded-lg py-2 border border-twitterBorder">
-                            <ProfileHoverPopover currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} currentUser={currentUser} cachedFollows={cachedFollows}/>
+                            <ProfileHoverPopover backGroundColor={backGroundColor} buttonColor={buttonColor} currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} currentUser={currentUser} cachedFollows={cachedFollows}/>
                         </div>
                     </div>
                 </Link>
@@ -93,7 +93,7 @@ function PostTemplate ({currentUserFollowing, bookMarkContent, setBookMarkConten
                 </div>
             ) : (
                 <div className="flex-[1] flex flex-col w-full h-full mr-4 ">
-                    <ProfileHoverPopover currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} currentUser={currentUser} cachedFollows={cachedFollows} postCreator={postCreator}/>
+                    <ProfileHoverPopover backGroundColor={backGroundColor} buttonColor={buttonColor} currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} currentUser={currentUser} cachedFollows={cachedFollows} postCreator={postCreator}/>
                 </div>
             )}
 
@@ -158,6 +158,7 @@ function PostTemplate ({currentUserFollowing, bookMarkContent, setBookMarkConten
 
             <div className="pl-4 pr-4">
                 <PostActions 
+                buttonColor={buttonColor}
                 bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent}
                 setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData}
                 isInZoomedMode={isInZoomedMode} tempPostReplies={tempPostReplies}
@@ -175,7 +176,7 @@ function PostTemplate ({currentUserFollowing, bookMarkContent, setBookMarkConten
 
         {isAReplyParent && replyObject && postCreator ? (
                 <div>
-                    <ReplyPostTemplate post={replyObject} ogPostUser={postCreator}/>
+                    <ReplyPostTemplate buttonColor={buttonColor} post={replyObject} ogPostUser={postCreator}/>
                 </div>
             ) : isInZoomedMode ? (
                 <div className="flex-col w-full h-full mt-4">
@@ -184,7 +185,7 @@ function PostTemplate ({currentUserFollowing, bookMarkContent, setBookMarkConten
                 </div>
                 {currentPostReplies.map((reply) => 
                 <div>
-                    <ReplyPostTemplate tempPostReplies={tempPostReplies} tempReplies={tempReplies} post={reply} ogPostUser={postCreator} cachedAddedReplies={cachedAddedReplies}/>
+                    <ReplyPostTemplate buttonColor={buttonColor} tempPostReplies={tempPostReplies} tempReplies={tempReplies} post={reply} ogPostUser={postCreator} cachedAddedReplies={cachedAddedReplies}/>
                  </div>
             )}
         </div>

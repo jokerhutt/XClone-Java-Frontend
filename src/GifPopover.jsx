@@ -5,12 +5,14 @@ import {
     Button,
   } from "@material-tailwind/react";
 
+  import clsx from 'clsx';
+
   import { MdOutlineGifBox } from "react-icons/md";
 
   import GifPicker from 'gif-picker-react';
 import { useEffect, useState } from "react";
 
-function GifPopover ({addGifToPost}) {
+function GifPopover ({addGifToPost, buttonColor}) {
 
     const handleGifSelect = (selectedGif) => {
         addGifToPost(selectedGif.url);
@@ -30,7 +32,10 @@ function GifPopover ({addGifToPost}) {
         <Popover open={openGifs} placement="bottom" className="z-50" theme="DARK">
             <PopoverHandler onClick={() => setOpenGifs(!openGifs)}>
                 <div>
-                    <MdOutlineGifBox className="text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
+                    <MdOutlineGifBox className={clsx ("text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] transition duration-300 hover:cursor-pointer", {
+            "hover:text-twitterRed": buttonColor === "twitterRed",
+            "hover:text-twitterBlue": buttonColor === "twitterBlue",
+        })}/>
                 </div>
             </PopoverHandler>
             <PopoverContent>

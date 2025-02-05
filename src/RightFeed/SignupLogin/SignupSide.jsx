@@ -3,11 +3,12 @@ import { FaGoogle, FaApple } from "react-icons/fa";
 import { useState, useEffect } from 'react';
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import YouMightLike from '../YouMightLike';
+import clsx from 'clsx';
 
 
 
 
-function SignupSide ({currentUserFollowing, cachedFollows, currentUser, setCurrentUser, sampleUsers, userFollowing, handleNewFollow}) {
+function SignupSide ({currentUserFollowing, buttonColor, backGroundColor, cachedFollows, currentUser, setCurrentUser, sampleUsers, userFollowing, handleNewFollow}) {
 
     const [SigningUp, setSigningup] = useState(false);
     const [signupState, setSignupState] = useState(1);
@@ -103,15 +104,26 @@ function SignupSide ({currentUserFollowing, cachedFollows, currentUser, setCurre
         }
     };
 
-    function handleUserLogin (e) {
+    function handleUserLogin (e, quickusername, quickemail, quickpassword) {
 
             e.preventDefault();
+
+            let loginPayload = {};
+
+            if (quickusername && quickemail && quickpassword) {
+                loginPayload = {
+                    username: quickusername,
+                    password: quickpassword,
+                    email: quickemail
+                };
+            } else {
+                loginPayload = {
+                    username: loginUsername,
+                    password: loginPassword,
+                    email: loginEmail
+                };
+            }
     
-            const loginPayload = {
-                username: loginUsername,
-                password: loginPassword,
-                email: loginEmail
-            };
     
             const decryptedPayload = JSON.stringify(loginPayload)
     
@@ -220,7 +232,22 @@ function SignupSide ({currentUserFollowing, cachedFollows, currentUser, setCurre
             </div>
         </div>
         <div className='flex-[2] h-full text-twitterBorder text-xs pl-3 pb-3'>
-            <p>By signing up, you agree to the <span className='hover:cursor-pointer text-twitterBlue'>Terms of Service</span> and <span className='hover:cursor-pointer text-twitterBlue'>Privacy Policy</span>, including <span className='text-twitterBlue hover:cursor-pointer'>Cookie Use.</span></p>
+            <p>By signing up, you agree to the <span className={clsx ("hover:cursor-pointer", {
+            "text-twitterRed": buttonColor === "twitterRed",
+            "text-twitterBlue": buttonColor === "twitterBlue",
+            "text-twitterYellow": buttonColor === "twitterYellow",
+            "text-twitterPurple": buttonColor === "twitterPurple",
+        })}>Terms of Service</span> and <span  className={clsx ("hover:cursor-pointer", {
+            "text-twitterRed": buttonColor === "twitterRed",
+            "text-twitterBlue": buttonColor === "twitterBlue",
+            "text-twitterYellow": buttonColor === "twitterYellow",
+            "text-twitterPurple": buttonColor === "twitterPurple",
+        })}>Privacy Policy</span>, including <span className={clsx ("hover:cursor-pointer", {
+            "text-twitterRed": buttonColor === "twitterRed",
+            "text-twitterBlue": buttonColor === "twitterBlue",
+            "text-twitterYellow": buttonColor === "twitterYellow",
+            "text-twitterPurple": buttonColor === "twitterPurple",
+        })}>Cookie Use.</span></p>
         </div>
     </div>
 
@@ -229,7 +256,13 @@ function SignupSide ({currentUserFollowing, cachedFollows, currentUser, setCurre
             <h1 className='text-xl text-white font-bold'>Already have an account?</h1>
             </div>
             <div className='flex-[10] h-full flex flex-col my-4 mx-3 gap-4 pr-4'>
-                <div onClick={() => setLoginState(true)} className='p2 bg-transparent border-twitterBorder border-2 font-bold rounded-r-xl rounded-l-xl w-full p-2 flex-[1] text-twitterBlue text-center flex justify-center items-center hover:cursor-pointer hover:bg-gray-900'  >
+            
+                <div onClick={() => setLoginState(true)}  className={clsx ("p2 bg-transparent border-twitterBorder border-2 font-bold rounded-r-xl rounded-l-xl w-full p-2 flex-[1] text-center flex justify-center items-center hover:cursor-pointer hover:bg-gray-900", {
+            "text-twitterRed": buttonColor === "twitterRed",
+            "text-twitterBlue": buttonColor === "twitterBlue",
+            "text-twitterYellow": buttonColor === "twitterYellow",
+            "text-twitterPurple": buttonColor === "twitterPurple",
+        })}  >
                 <p>Sign in here</p>
             </div>
             </div>
@@ -249,7 +282,7 @@ function SignupSide ({currentUserFollowing, cachedFollows, currentUser, setCurre
             <div className='flex flex-col max-h-13'>
             {sampleUsers ? (
             <>
-            {sampleUsers.map((user) => <YouMightLike currentUserFollowing={currentUserFollowing} cachedFollows={cachedFollows} sampleuser={user} userFollowing={userFollowing} handleNewFollow={handleNewFollow} currentUser={currentUser}/>)}
+            {sampleUsers.map((user) => <YouMightLike backGroundColor={backGroundColor} currentUserFollowing={currentUserFollowing} cachedFollows={cachedFollows} sampleuser={user} userFollowing={userFollowing} handleNewFollow={handleNewFollow} currentUser={currentUser}/>)}
             </>
             ) : null}
             </div>
@@ -258,9 +291,19 @@ function SignupSide ({currentUserFollowing, cachedFollows, currentUser, setCurre
         
         <div>
                 {SigningUp ? (
-                    <div className='fixed inset-0 h-full z-40 w-screen bg-opacity-60 bg-black flex flex-col justify-center flex-grow items-center '>
-                        <div className='h-3/4 bg-black w-2/5 flex flex-col border-2 rounded-md border-twitterBlue pb-10'>
-                            <div className=' bg-black px-20 h-full w-full flex-[497] flex flex-col'>
+                    <div className={clsx ('fixed inset-0 h-full z-40 w-screen flex flex-col justify-center flex-grow items-center bg-opacity-60', {
+                        "bg-dimBackGround": backGroundColor === "dimBackGround",
+                        "bg-twitterBlack": backGroundColor === "twitterBlack",
+                    })}>
+                        <div className={clsx ('h-3/4 w-2/5 flex flex-col border-2 rounded-md pb-10', {
+                            "bg-dimBackGround": backGroundColor === "dimBackGround",
+                            "bg-twitterBlack": backGroundColor === "twitterBlack",
+                            "border-twitterRed": buttonColor === "twitterRed",
+                            "border-twitterBlue": buttonColor === "twitterBlue",
+                            "border-twitterYellow": buttonColor === "twitterYellow",
+                            "border-twitterPurple": buttonColor === "twitterPurple",
+                        })}>
+                            <div className=' px-20 h-full w-full flex-[497] flex flex-col'>
 
                                 <div className='flex-[15] h-full w-full:'>
                                 </div>
@@ -269,7 +312,7 @@ function SignupSide ({currentUserFollowing, cachedFollows, currentUser, setCurre
                                     <h1 className='text-white font-bold text-3xl'>Create your account</h1>
                                 </div>
 
-                                <div className='bg-black h-full w-full flex-[53] relative cursor-pointer'>
+                                <div className=' h-full w-full flex-[53] relative cursor-pointer'>
                                     <div className='w-full h-full'>
                                         <img 
                                             src={signupBackground}
@@ -356,15 +399,41 @@ function SignupSide ({currentUserFollowing, cachedFollows, currentUser, setCurre
                 {loginState ? (
                     
                     
-                    <div className='fixed inset-0 h-full z-40 w-screen bg-opacity-60 bg-black flex flex-col justify-center flex-grow items-center '>
-                    <div className='h-3/4 bg-black w-2/5 flex flex-col border-2 rounded-md border-twitterBlue pb-10'>
-                        <div className=' bg-black px-20 h-full w-full flex-[497] flex flex-col'>
+                    <div className={clsx ('fixed inset-0 h-full z-40 w-screen bg-opacity-60 flex flex-col justify-center flex-grow items-center', {
+                        "bg-dimBackGround": backGroundColor === "dimBackGround",
+                        "bg-twitterBlack": backGroundColor === "twitterBlack",
+                    })}>
+                    <div className={clsx ('h-3/4  w-2/5 flex flex-col border-2 rounded-md pb-10 ', {
+                        "bg-dimBackGround": backGroundColor === "dimBackGround",
+                        "bg-twitterBlack": backGroundColor === "twitterBlack",
+                        "border-twitterRed": buttonColor === "twitterRed",
+                        "border-twitterBlue": buttonColor === "twitterBlue",
+                        "border-twitterYellow": buttonColor === "twitterYellow",
+                        "border-twitterPurple": buttonColor === "twitterPurple",
+                    })}>
+                        <div className=' px-20 h-full w-full flex-[497] flex flex-col'>
 
                             <div className='flex-[15] h-full w-full:'>
                             </div>
 
-                            <div className='h-full w-full flex-[30]'>
-                                <h1 className='text-white font-bold text-3xl'>Sign In</h1>
+                            <div className='h-full w-full flex gap-2 flex-[30]'>
+                                <div className='w-32'>
+                                    <h1 className='text-white font-bold text-3xl'>Sign In</h1>
+                                </div>
+                                <div className='flex h-full w-80 justify-between text-white text-xl'>
+                                    <div onClick={(e) => handleUserLogin(e, "billgates", "admin1@twitterclone.com", "admin")} className='border border-twitterBlue w-10 h-10 flex justify-center items-center hover:cursor-pointer'>
+                                        <p>1</p>
+                                    </div>
+                                    <div onClick={(e) => handleUserLogin(e, "jokerhut", "admin2@twitterclone.com", "admin")} className='border border-twitterBlue w-10 h-10 flex justify-center items-center hover:cursor-pointer'>
+                                        <p>2</p>
+                                    </div>
+                                    <div onClick={(e) => handleUserLogin(e, "zuck", "admin3@twitterclone.com", "admin")} className='border border-twitterBlue w-10 h-10 flex justify-center items-center hover:cursor-pointer'>
+                                        <p>3</p>
+                                    </div>
+                                    <div onClick={(e) => handleUserLogin(e, "stevejobs", "admin4@twitterclone.com", "admin")} className='border border-twitterBlue w-10 h-10 flex justify-center items-center hover:cursor-pointer'>
+                                        <p>4</p>
+                                    </div>
+                                </div>
                             </div>
                         
                                 <div className='flex-[100] flex-col w-full h-full flex justify-start items-center mb-5'>

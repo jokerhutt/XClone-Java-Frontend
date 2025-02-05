@@ -7,6 +7,7 @@ import { MdOutlineLocationOn } from "react-icons/md";
 import { MdCalendarMonth } from "react-icons/md";
 import FollowersFollowing from "../FollowersFollowing";
 import { Link } from "react-router-dom";
+import clsx from 'clsx';
 import ProfileFeedFollow from "./ProfileFeedFollow";
 import { useParams } from "react-router"
 import { useNavigate } from "react-router-dom";
@@ -17,7 +18,7 @@ import '../App.css'
 import { startTransition } from "react";
 import PostTemplate from "../PostTemplate";
 
-function ProfileFeed ({currentUserFollowing, bookMarkContent, setBookMarkContent, cachedFollows, setCurrentUserProfileData, currentUserProfileData, cachedMediaPosts, cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, cachedProfiles, setCachedProfiles, handleNewFollow, posts, currentUser, setCurrentUser, setCachedBookMarks, setPosts, setCachedLikedPosts, cachedLikedPosts, userFollowers, userFollowing}) {
+function ProfileFeed ({currentUserFollowing, buttonColor, backGroundColor, bookMarkContent, setBookMarkContent, cachedFollows, setCurrentUserProfileData, currentUserProfileData, cachedMediaPosts, cachedAddedReplies, setCachedAddedReplies, cachedReposts, setCachedReposts, cachedBookMarks, cachedProfiles, setCachedProfiles, handleNewFollow, posts, currentUser, setCurrentUser, setCachedBookMarks, setPosts, setCachedLikedPosts, cachedLikedPosts, userFollowers, userFollowing}) {
 
     const {profileUserId} = useParams();
     const [profileUser, setProfileUser] = useState(null);
@@ -42,7 +43,7 @@ function ProfileFeed ({currentUserFollowing, bookMarkContent, setBookMarkContent
                 return
             }
         
-            if (cachedProfiles[profileUserId]) {
+            if (cachedProfiles && cachedProfiles[profileUserId]) {
                 setProfileUserData(cachedProfiles[profileUserId]);
                 return;
             }
@@ -130,7 +131,7 @@ function ProfileFeed ({currentUserFollowing, bookMarkContent, setBookMarkContent
         <div className="flex flex-col flex-grow">
             {profileUserData && profileUser ? (
                 <>
-            <div className="flex h-full w-full px-4 border border-twitterBorder sticky top-0 z-20 backdrop-blur-md bg-black bg-opacity-70">
+            <div className="flex items-center h-16 w-full px-4 py-1 border border-twitterBorder sticky top-0 z-20 backdrop-blur-md bg-opacity-70">
                 <div className="w-8 mr-2 h-full flex justify-start text-lg items-center">
                     <FaArrowLeft onClick={() => navigate(-1)} className="text-white hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
                 </div>
@@ -138,17 +139,24 @@ function ProfileFeed ({currentUserFollowing, bookMarkContent, setBookMarkContent
                     <div className="flex gap-2 items-center">
                         <h2 className="text-xl font-bold text-white">{profileUser.displayName}</h2> <MdOutlineVerified className="text-twitterBlue"/>
                     </div>
-                <p className="text-twitterBorder">22 posts</p>
+                {currentUserProfileData && currentUser && profileUser.id === currentUser.id ? (
+                    <p className="text-twitterBorder">{currentUserProfileData.userPosts.length} Posts</p>
+                ) : (
+                    <p className="text-twitterBorder">{profileUserData.userPosts.length} Posts</p>
+                )}
                 </div>
             </div>
-            <div className="flex-[526] flex flex-col flex-grow bg-black border-x border-x-twitterBorder h-full w-full text-white pt-3">
+            <div className="flex-[526] flex flex-col flex-grow border-x border-x-twitterBorder h-full w-full text-white pt-3">
 
             <div className="flex-[240] h-full w-full relative">
                 <div>
                     <img className="h-52 w-full" src={profileUser.backGround}/>
                 </div>
                 <div className="z-45 absolute -translate-x-1 -bottom-1/4  mb-2 ml-4 h-35 w-35">
-                    <img className="rounded-full h-32 w-32 object-cover border-4 border-black" src={profileUser.profilePic}/>
+                    <img className={ clsx ("rounded-full h-32 w-32 object-cover border-4 ", {
+                        "border-dimBackGround": backGroundColor === "dimBackGround",
+                        "border-twitterBlack": backGroundColor === "twitterBlack",
+                    })} src={profileUser.profilePic}/>
                 </div>
             </div>
             <div className="flex-[200] flex-col h-full w-full flex px-4 py-3">
@@ -180,7 +188,7 @@ function ProfileFeed ({currentUserFollowing, bookMarkContent, setBookMarkContent
 
             </div>
             <div className="flex-[55] h-full w-full border-b-2 border-twitterBorder pb-0.5 justify-evenly px-4 flex">
-                <ProfileFeedTabState setTabState={setTabState} tabState={tabState}/>
+                <ProfileFeedTabState buttonColor={buttonColor} setTabState={setTabState} tabState={tabState}/>
             </div>
 
 
@@ -190,23 +198,48 @@ function ProfileFeed ({currentUserFollowing, bookMarkContent, setBookMarkContent
 
 
             <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder" style={{ display: tabState === "posts" ? "block" : "none" }}>
+                {profileUserData && profileUserData.userPostsAndReposts.length > 0 ? (
+                <>
                 {profileUserData.userPostsAndReposts.map((post) => 
                     <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
-                        <PostTemplate bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} cachedFollows={cachedFollows} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} profileUser={profileUser} currentUser={currentUser} post={post} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} postCreator={post.creator} postMedia={post.mediaList} postReplies={post.replyList}/>
+                        <PostTemplate backGroundColor={backGroundColor} buttonColor={buttonColor} bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} cachedFollows={cachedFollows} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} profileUser={profileUser} currentUser={currentUser} post={post} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} postCreator={post.creator} postMedia={post.mediaList} postReplies={post.replyList}/>
                     </div>
                 )}
+                </>
+                ) : (
+                <div className="w-full h-full flex justify-center item-center">
+                    <div className="w-2/5 flex flex-col mt-4 items-center gap-2">
+                    <p className="text-center font-bold text-2xl">@{profileUserData.userProfile.username} hasn't posted</p>
+                    <p className="text-center text-twitterBorder">When they do, their posts will show up here</p>
+                    </div>
+                </div>  
+                )}
+
             </div>
 
             <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder" style={{ display: tabState === "likes" ? "block" : "none" }}>
+                {profileUserData && profileUserData.userLiked.length > 0 ? (
+                <>
                 {profileUserData.userLiked.map((post) => 
                     <div className="w-full h-fit pb-2 border-b-2 border-twitterBorder">
-                        <PostTemplate bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} cachedFollows={cachedFollows} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} currentUser={currentUser} post={post} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} postCreator={post.creator} postMedia={post.mediaList} postReplies={post.replyList}/>
+                        <PostTemplate backGroundColor={backGroundColor} buttonColor={buttonColor} bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} cachedFollows={cachedFollows} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} currentUser={currentUser} post={post} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} postReposts={post.repostList} postBookMarks={post.bookMarkList} postLikes={post.likeList} postCreator={post.creator} postMedia={post.mediaList} postReplies={post.replyList}/>
                     </div>
                 )}
+                </>
+                ) : (
+                <div className="w-full h-full flex justify-center item-center">
+                    <div className="w-2/5 flex flex-col mt-4 items-center gap-2">
+                    <p className="text-center font-bold text-2xl">@{profileUserData.userProfile.username} hasn't liked any posts yet</p>
+                    <p className="text-center text-twitterBorder">Once they do, those posts will show up here</p>
+                    </div>
+                </div>  
+                )}
+
             </div>
 
             <div className="flex-[320] text-white flex flex-col-reverse justify-end h-full w-full border-l-2 border-r-2 border-twitterBorder" style={{ display: tabState === "media" ? "block" : "none" }}>
-                <div className="grid grid-cols-3 gap-1">
+                    {postMediaArray && postMediaArray.length > 0 ? (
+                    <div className="grid grid-cols-3 gap-1">
                     {postMediaArray.map((image, index) => 
                         <div key={index} className="w-full aspect-square bg-gray-200">
                             <img 
@@ -216,7 +249,18 @@ function ProfileFeed ({currentUserFollowing, bookMarkContent, setBookMarkContent
                             />
                         </div>
                     )}
-                </div>
+                    </div>
+                    ) : (
+                        <div className="w-full h-full flex justify-center item-center">
+                            <div className="w-2/5 flex flex-col mt-4 items-center gap-2">
+                            <img src={"/no-media.png"}/>
+                            <p className="text-center font-bold text-2xl">@{profileUserData.userProfile.username} hasn't posted any media yet</p>
+                            <p className="text-center text-twitterBorder">Once they do, those posts will show up here</p>
+                            </div>
+                        </div>
+                    )}
+
+
             </div>
 
             {/* <div style={{ display: tabState === "replies" ? "block" : "none" }}>

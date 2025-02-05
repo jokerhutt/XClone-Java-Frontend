@@ -5,13 +5,14 @@ import imageCompression from 'browser-image-compression';
 import { CiImageOn } from "react-icons/ci";
 import { MdOutlineGifBox } from "react-icons/md";
 import GifPopover from "../../GifPopover";
+import clsx from 'clsx';
 import { BsEmojiSmile } from "react-icons/bs";
 import GifPicker from 'gif-picker-react';
 import { FaGlobeAmericas } from "react-icons/fa";
 
 
 
-function NewPost ({cachedMediaPosts, setCachedMediaPosts, setCurrentUserProfileData, currentUserProfileData, currentUser, setIsPosting, setCurrentUser, isPosting, setForYouFeedContent, forYouFeedContent}) {
+function NewPost ({cachedMediaPosts, buttonColor, setCachedMediaPosts, setCurrentUserProfileData, currentUserProfileData, currentUser, setIsPosting, setCurrentUser, isPosting, setForYouFeedContent, forYouFeedContent}) {
 
     const [postTitle, setPostTitle] = useState("");
     const [postMedia, setPostMedia] = useState([]);
@@ -190,8 +191,17 @@ function NewPost ({cachedMediaPosts, setCachedMediaPosts, setCurrentUserProfileD
                                 )}
             
                                 <div className="flex-[12] text-white ">
-            
-                                    <div className=" flex gap-2 items-center flex-[1] text-sm text-twitterBlue hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer">
+                                
+                                    <div className={clsx ("flex gap-2 items-center flex-[1] text-sm hover:drop-shadow-[0_0_15px_#1C9BF0] transition duration-300 hover:cursor-pointer", {
+            "text-twitterRed": buttonColor === "twitterRed",
+            "text-twitterBlue": buttonColor === "twitterBlue",
+            "text-twitterYellow": buttonColor === "twitterYellow",
+            "text-twitterPurple": buttonColor === "twitterPurple",
+            "hover:text-twitterRed": buttonColor === "twitterRed",
+            "hover:text-twitterBlue": buttonColor === "twitterBlue",
+            "hover:text-twitterYellow": buttonColor === "twitterYellow",
+            "hover:text-twitterPurple": buttonColor === "twitterPurple",
+        })}>
                                         <FaGlobeAmericas />
                                         <p className="font-bold ">Everyone can reply</p>
                                     </div>
@@ -199,7 +209,12 @@ function NewPost ({cachedMediaPosts, setCachedMediaPosts, setCurrentUserProfileD
                                     <hr className="mt-3 border-twitterBorder"/>
             
                                     <div className="flex-[3] flex justify-between">
-                                        <div className="h-1/2 flex gap-4 pt-2 text-twitterBlue items-center">
+                                        <div className={clsx ("h-1/2 flex gap-4 pt-2 items-center", {
+            "text-twitterRed": buttonColor === "twitterRed",
+            "text-twitterBlue": buttonColor === "twitterBlue",
+            "text-twitterYellow": buttonColor === "twitterYellow",
+            "text-twitterPurple": buttonColor === "twitterPurple",
+        })}>
                                         <div>
                                             {/* <input
                                                 id="imageInput"
@@ -209,17 +224,29 @@ function NewPost ({cachedMediaPosts, setCachedMediaPosts, setCurrentUserProfileD
                                                 onChange={handleImageChange} // Handle file change
                                                 style={{ display: 'none' }} // Hide the file input
                                             /> */}
+                                            
                                             <input type="file" id="imageInput" accept="image/*" style={{ display: 'none' }} onChange={(event) => handleImageUpload(event)}></input>
-                                            <CiImageOn onClick={handleImageClick} className="hover:cursor-pointer text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300"/>
+                                            <CiImageOn onClick={handleImageClick} className={clsx ("hover:cursor-pointer text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] transition duration-300", {
+                                                "hover:text-twitterRed": buttonColor === "twitterRed",
+                                                "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                                                "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                                                "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                                            })}/>
                                         </div>
                                             <div className="relative">
-                                                <GifPopover addGifToPost={addGifToPost}/>
+                                                <GifPopover buttonColor={buttonColor} addGifToPost={addGifToPost}/>
                                             </div>
                                             
                                             <div className="relative">
                                             <BsEmojiSmile
                                             onClick={() => setEmojiToggle(!emojiToggle)}
-                                            className="text-l hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
+                                            
+                                            className={clsx ("text-l hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer", {
+                                                "hover:text-twitterRed": buttonColor === "twitterRed",
+                                                "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                                                "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                                                "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                                            })}/>
                                             <div className="absolute z-70 translate-y-5">
                                                 <EmojiPicker open={emojiToggle} onEmojiClick={handleEmojiAdd} theme={"dark"} height={340} width={280}/>
                                             </div>

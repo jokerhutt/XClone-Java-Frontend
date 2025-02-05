@@ -3,8 +3,9 @@ import { CiImageOn } from "react-icons/ci";
 import { MdOutlineGifBox } from "react-icons/md";
 import { BsEmojiSmile } from "react-icons/bs";
 import "./App.css"
+import clsx from 'clsx';
 
-function ReplyingModal ({tempPostReplies, setTempPostReplies, post, postUser, currentUser, setIsReplyingToggle, setCachedAddedReplies}) {
+function ReplyingModal ({backGroundColor, buttonColor, tempPostReplies, setTempPostReplies, post, postUser, currentUser, setIsReplyingToggle, setCachedAddedReplies}) {
 
     const [replyText, setReplyText] = useState("");
     const [characterLength, setCharacterLength] = useState(1);
@@ -56,7 +57,10 @@ function ReplyingModal ({tempPostReplies, setTempPostReplies, post, postUser, cu
     return (
         <div className="fixed inset-0 h-full z-60 w-screen bg-opacity-55 bg-gray-700 flex flex-col justify-center flex-grow items-center">
             {post && postUser && currentUser ? (
-            <div className="h-2/3 w-2/5 mb-20 rounded-3xl bg-black text-white flex flex-col px-4 gap-6">
+            <div className={clsx ("h-2/3 w-2/5 mb-20 rounded-3xl text-white flex flex-col px-4 gap-6", {
+                "bg-dimBackGround": backGroundColor === "dimBackGround",
+                "bg-twitterBlack": backGroundColor === "twitterBlack",
+            })}>
             <div className="h-10 w-full pt-4 pl-4">
                 <p className="hover:cursor-pointer text-white text-xl" onClick={() => setIsReplyingToggle(false)}>X</p>
             </div>
@@ -84,7 +88,12 @@ function ReplyingModal ({tempPostReplies, setTempPostReplies, post, postUser, cu
                 </div>
                 <div className="flex-col w-full gap-2 pl-1">
                     <div>
-                        <p className="text-twitterBorder"> Replying to <span className="text-twitterBlue">@{postUser.username}</span> </p>
+                        <p className="text-twitterBorder"> Replying to <span className={clsx ({
+                            "text-twitterRed": buttonColor === "twitterRed",
+                            "text-twitterBlue": buttonColor === "twitterBlue",
+                            "text-twitterYellow": buttonColor === "twitterYellow",
+                            "text-twitterPurple": buttonColor === "twitterPurple",
+                        })}>@{postUser.username}</span> </p>
                     </div>
                 </div>
             </div>
@@ -97,10 +106,37 @@ function ReplyingModal ({tempPostReplies, setTempPostReplies, post, postUser, cu
                 </div>
             </div>
             <div className="flex w-full h-12 items-end pb-6">
-                <div className="w-3/4 h-full flex gap-4 text-twitterBlue items-ceter pl-1">
-                                <CiImageOn className="text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
-                                <MdOutlineGifBox className="text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
-                                <BsEmojiSmile className="text-l hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
+                <div className="w-3/4 h-full flex items-center gap-4 items-ceter pl-1">
+                                <CiImageOn className={clsx ("text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] transition duration-300 hover:cursor-pointer", {
+                                                                "text-twitterRed": buttonColor === "twitterRed",
+                                                                "text-twitterBlue": buttonColor === "twitterBlue",
+                                                                "text-twitterYellow": buttonColor === "twitterYellow",
+                                                                "text-twitterPurple": buttonColor === "twitterPurple",
+                                                                "hover:text-twitterRed": buttonColor === "twitterRed",
+                                                                "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                                                                "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                                                                "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                                })}/>
+                                <MdOutlineGifBox className={clsx ("text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] transition duration-300 hover:cursor-pointer", {
+                                                                "text-twitterRed": buttonColor === "twitterRed",
+                                                                "text-twitterBlue": buttonColor === "twitterBlue",
+                                                                "text-twitterYellow": buttonColor === "twitterYellow",
+                                                                "text-twitterPurple": buttonColor === "twitterPurple",
+                                                                "hover:text-twitterRed": buttonColor === "twitterRed",
+                                                                "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                                                                "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                                                                "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                                })}/>
+                                <BsEmojiSmile className={clsx ("text-l hover:drop-shadow-[0_0_15px_#1C9BF0] transition duration-300 hover:cursor-pointer", {
+                                                                "text-twitterRed": buttonColor === "twitterRed",
+                                                                "text-twitterBlue": buttonColor === "twitterBlue",
+                                                                "text-twitterYellow": buttonColor === "twitterYellow",
+                                                                "text-twitterPurple": buttonColor === "twitterPurple",
+                                                                "hover:text-twitterRed": buttonColor === "twitterRed",
+                                                                "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                                                                "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                                                                "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                                })}/>
                 </div>
                 <div className="flex justify-end w-full gap-2">
                 <div className="relative flex items-center justify-center">

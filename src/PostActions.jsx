@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { FaRegComment, FaRegHeart, FaRegChartBar, FaRegBookmark, FaRetweet } from "react-icons/fa";
+import clsx from 'clsx';
 
-function PostActions ({setCurrentUserProfileData, bookMarkContent, setBookMarkContent, tempPostReplies, isInZoomedMode, currentPostReplies, setIsReplyingToggle, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, postLikes, post, currentUser, postReplies, postCreator, postBookMarks}) {
+function PostActions ({setCurrentUserProfileData, buttonColor, bookMarkContent, setBookMarkContent, tempPostReplies, isInZoomedMode, currentPostReplies, setIsReplyingToggle, postReposts, cachedReposts, setCachedReposts, cachedBookMarks, setCachedBookMarks, setCachedLikedPosts, cachedLikedPosts, postLikes, post, currentUser, postReplies, postCreator, postBookMarks}) {
 
     //FLAG VARIABLES FOR INTERACTIONS
     const [isBookMarked, setIsBookMarked] = useState(false);
@@ -292,15 +293,38 @@ function PostActions ({setCurrentUserProfileData, bookMarkContent, setBookMarkCo
                     
                     {tempPostReplies && isInZoomedMode ? (
                         <div className="flex items-center gap-2">
-                        <FaRegComment onClick={() => setIsReplyingToggle(true)} className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{tempPostReplies.length}</p>
+                        <FaRegComment onClick={() => setIsReplyingToggle(true)}                             className={clsx ("hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 transition duration-300 hover:cursor-pointer", {
+                                "hover:text-twitterRed": buttonColor === "twitterRed",
+                                "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                                "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                                "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                                "text-twitterRed": buttonColor === "twitterRed",
+                                "text-twitterBlue": buttonColor === "twitterBlue",
+                                "text-twitterYellow": buttonColor === "twitterYellow",
+                                "text-twitterPurple": buttonColor === "twitterPurple",
+                            })}/> <p className="text-white text-sm">{tempPostReplies.length}</p>
                         </div>
                     ) : postReplies ? (
                         <div className="flex items-center gap-2">
-                        <FaRegComment onClick={() => setIsReplyingToggle(true)} className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{currentPostReplies.length}</p>
+                        <FaRegComment onClick={() => setIsReplyingToggle(true)} 
+                            className={clsx ("hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 transition duration-300 hover:cursor-pointer", {
+                                "hover:text-twitterRed": buttonColor === "twitterRed",
+                                "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                                "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                                "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                            })}
+                            /> <p className="text-white text-sm">{currentPostReplies.length}</p>
                         </div>
                     ) : (
                         <div className="flex items-center gap-2">
-                        <FaRegComment onClick={() => setIsReplyingToggle(true)} className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
+                        <FaRegComment onClick={() => setIsReplyingToggle(true)} 
+                            className={clsx ("hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 transition duration-300 hover:cursor-pointer", {
+                                "hover:text-twitterRed": buttonColor === "twitterRed",
+                                "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                                "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                                "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                            })}
+                        /> <p className="text-white text-sm">0</p>
                         </div>
                     )}
 
@@ -308,19 +332,38 @@ function PostActions ({setCurrentUserProfileData, bookMarkContent, setBookMarkCo
                         <div className="flex items-center gap-2">
                             <FaRetweet 
                             onClick={() => handleNewRepost()}
-                            className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{repostsLength}</p>
+                            className={clsx ("hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 transition duration-300 hover:cursor-pointer", {
+                                "hover:text-twitterRed": buttonColor === "twitterRed",
+                                "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                                "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                                "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                                "text-twitterRed": buttonColor === "twitterRed",
+                                "text-twitterBlue": buttonColor === "twitterBlue",
+                                "text-twitterYellow": buttonColor === "twitterYellow",
+                                "text-twitterPurple": buttonColor === "twitterPurple",
+                            })}/> <p className="text-white text-sm">{repostsLength}</p>
                         </div>
                     ) : !isReposted && repostsLength && postReposts ? (
                         <div className="flex items-center gap-2">
                             <FaRetweet 
                             onClick={() => handleNewRepost()}
-                            className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{repostsLength}</p>
+                            className={clsx ("hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 transition duration-300 hover:cursor-pointer", {
+                                "hover:text-twitterRed": buttonColor === "twitterRed",
+                                "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                                "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                                "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                            })}/> <p className="text-white text-sm">{repostsLength}</p>
                         </div>
                     ) : (
                         <div className="flex items-center gap-2">
                             <FaRetweet 
                             onClick={() => handleNewRepost()}
-                            className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
+                            className={clsx ("hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 transition duration-300 hover:cursor-pointer", {
+                                "hover:text-twitterRed": buttonColor === "twitterRed",
+                                "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                                "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                                "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                            })}/> <p className="text-white text-sm">0</p>
                         </div>  
                     )}
 
@@ -328,43 +371,86 @@ function PostActions ({setCurrentUserProfileData, bookMarkContent, setBookMarkCo
                         <div className="flex items-center gap-2">
                         <FaRegHeart 
                         onClick={() => handleLike()}
-                        className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
+                        className={clsx ("hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 transition duration-300 hover:cursor-pointer", {
+                            "hover:text-twitterRed": buttonColor === "twitterRed",
+                            "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                            "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                            "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                            "text-twitterRed": buttonColor === "twitterRed",
+                            "text-twitterBlue": buttonColor === "twitterBlue",
+                            "text-twitterYellow": buttonColor === "twitterYellow",
+                            "text-twitterPurple": buttonColor === "twitterPurple",
+                        })}/>
                          <p className="text-white text-sm">{likesLength}</p>
                         </div>
                     ) : !isLiked && postLikes && likesLength ? (
                         <div className="flex items-center gap-2">
                         <FaRegHeart 
                         onClick={() => handleLike()}
-                        className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{likesLength}</p>
+                        className={clsx ("hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 transition duration-300 hover:cursor-pointer", {
+                            "hover:text-twitterRed": buttonColor === "twitterRed",
+                            "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                            "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                            "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                        })}/> <p className="text-white text-sm">{likesLength}</p>
                         </div>
                     ) : (
                         <div className="flex items-center gap-2">
                         <FaRegHeart 
                         onClick={() => handleLike()}
-                        className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
+                        className={clsx ("hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 transition duration-300 hover:cursor-pointer", {
+                            "hover:text-twitterRed": buttonColor === "twitterRed",
+                            "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                            "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                            "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                        })}/> <p className="text-white text-sm">0</p>
                         </div>
                     )}
                     
                     <div className="flex items-center gap-2">
-                    <FaRegChartBar className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
+                    <FaRegChartBar                             className={clsx ("hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 transition duration-300 hover:cursor-pointer", {
+                                "hover:text-twitterRed": buttonColor === "twitterRed",
+                                "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                                "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                                "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                            })}/> <p className="text-white text-sm">0</p>
                     </div>
                     {postBookMarks && isBookMarked && bookMarksLength ? (
                         <div className="flex items-center gap-2">
                         <FaRegBookmark 
                         onClick={() => {handleNewBookMark()}}
-                        className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{bookMarksLength}</p>
+                        className={clsx ("hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 transition duration-300 hover:cursor-pointer", {
+                            "hover:text-twitterRed": buttonColor === "twitterRed",
+                            "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                            "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                            "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                            "text-twitterRed": buttonColor === "twitterRed",
+                            "text-twitterBlue": buttonColor === "twitterBlue",
+                            "text-twitterYellow": buttonColor === "twitterYellow",
+                            "text-twitterPurple": buttonColor === "twitterPurple",
+                        })}/> <p className="text-white text-sm">{bookMarksLength}</p>
                         </div>
                     ) : !isBookMarked && postBookMarks && bookMarksLength ? (
                         <div className="flex items-center gap-2">
                         <FaRegBookmark 
                         onClick={() => {handleNewBookMark()}}
-                        className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">{bookMarksLength}</p>
+                        className={clsx ("hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 transition duration-300 hover:cursor-pointer", {
+                            "hover:text-twitterRed": buttonColor === "twitterRed",
+                            "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                            "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                            "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                        })}/> <p className="text-white text-sm">{bookMarksLength}</p>
                         </div>
                     ) : (
                         <div className="flex items-center gap-2">
                         <FaRegBookmark 
                         onClick={() => {handleNewBookMark()}}
-                        className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/> <p className="text-white text-sm">0</p>
+                        className={clsx ("hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-gray-300 transition duration-300 hover:cursor-pointer", {
+                            "hover:text-twitterRed": buttonColor === "twitterRed",
+                            "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                            "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                            "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                        })}/> <p className="text-white text-sm">0</p>
                         </div>
                     )}
 

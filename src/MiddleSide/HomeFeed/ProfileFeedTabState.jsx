@@ -1,11 +1,20 @@
-function ProfileFeedTabState({setTabState, tabState}) {
+import clsx from 'clsx';
+
+function ProfileFeedTabState({setTabState, buttonColor, tabState}) {
+
+    
     return(
         <>
         <div 
             onClick={() => setTabState("posts")}
             className="flex justify-center w-full h-full hover:bg-twitterBorder hover:cursor-pointer">
                 {tabState == "posts" ? (
-                    <p className="border-b-2 font-bold border-twitterBlue">Posts</p>
+                    <p className={clsx("border-b-2 font-bold", {
+                        "border-twitterRed": buttonColor === "twitterRed",
+                        "border-twitterBlue": buttonColor === "twitterBlue",
+                        "border-twitterYellow": buttonColor === "twitterYellow",
+                        "border-twitterPurple": buttonColor === "twitterPurple",
+                    })}>Posts</p>
                 ) : (
                     <p>Posts</p>
                 )}
@@ -24,7 +33,13 @@ function ProfileFeedTabState({setTabState, tabState}) {
             onClick={() => setTabState("media")}
             className="flex justify-center items-center w-full h-full hover:bg-twitterBorder hover:cursor-pointer">
                 {tabState == "media" ? (
-                    <p className="border-b-2 font-bold border-twitterBlue">Media</p>
+                    <p className={clsx("border-b-2 font-bold", {
+                        "border-twitterRed": buttonColor === "twitterRed",
+                        "border-twitterBlue": buttonColor === "twitterBlue",
+                        "border-twitterYellow": buttonColor === "twitterYellow",
+                        "border-twitterPurple": buttonColor === "twitterPurple",
+
+                    })}>Media</p>
                 ) : (
                     <p>Media</p>
                 )}      
@@ -33,7 +48,12 @@ function ProfileFeedTabState({setTabState, tabState}) {
             onClick={() => setTabState("likes")}
             className="flex justify-center items-center w-full h-full hover:bg-twitterBorder hover:cursor-pointer">
                 {tabState == "likes" ? (
-                    <p className="border-b-2 font-bold border-twitterBlue">Likes</p>
+                    <p className={clsx("border-b-2 font-bold", {
+                        "border-twitterRed": buttonColor === "twitterRed",
+                        "border-twitterBlue": buttonColor === "twitterBlue",
+                        "border-twitterYellow": buttonColor === "twitterYellow",
+                        "border-twitterPurple": buttonColor === "twitterPurple",
+                    })}>Likes</p>
                 ) : (
                     <p>Likes</p>
                 )}      

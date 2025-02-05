@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa";
 import PostTemplate from './PostTemplate';
+import clsx from 'clsx';
 import { FaCircleArrowRight } from "react-icons/fa6";
 import { FaCircleArrowLeft } from "react-icons/fa6";
 
 
 
 
-function MediaPreviewModal ({cachedLikedPosts, bookMarkContent, setBookMarkContent, setCachedLikedPosts, setCachedBookMarks, cachedBookMarks, cachedMediaPosts, cachedAddedReplies, setCachedReposts, setCachedAddedReplies, cachedReposts, currentUser}) {
+function MediaPreviewModal ({cachedLikedPosts, backGroundColor, bookMarkContent, setBookMarkContent, setCachedLikedPosts, setCachedBookMarks, cachedBookMarks, cachedMediaPosts, cachedAddedReplies, setCachedReposts, setCachedAddedReplies, cachedReposts, currentUser}) {
     const { postId, position } = useParams();
     const navigate = useNavigate();
     const [previewedPost, setPreviewedPost] = useState(null);
@@ -29,7 +30,10 @@ function MediaPreviewModal ({cachedLikedPosts, bookMarkContent, setBookMarkConte
 
     return (
         <>
-        <div className="fixed inset-0 h-full z-70 w-screen bg-black bg-opacity-50 backdrop-blur-lg backdrop-brightness-75 flex justify-center items-center">
+        <div className={clsx ("fixed inset-0 h-full z-70 w-screen bg-opacity-50 backdrop-blur-lg backdrop-brightness-75 flex justify-center items-center", {
+          "bg-dimBackGround": backGroundColor === "dimBackGround",
+          "bg-twitterBlack": backGroundColor === "twitterBlack",
+        })}>
 
             <div className="flex-[80] h-full w-full flex-col relative">
                 <div className='text-white h-10 absolute py-16 px-16 z-65 text-xl'>
@@ -76,7 +80,10 @@ function MediaPreviewModal ({cachedLikedPosts, bookMarkContent, setBookMarkConte
 
             </div>
             {previewedPost ? (
-            <div className="flex-[25] bg-black h-full w-full pr-6 flex-col">
+            <div className={clsx ("flex-[25] bg-black h-full w-full px-2 flex justify-center items-center flex-col", {
+                "bg-dimBackGround": backGroundColor === "dimBackGround",
+                "bg-twitterBlack": backGroundColor === "twitterBlack",
+            })}>
                 <PostTemplate bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} post={previewedPost} cachedMediaPosts={cachedMediaPosts} currentUser={currentUser} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} disableMedia={disableMedia}
                 isInZoomedMode={true}
                 postReposts={previewedPost.repostList} postBookMarks={previewedPost.bookMarkList} postLikes={previewedPost.likeList} postCreator={previewedPost.creator} postMedia={previewedPost.mediaList} postReplies={previewedPost.replyList}

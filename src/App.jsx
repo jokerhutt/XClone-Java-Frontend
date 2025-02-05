@@ -11,6 +11,8 @@ import LogOutPage from '../LogOutPage';
 import ZoomedPost from './ZoomedPost';
 import ProfileFeed from './MiddleSide/ProfileFeed';
 import MediaPreviewModal from './MediaPreviewModal';
+import clsx from 'clsx';
+
 import './App.css'
 
 import MessageComponent from './MessageComponent';
@@ -21,9 +23,13 @@ import { cache } from 'react';
 function App() {
   const [count, setCount] = useState(0)
 
+  const [backGroundColor, setBackGroundColor] = useState('twitterBlack');
+  const [buttonColor, setButtonColor] = useState('twitterBlue');
+
   const [currentUser, setCurrentUser] = useState(null);
   const [posts, setPosts] = useState([]);
   const [cachedProfiles, setCachedProfiles] = useState({});
+  
   const [currentUserProfileData, setCurrentUserProfileData] = useState({})
 
   const socket = useSocket();
@@ -80,17 +86,14 @@ useEffect(() => {
       const receivedMessage = JSON.parse(event.data);
       console.log("New message received: " + JSON.stringify(receivedMessage));
 
-      if (!currentUser) {
-        console.warn("Message not relevant for this user, ignoring.");
-        return;
-     }
-
-      if (receivedMessage.receiverId !== currentUser.id && receivedMessage.senderId !== currentUser.id) {
-        console.warn("Message not relevant for this user, ignoring.");
-        return;
-     }
-
-      setConvoCache((prevCache) => {
+      if (receivedMessage && currentUser) {
+        if (receivedMessage.receiverId !== currentUser.id && receivedMessage.senderId !== currentUser.id) {
+          console.warn("Message not relevant for this user, ignoring.");
+          return;
+       }
+      }
+      if (receivedMessage) {
+        setConvoCache((prevCache) => {
 
           const conversationId = receivedMessage.conversationId;
 
@@ -104,6 +107,7 @@ useEffect(() => {
                     ...prevCache[conversationId].convo,
                     lastMessageId: receivedMessage.messageId,
                     lastMessageText: receivedMessage.messageText,
+                    lastMessageCreatedAt: receivedMessage.createdAt,
                 },
             },
         };
@@ -111,6 +115,7 @@ useEffect(() => {
 
       if (currentUser && receivedMessage.receiverId === currentUser.id) {
         fetchMessageNotifications();
+      }
       }
 
   };
@@ -718,22 +723,25 @@ function sortMediaCachedPosts (passedPosts) {
     <>
       <div>
 
-      <div className='grid grid-cols-12 h-screen w-screen'>
-        <div className='flex bg-black max-h-screen h-screen flex-col col-span-3'>
-          <LeftFeed hasMessages={hasMessages} setHasMessages={setHasMessages} setForYouFeedContent={setForYouFeedContent} forYouFeedContent={forYouFeedContent} currentUser={currentUser} setCurrentUser={setCurrentUser} nonMessageNotifications={nonMessageNotifications} setPosts={setPosts} setUserNotifications={setUserNotifications}/>
+      <div className={clsx('grid grid-cols-12 h-screen w-screen', {
+          "bg-dimBackGround": backGroundColor === "dimBackGround",
+          "bg-twitterBlack": backGroundColor === "twitterBlack",
+        })}>
+        <div className="flex max-h-screen h-screen flex-col col-span-3">
+          <LeftFeed setBackGroundColor={setBackGroundColor} setButtonColor={setButtonColor} buttonColor={buttonColor} backGroundColor={backGroundColor} hasMessages={hasMessages} setHasMessages={setHasMessages} setForYouFeedContent={setForYouFeedContent} forYouFeedContent={forYouFeedContent} currentUser={currentUser} setCurrentUser={setCurrentUser} nonMessageNotifications={nonMessageNotifications} setPosts={setPosts} setUserNotifications={setUserNotifications}/>
         </div>
-        <div className='flex bg-black h-full flex-col col-span-5 overflow-auto scrollable-none'>
+        <div className='flex h-full flex-col col-span-5 overflow-auto scrollable-none'>  
         <Routes>
             <Route 
               path="/" 
               element={
-              <MainFeed bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} setMessageNotificationCache={setMessageNotificationCache} currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} cachedFollows={cachedFollows} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} followingFeedContent={followingFeedContent} cachedMediaPosts={cachedMediaPosts} setCachedMediaPosts={setCachedMediaPosts} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} changeForYouFeed={changeForYouFeed} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>}
+              <MainFeed backGroundColor={backGroundColor} buttonColor={buttonColor} bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} setMessageNotificationCache={setMessageNotificationCache} currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} cachedFollows={cachedFollows} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} followingFeedContent={followingFeedContent} cachedMediaPosts={cachedMediaPosts} setCachedMediaPosts={setCachedMediaPosts} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} changeForYouFeed={changeForYouFeed} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts} setUserLikedPosts={setUserLikedPosts} likedPostIdsSet={likedPostIdsSet} currentUser={currentUser} setCurrentUser={setCurrentUser} forYouFeedContent={forYouFeedContent} setForYouFeedContent={setForYouFeedContent}/>}
             />
 
             <Route 
               path="/:profileUserId" 
               element={
-              <ProfileFeed bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} currentUserFollowing={currentUserFollowing} cachedFollows={cachedFollows} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} handleNewFollow={handleNewFollow} userFollowing={userFollowing} userFollowers={userFollowers} currentUser={currentUser} setCurrentUser={setCurrentUser} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>}
+              <ProfileFeed buttonColor={buttonColor} backGroundColor={backGroundColor} bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} currentUserFollowing={currentUserFollowing} cachedFollows={cachedFollows} setCurrentUserProfileData={setCurrentUserProfileData} currentUserProfileData={currentUserProfileData} cachedProfiles={cachedProfiles} setCachedProfiles={setCachedProfiles} handleNewFollow={handleNewFollow} userFollowing={userFollowing} userFollowers={userFollowers} currentUser={currentUser} setCurrentUser={setCurrentUser} cachedMediaPosts={cachedMediaPosts} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>}
             />
 
             <Route 
@@ -745,13 +753,13 @@ function sortMediaCachedPosts (passedPosts) {
             <Route
               path="/post/:postId"
               element={
-              <ZoomedPost bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} currentUser={currentUser} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>
+              <ZoomedPost buttonColor={buttonColor} backGroundColor={backGroundColor} bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} currentUser={currentUser} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>
               }/>
 
             <Route
               path="/imagepreview/:postId/:position"
               element={
-              <MediaPreviewModal bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} cachedMediaPosts={cachedMediaPosts} currentUser={currentUser} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>
+              <MediaPreviewModal backGroundColor={backGroundColor} bookMarkContent={bookMarkContent} setBookMarkContent={setBookMarkContent} cachedMediaPosts={cachedMediaPosts} currentUser={currentUser} cachedAddedReplies={cachedAddedReplies} setCachedAddedReplies={setCachedAddedReplies} cachedReposts={cachedReposts} setCachedReposts={setCachedReposts} cachedBookMarks={cachedBookMarks} setCachedBookMarks={setCachedBookMarks} setCachedLikedPosts={setCachedLikedPosts} cachedLikedPosts={cachedLikedPosts}/>
               }/>
 
             <Route
@@ -763,7 +771,7 @@ function sortMediaCachedPosts (passedPosts) {
             <Route 
               path="/messages/:userId"
               element={
-                <MessageComponent hasMessages={hasMessages} setHasMessages={setHasMessages} setMessageNotificationCache={setMessageNotificationCache} messageNotificationCache={messageNotificationCache} sendMessage={sendMessage} socket={socket} convoCache={convoCache} setConvoCache={setConvoCache} currentUser={currentUser} messageNotifications={messageNotifications} refreshNotifications={refreshNotifications} userNotifications={userNotifications}/>
+                <MessageComponent buttonColor={buttonColor} hasMessages={hasMessages} setHasMessages={setHasMessages} setMessageNotificationCache={setMessageNotificationCache} messageNotificationCache={messageNotificationCache} sendMessage={sendMessage} socket={socket} convoCache={convoCache} setConvoCache={setConvoCache} currentUser={currentUser} messageNotifications={messageNotifications} refreshNotifications={refreshNotifications} userNotifications={userNotifications}/>
               }
             />
 
@@ -777,7 +785,7 @@ function sortMediaCachedPosts (passedPosts) {
             <Route 
               path="/messages/:userId/:otherUserId"
               element={
-                <MessageComponent hasMessages={hasMessages} setHasMessages={setHasMessages} setMessageNotificationCache={setMessageNotificationCache} messageNotificationCache={messageNotificationCache} sendMessage={sendMessage} socket={socket} currentUser={currentUser} convoCache={convoCache} setConvoCache={setConvoCache} messageNotifications={messageNotifications} refreshNotifications={refreshNotifications} userNotifications={userNotifications}/>
+                <MessageComponent buttonColor={buttonColor} hasMessages={hasMessages} setHasMessages={setHasMessages} setMessageNotificationCache={setMessageNotificationCache} messageNotificationCache={messageNotificationCache} sendMessage={sendMessage} socket={socket} currentUser={currentUser} convoCache={convoCache} setConvoCache={setConvoCache} messageNotifications={messageNotifications} refreshNotifications={refreshNotifications} userNotifications={userNotifications}/>
               }
             />
 
@@ -788,8 +796,8 @@ function sortMediaCachedPosts (passedPosts) {
             /> */}
         </Routes>
         </div>
-        <div className='flex bg-black h-screen max-h-screen flex-col col-span-4'>
-          <RightFeed currentUserFollowing={currentUserFollowing} cachedFollows={cachedFollows} sampleUsers={sampleUsers} currentUser={currentUser} setCurrentUser={setCurrentUser} userFollowing={userFollowing} handleNewFollow={handleNewFollow}/>
+        <div className='flex h-screen max-h-screen flex-col col-span-4'>
+          <RightFeed  buttonColor={buttonColor} backGroundColor={backGroundColor} currentUserFollowing={currentUserFollowing} cachedFollows={cachedFollows} sampleUsers={sampleUsers} currentUser={currentUser} setCurrentUser={setCurrentUser} userFollowing={userFollowing} handleNewFollow={handleNewFollow}/>
         </div>
       </div>
       

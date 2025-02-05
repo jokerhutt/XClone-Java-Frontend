@@ -3,6 +3,8 @@ import { IoMdMail } from "react-icons/io";
 import { FaUserGroup } from "react-icons/fa6";
 import { FaGlobeAmericas } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
+import MoreModal from "../MoreModal";
+import { PiDotsThreeCircle } from "react-icons/pi";
 import PostModal from "../PostModal";
 import { GoDotFill } from "react-icons/go";
 import LogOutModal from "../../LogOutModal";
@@ -11,7 +13,7 @@ import { useEffect, useState } from "react";
 
 
 
-function LeftFeed ({hasMessages, setHasMessages, currentUser, forYouFeedContent, setForYouFeedContent}) {
+function LeftFeed ({hasMessages,setBackGroundColor, setButtonColor, buttonColor, backGroundColor, setHasMessages, currentUser, forYouFeedContent, setForYouFeedContent}) {
 
     const [isPosting, setIsPosting] = useState(false);
     const [isLoggingOut, setIsLoggingOut] = useState(false)
@@ -19,17 +21,17 @@ function LeftFeed ({hasMessages, setHasMessages, currentUser, forYouFeedContent,
     return(
         <>
         {isPosting && currentUser && forYouFeedContent ? (
-            <PostModal setForYouFeedContent={setForYouFeedContent} forYouFeedContent={forYouFeedContent} currentUser={currentUser} isPosting={isPosting} setIsPosting={setIsPosting}/>
+            <PostModal buttonColor={buttonColor} backGroundColor={backGroundColor} setForYouFeedContent={setForYouFeedContent} forYouFeedContent={forYouFeedContent} currentUser={currentUser} isPosting={isPosting} setIsPosting={setIsPosting}/>
         ) : (
                 null
             )}
 <div className="flex flex-col flex-grow h-full w-full ml-20">
 
-<Link to="/" className="flex-[1] h-full w-full bg-black flex items-center">
+<Link to="/" className="flex-[1] h-full w-full flex items-center">
     <img src="/X.png" className="h-8 w-8"/>
 </Link>
 
-<div className="flex-[10] h-full w-full bg-black text-white mt-4 flex flex-col gap-6">
+<div className="flex-[10] h-full w-full text-white mt-4 flex flex-col gap-6">
     <Link to="/"className="flex gap-4 items-center text-2xl ">
         <FaHome/>
         <p>Home</p>
@@ -99,10 +101,7 @@ function LeftFeed ({hasMessages, setHasMessages, currentUser, forYouFeedContent,
         <p>Profile</p>
     </div>
     )}
-    <div className="flex gap-4 items-center text-2xl ">
-        <FaUserGroup/>
-        <p>More</p>
-    </div>
+    <MoreModal backGroundColor={backGroundColor} buttonColor={buttonColor} setBackGroundColor={setBackGroundColor} setButtonColor={setButtonColor}/>
 </div>
 {currentUser ? (
     <>

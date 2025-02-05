@@ -13,7 +13,7 @@ function NotificationFeed ({notificationCache, nonMessageNotifications, currentU
     
         
         <div className="flex flex-col flex-grow">
-            <div className='h-14 w-full px-4 justify-start gap-5 flex border border-twitterBorder text-white sticky top-0 z-20 backdrop-blur-md bg-black bg-opacity-7'>
+            <div className='h-14 w-full px-4 justify-start gap-5 flex border border-twitterBorder text-white sticky top-0 z-20 backdrop-blur-md bg-opacity-7'>
                 <div className="w-8 ml-2 h-full flex justify-start text-lg items-center">
                     <FaArrowLeft onClick={() => navigate(-1)} className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
                 </div>

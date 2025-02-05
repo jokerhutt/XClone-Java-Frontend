@@ -4,7 +4,7 @@ import FollowersFollowing from '../FollowersFollowing';
 import ProfileHoverPopover from '../ProfileHoverPopover';
 import '../App.css'
 
-function YouMightLike ({currentUserFollowing, cachedFollows, sampleuser, userFollowing, handleNewFollow, currentUser}) {
+function YouMightLike ({currentUserFollowing, backGroundColor, cachedFollows, sampleuser, userFollowing, handleNewFollow, currentUser}) {
 
     const [toggleFollowing, setToggleFollowing] = useState(false);
     const [unfollowHover, setUnfollowHover] = useState(false);
@@ -18,7 +18,7 @@ function YouMightLike ({currentUserFollowing, cachedFollows, sampleuser, userFol
 
         <div className='px-4 py-3 flex w-full h-full hover:cursor-pointer'>
             <Link to={`/${sampleuser.id}`} className='flex-[1]'>
-                <ProfileHoverPopover currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} cachedFollows={cachedFollows} postCreator={sampleuser} currentUser={currentUser} />
+                <ProfileHoverPopover backGroundColor={backGroundColor} currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} cachedFollows={cachedFollows} postCreator={sampleuser} currentUser={currentUser} />
             </Link>
             <div className='hidden'>
                 {currentUser ? (
@@ -39,7 +39,7 @@ function YouMightLike ({currentUserFollowing, cachedFollows, sampleuser, userFol
                             onClick={() => handleNewFollow(sampleuser.id, currentUser.id)}
                             onMouseEnter={() => setUnfollowHover(true)}
                             onMouseLeave={() => setUnfollowHover(false)}
-                            className='h-3/5 w-full bg-black text-white border flex justify-center items-center rounded-l-full rounded-r-full hover:cursor-pointer border-twitterBorder'>
+                            className='h-3/5 w-full text-white border flex justify-center items-center rounded-l-full rounded-r-full hover:cursor-pointer border-twitterBorder'>
                                 {unfollowHover ? (
                                     <p className='text-red-500'>Unfollow</p>
                                 ) : (

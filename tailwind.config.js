@@ -7,6 +7,11 @@ export default {
         twitterBlue: '#1C9BF0',
         twitterBorder: '#4C5159', 
         twitterHover: '#16181c',
+        dimBackGround: '#15202c',
+        twitterBlack: '#000000',
+        twitterRed: '#ff2c84',
+        twitterYellow: '#ffd404',
+        twitterPurple: '#8054fc',
       },
       fontFamily: {
         sans: ['Helvetica', 'Arial', 'sans-serif'],
