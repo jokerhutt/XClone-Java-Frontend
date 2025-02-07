@@ -15,7 +15,7 @@ function ProfileFeedFollow({isFollowing, currentUser, profileUser, userFollowing
     <div className="h-full w-full flex justify-end gap-6 items-center">
         {currentUser && profileUser.id === currentUser.id? (
         <div 
-        className="hover:cursor-pointer h-full w-1/5 flex justify-center items-center border-twitterBorder rounded-l-xl rounded-r-xl py-0.5 border-2">
+        className="hover:cursor-pointer h-full md:w-1/5 w-2/5 flex justify-center items-center border-twitterBorder rounded-l-xl rounded-r-xl py-0.5 border-2">
             <p className="text-4">Edit Profile</p>
         </div>
         ) : isFollowing ? (
@@ -27,7 +27,7 @@ function ProfileFeedFollow({isFollowing, currentUser, profileUser, userFollowing
                     onClick={() => handleNewFollow(profileUser.id, currentUser.id)}
                     onMouseEnter={() => setUnfollowHover(true)}
                     onMouseLeave={() => setUnfollowHover(false)}
-                    className="hover:cursor-pointer h-full w-1/5 flex justify-center items-cente rounded-l-xl rounded-r-xl py-0.5 border-twitterBorder border-2">
+                    className="hover:cursor-pointer h-full md:w-1/5 w-2/5 flex justify-center items-cente rounded-l-xl rounded-r-xl py-0.5 border-twitterBorder border-2">
                         {unfollowHover ? (
                             <div className="">
                                 <p className="text-4 text-red-500">Unfollow</p>
@@ -53,7 +53,7 @@ function ProfileFeedFollow({isFollowing, currentUser, profileUser, userFollowing
             )}
             <div 
             onClick={() => handleNewFollow(profileUser.id, currentUser.id)}
-            className="hover:cursor-pointer h-full w-1/5 flex justify-center items-center bg-white text-black rounded-l-xl rounded-r-xl py-0.5 border-2">
+            className="hover:cursor-pointer h-full md:w-1/5 w-2/5 flex justify-center items-center bg-white text-black rounded-l-xl rounded-r-xl py-0.5 border-2">
                 <p className="text-4">Follow</p>
             </div>
             </>

@@ -56,10 +56,10 @@ function FollowersFollowing ({currentUserFollowing, toggleFollowing, setToggleFo
 
     return (
         <>
-            <div className="flex w-full gap-4 items-center">
-                <p> <span className="font-bold">{followersLength}</span> Followers</p>
-                <p> <span className="font-bold">{followingLength}</span> Following</p>
-            </div>
+        <div className="flex w-full text-white gap-4 items-center">
+            <p> <span className="font-bold">{followersLength}</span> Followers</p>
+            <p> <span className="font-bold">{followingLength}</span> Following</p>
+        </div>
         </>
     )
 }

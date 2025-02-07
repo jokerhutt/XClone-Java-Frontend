@@ -3,22 +3,28 @@ import { useParams } from "react-router"
 import { useState, useEffect } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { TbBellRinging } from "react-icons/tb";
+import clsx from 'clsx';
 import NotificationTemplate from "./NotificationTemplate";
 import '../App.css'
 
-function NotificationFeed ({notificationCache, nonMessageNotifications, currentUser}) {
+function NotificationFeed ({notificationCache, buttonColor, nonMessageNotifications, currentUser}) {
     const navigate = useNavigate();
 
     return (
     
         
-        <div className="flex flex-col flex-grow">
-            <div className='h-14 w-full px-4 justify-start gap-5 flex border border-twitterBorder text-white sticky top-0 z-20 backdrop-blur-md bg-opacity-7'>
-                <div className="w-8 ml-2 h-full flex justify-start text-lg items-center">
-                    <FaArrowLeft onClick={() => navigate(-1)} className="hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
+        <div className="flex flex-col flex-grow relative">
+        <div className='h-16 min-h-16 w-full px-4 justify-start sticky top-0 z-20 gap-5 flex border-b border-twitterBorder text-white backdrop-blur-md bg-opacity-7'>
+                <div className="w-8 ml-2 h-full flex justify-start text-lg  items-center">
+                    <FaArrowLeft onClick={() => navigate(-1)} className={clsx ("hover:drop-shadow-[0_0_15px_#1C9BF0] transition duration-300 hover:cursor-pointer", {
+                        "hover:text-twitterRed": buttonColor === "twitterRed",
+                        "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                        "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                        "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                    })}/>
                 </div>
                 <div className="flex items-center justify-start">
-                    <h2 className='font-bold'>All Notifications</h2>
+                    <h2 className='font-bold'>Notifications</h2>
                 </div>
             </div>
             {currentUser && nonMessageNotifications && nonMessageNotifications.length > 0 ? (

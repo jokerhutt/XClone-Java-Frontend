@@ -133,16 +133,23 @@ function ProfileFeed ({currentUserFollowing, buttonColor, backGroundColor, bookM
                 <>
             <div className="flex items-center h-16 w-full px-4 py-1 border border-twitterBorder sticky top-0 z-20 backdrop-blur-md bg-opacity-70">
                 <div className="w-8 mr-2 h-full flex justify-start text-lg items-center">
-                    <FaArrowLeft onClick={() => navigate(-1)} className="text-white hover:drop-shadow-[0_0_15px_#1C9BF0] hover:text-[#66C9FF] transition duration-300 hover:cursor-pointer"/>
+                    <FaArrowLeft onClick={() => navigate(-1)} className={clsx ("text-white hover:drop-shadow-[0_0_15px_#1C9BF0] transition duration-300 hover:cursor-pointer", {
+                        "hover:text-twitterRed": buttonColor === "twitterRed",
+                        "hover:text-twitterBlue": buttonColor === "twitterBlue",
+                        "hover:text-twitterYellow": buttonColor === "twitterYellow",
+                        "hover:text-twitterPurple": buttonColor === "twitterPurple",
+                    })}/>
                 </div>
                 <div>
                     <div className="flex gap-2 items-center">
                         <h2 className="text-xl font-bold text-white">{profileUser.displayName}</h2> <MdOutlineVerified className="text-twitterBlue"/>
                     </div>
-                {currentUserProfileData && currentUser && profileUser.id === currentUser.id ? (
+                {currentUserProfileData && currentUserProfileData.userPosts && currentUser && profileUser.id === currentUser.id ? (
                     <p className="text-twitterBorder">{currentUserProfileData.userPosts.length} Posts</p>
-                ) : (
+                ) : profileUserData ? (
                     <p className="text-twitterBorder">{profileUserData.userPosts.length} Posts</p>
+                ) : (
+                    <p className="text-twitterBorder">Loading Posts...</p>
                 )}
                 </div>
             </div>
@@ -150,10 +157,12 @@ function ProfileFeed ({currentUserFollowing, buttonColor, backGroundColor, bookM
 
             <div className="flex-[240] h-full w-full relative">
                 <div>
-                    <img className="h-52 w-full" src={profileUser.backGround}/>
+                    <img className="md:h-52 h-28 w-full" src={profileUser.backGround}/>
                 </div>
                 <div className="z-45 absolute -translate-x-1 -bottom-1/4  mb-2 ml-4 h-35 w-35">
-                    <img className={ clsx ("rounded-full h-32 w-32 object-cover border-4 ", {
+                    <img 
+                    onClick={() => window.open(profileUser.profilePic, "_blank")}
+                    className={ clsx ("hover:cursor-pointer rounded-full md:h-32 h-20 md:w-32 w-20 object-cover border-4 ", {
                         "border-dimBackGround": backGroundColor === "dimBackGround",
                         "border-twitterBlack": backGroundColor === "twitterBlack",
                     })} src={profileUser.profilePic}/>
@@ -165,7 +174,7 @@ function ProfileFeed ({currentUserFollowing, buttonColor, backGroundColor, bookM
                     <ProfileFeedFollow isFollowing={toggleFollowing} currentUser={currentUser} profileUser={profileUser} userFollowing={userFollowing} handleNewFollow={handleNewFollow}/>
                 </div>
 
-                <div className="flex-[47] h-full w-full mt-4">
+                <div className="flex-[47] h-full w-full md:mt-4">
                     <h2 className="font-bold text-2xl">{profileUser.displayName}</h2> 
                     <p className="text-sm">@{profileUser.username}</p>
                 </div>
@@ -206,13 +215,15 @@ function ProfileFeed ({currentUserFollowing, buttonColor, backGroundColor, bookM
                     </div>
                 )}
                 </>
-                ) : (
+                ) : profileUserData ? (
                 <div className="w-full h-full flex justify-center item-center">
                     <div className="w-2/5 flex flex-col mt-4 items-center gap-2">
                     <p className="text-center font-bold text-2xl">@{profileUserData.userProfile.username} hasn't posted</p>
                     <p className="text-center text-twitterBorder">When they do, their posts will show up here</p>
                     </div>
                 </div>  
+                ) : (
+                    null
                 )}
 
             </div>
@@ -226,13 +237,15 @@ function ProfileFeed ({currentUserFollowing, buttonColor, backGroundColor, bookM
                     </div>
                 )}
                 </>
-                ) : (
+                ) : profileUserData ? (
                 <div className="w-full h-full flex justify-center item-center">
                     <div className="w-2/5 flex flex-col mt-4 items-center gap-2">
                     <p className="text-center font-bold text-2xl">@{profileUserData.userProfile.username} hasn't liked any posts yet</p>
                     <p className="text-center text-twitterBorder">Once they do, those posts will show up here</p>
                     </div>
                 </div>  
+                ) : (
+                    null
                 )}
 
             </div>
@@ -250,7 +263,7 @@ function ProfileFeed ({currentUserFollowing, buttonColor, backGroundColor, bookM
                         </div>
                     )}
                     </div>
-                    ) : (
+                    ) : profileUserData ? (
                         <div className="w-full h-full flex justify-center item-center">
                             <div className="w-2/5 flex flex-col mt-4 items-center gap-2">
                             <img src={"/no-media.png"}/>
@@ -258,6 +271,8 @@ function ProfileFeed ({currentUserFollowing, buttonColor, backGroundColor, bookM
                             <p className="text-center text-twitterBorder">Once they do, those posts will show up here</p>
                             </div>
                         </div>
+                    ) : (
+                        null
                     )}
 
 

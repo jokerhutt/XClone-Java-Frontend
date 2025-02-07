@@ -5,6 +5,7 @@ import ReplyingModal from "./ReplyingModal";
 import { FaRetweet } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { BsThreeDots } from "react-icons/bs";
+import clsx from 'clsx';
 
 import MorePost from "./MorePost";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -104,9 +105,14 @@ function PostTemplate ({currentUserFollowing, backGroundColor, buttonColor, book
                             <p className="font-bold">{postCreator.displayName}</p>
                             <p className="text-twitterBorder">@{postCreator.username}</p>
                     </div>
-                    <div className="flex items-center gap-2 text-twitterBlue font-semibold">
+                    <div className={clsx ("flex items-center gap-2 font-semibold", {
+                        "text-twitterRed": buttonColor === "twitterRed",
+                        "text-twitterBlue": buttonColor === "twitterBlue",
+                        "text-twitterYellow": buttonColor === "twitterYellow",
+                        "text-twitterPurple": buttonColor === "twitterPurple",
+                    })}>
                         <FaRetweet className="text-lg"/>
-                        <p> {profileUser.displayName} Reposted </p>
+                        <p className="hidden md:block"> {profileUser.displayName} Reposted </p>
                     </div>
                 </div>
                 ) : (
@@ -139,14 +145,14 @@ function PostTemplate ({currentUserFollowing, backGroundColor, buttonColor, book
                     <p>{post.postText}</p>
                 </div>
                 {postMedia && postMedia.length > 0 && !disableMedia ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
+                    <div className={`grid grid-cols-2 md:gap-4 gap-2 my-4`}>
                         {postMedia.map((image, index) => {
                         return (
-                        <div key={index} className="col-span-1">
+                        <div key={index} className={`col-span-${postMedia.length === 1 ? "2" : "1"} flex justify-center items-center w-full h-full`}>
                             <img
                                 onClick={() => navigate(`/imagepreview/${post.postId}/${image.position}`)}
                                 src={image.mediaFile}
-                                className="hover:cursor-pointer w-full h-48 object-cover rounded-lg "
+                                className={`hover:cursor-pointer w-full h-28 md:h-48 object-cover rounded-lg`}
                             />
                         </div>)})}
                     </div>
@@ -183,11 +189,20 @@ function PostTemplate ({currentUserFollowing, backGroundColor, buttonColor, book
                 <div className="">
                     <hr/>
                 </div>
+                {currentPostReplies && currentPostReplies.length > 0 ? (
+                <>
                 {currentPostReplies.map((reply) => 
-                <div>
-                    <ReplyPostTemplate buttonColor={buttonColor} tempPostReplies={tempPostReplies} tempReplies={tempReplies} post={reply} ogPostUser={postCreator} cachedAddedReplies={cachedAddedReplies}/>
-                 </div>
-            )}
+                    <div>
+                        <ReplyPostTemplate buttonColor={buttonColor} tempPostReplies={tempPostReplies} tempReplies={tempReplies} post={reply} ogPostUser={postCreator} cachedAddedReplies={cachedAddedReplies}/>
+                     </div>
+                )}
+                </>
+                ) : (
+                    <div className="text-white flex w-full h-20 justify-center items-center text-2xl font-bold">
+                        <p>No replies yet...</p>
+                    </div>    
+                )}
+
         </div>
         ) :  (
             null

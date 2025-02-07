@@ -16,7 +16,7 @@ function YouMightLike ({currentUserFollowing, backGroundColor, cachedFollows, sa
 
     return(
 
-        <div className='px-4 py-3 flex w-full h-full hover:cursor-pointer'>
+        <div className='px-4 py-3 flex w-full h-full hover:cursor-pointer hover:bg-twitterHover'>
             <Link to={`/${sampleuser.id}`} className='flex-[1]'>
                 <ProfileHoverPopover backGroundColor={backGroundColor} currentUserFollowing={currentUserFollowing} handleNewFollow={handleNewFollow} toggleFollowing={toggleFollowing} setToggleFollowing={setToggleFollowing} cachedFollows={cachedFollows} postCreator={sampleuser} currentUser={currentUser} />
             </Link>
@@ -31,7 +31,7 @@ function YouMightLike ({currentUserFollowing, backGroundColor, cachedFollows, sa
                 <p className="font-bold">{sampleuser.displayName}</p>
                 <p className="text-twitterBorder">@{sampleuser.username}</p>
             </div>
-            <div className='h-full w-full text-black flex-[3] flex justify-center items-center'>
+            <div className=' h-full w-full text-black flex-[3] flex justify-center items-center'>
                 {sampleuser ? (
                     <>
                         {toggleFollowing ? (

@@ -29,7 +29,7 @@ function GifPopover ({addGifToPost, buttonColor}) {
 
     return (
         <>
-        <Popover open={openGifs} placement="bottom" className="z-50" theme="DARK">
+        <Popover open={openGifs} placement="bottom" className="" theme="DARK">
             <PopoverHandler onClick={() => setOpenGifs(!openGifs)}>
                 <div>
                     <MdOutlineGifBox className={clsx ("text-xl hover:drop-shadow-[0_0_15px_#1C9BF0] transition duration-300 hover:cursor-pointer", {
@@ -39,8 +39,8 @@ function GifPopover ({addGifToPost, buttonColor}) {
                 </div>
             </PopoverHandler>
             <PopoverContent>
-                <div>
-                <GifPicker onGifClick={(selectedGif) => handleGifSelect(selectedGif)} tenorApiKey={TENOR_API_KEY}/>
+                <div className="px-4 w-full z-50">
+                <GifPicker onGifClick={(selectedGif) => handleGifSelect(selectedGif)} width={180} height={240} tenorApiKey={TENOR_API_KEY}/>
                 </div>
             </PopoverContent>
         </Popover>

@@ -5,6 +5,7 @@ import imageCompression from 'browser-image-compression';
 import { CiImageOn } from "react-icons/ci";
 import { MdOutlineGifBox } from "react-icons/md";
 import GifPopover from "../../GifPopover";
+import { useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { BsEmojiSmile } from "react-icons/bs";
 import GifPicker from 'gif-picker-react';
@@ -12,11 +13,12 @@ import { FaGlobeAmericas } from "react-icons/fa";
 
 
 
-function NewPost ({cachedMediaPosts, buttonColor, setCachedMediaPosts, setCurrentUserProfileData, currentUserProfileData, currentUser, setIsPosting, setCurrentUser, isPosting, setForYouFeedContent, forYouFeedContent}) {
+function NewPost ({cachedMediaPosts, buttonColor, setCachedMediaPosts, setCurrentUserProfileData, currentUserProfileData, currentUser, setIsPosting, setCurrentUser, mobileCompose, isPosting, setForYouFeedContent, forYouFeedContent}) {
 
     const [postTitle, setPostTitle] = useState("");
     const [postMedia, setPostMedia] = useState([]);
     const [emojiToggle, setEmojiToggle] = useState(false);
+    const navigate = useNavigate();
 
     function addGifToPost (gifUrl) {
         const postMediaArray = [...postMedia];
@@ -116,6 +118,9 @@ function NewPost ({cachedMediaPosts, buttonColor, setCachedMediaPosts, setCurren
                     if (isPosting) {
                         setIsPosting(false);
                     }
+                    if (mobileCompose) {
+                        navigate("/")
+                    }
     
             })
 
@@ -144,41 +149,51 @@ function NewPost ({cachedMediaPosts, buttonColor, setCachedMediaPosts, setCurren
 
     return(
         
-        <div className=" w-full h-full pt-1 z-50">
+        <div className=" w-full h-full pt-1">
 
             {forYouFeedContent ? (
-                            <div className="flex flex-row flex-grow  w-full h-full">
+                            <div className="flex w-full h-auto">
 
                             {isPosting && currentUser ? (
-                            <div className="flex-[1] flex flex-col w-full h-full mr-6 pt-3 z-65">
+                            <div className="flex-[1] flex flex-col w-full h-full mr-6 pt-3 z-40">
                                 <img src={currentUser.profilePic} className="rounded-full w-12"/>
                             </div>
                             ) : currentUser ? (
-                            <div className="flex-[1] flex flex-col w-full h-full mr-4 pt-3 z-65">
+                            <div className="flex-[1] flex flex-col w-full h-full mr-4 pt-3 z-40">
                                 <img src={currentUser.profilePic} className="rounded-full w-10"/>
                             </div>
                             ) : (
-                            <div className="flex-[1] flex flex-col w-full h-full mr-4 pt-3 z-65">
+                            <div className="flex-[1] flex flex-col w-full h-full mr-4 pt-3 z-40">
                                 <img src="/DEFAULTPFP.png" className="rounded-full w-10"/>
                             </div>
                             )}
             
             
                             <div className="flex-[12] flex flex-col w-full">
-                                <input value={postTitle} placeholder="What is happening?!" onChange={(e) => setPostTitle(e.target.value)} className="text-xl flex-[5] flex py-3 h-6 bg-transparent text-gray-100 border-none focus:outline-none"/>
+                                <textarea 
+                                value={postTitle} 
+                                placeholder="What is happening?!" 
+                                onChange={(e) => {
+                                    setPostTitle(e.target.value);
+                                    e.target.style.height = "auto";
+                                    e.target.style.height = `${e.target.scrollHeight}px`;
+                                }}
+
+                                className="text-xl md:flex-[5] flex py-3 md:h-6 max-h-40 bg-transparent text-gray-100 border-none focus:outline-none"
+                                />
 
                                 {postMedia.length > 0 ? (
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
+                                    <div className="grid grid-cols-2 gap-4 my-4">
                                         {postMedia.slice(0, 4).map((image, index) => {
                                             return (
                                                 <div key={index} className="col-span-1 relative">
                                                     <img
                                                         src={image}
-                                                        className="w-full h-48 object-cover relative rounded-lg"
+                                                        className="w-full md:h-48 h-24 object-cover relative rounded-lg"
                                                     />
                                                     <div 
                                                     onClick={() => handleRemoveImage(index)}
-                                                    className="z-60 absolute top-2 rounded-full border-2 right-4 hover:cursor-pointer hover:bg-twitterHover hover:bg-opacity-40">
+                                                    className="absolute top-2 rounded-full border-2 right-4 hover:cursor-pointer hover:bg-twitterHover hover:bg-opacity-40">
                                                         <p className="text-white px-1.5">X</p>
                                                     </div>
                                                 </div>
@@ -190,9 +205,11 @@ function NewPost ({cachedMediaPosts, buttonColor, setCachedMediaPosts, setCurren
                                     null
                                 )}
             
-                                <div className="flex-[12] text-white ">
+                                <div className="md:flex-[12] text-white ">
+
+                                <hr className="md:hidden border-twitterBorder"/>
                                 
-                                    <div className={clsx ("flex gap-2 items-center flex-[1] text-sm hover:drop-shadow-[0_0_15px_#1C9BF0] transition duration-300 hover:cursor-pointer", {
+                                    <div className={clsx ("flex gap-2 pt-2 md:pt-0 items-center flex-[1] text-sm hover:drop-shadow-[0_0_15px_#1C9BF0] transition duration-300 hover:cursor-pointer", {
             "text-twitterRed": buttonColor === "twitterRed",
             "text-twitterBlue": buttonColor === "twitterBlue",
             "text-twitterYellow": buttonColor === "twitterYellow",
@@ -247,26 +264,26 @@ function NewPost ({cachedMediaPosts, buttonColor, setCachedMediaPosts, setCurren
                                                 "hover:text-twitterYellow": buttonColor === "twitterYellow",
                                                 "hover:text-twitterPurple": buttonColor === "twitterPurple",
                                             })}/>
-                                            <div className="absolute z-70 translate-y-5">
+                                            <div className="absolute z-40 translate-y-5">
                                                 <EmojiPicker open={emojiToggle} onEmojiClick={handleEmojiAdd} theme={"dark"} height={340} width={280}/>
                                             </div>
                                             </div>
                                         </div>
                                         <div className='h-full w-full text-black flex-[3] flex justify-end items-center py-4'>
                                             {currentUser && postTitle.length > 0 || postMedia.length > 0? (
-                                                <div className='hover:cursor-pointer h-full w-1/4 bg-white flex justify-center items-center py-1 rounded-l-full rounded-r-full hover:bg-gray-200'
+                                                <div className='hover:cursor-pointer h-full w-1/2 md:w-1/4 bg-white flex justify-center items-center py-1 rounded-l-full rounded-r-full hover:bg-gray-200'
                                                 onClick={(e) => handleNewPost(e)}
                                                 >
                                                     <p className="font-bold">Post</p>
                                                 </div>
                                             ) : currentUser ? (
-                                                <div className='h-full w-1/4 bg-gray-400 flex justify-center items-center py-1 rounded-l-full rounded-r-full'
+                                                <div className='h-full w-1/2 md:w-1/4 bg-gray-400 flex justify-center items-center py-1 rounded-l-full rounded-r-full'
                                                 onClick={(e) => handleNewPost(e)}
                                                 >
                                                     <p className="font-bold">Post</p>
                                                 </div>
                                             )  : (
-                                                <div className='hover:cursor-not-allowed h-full w-1/4 bg-white flex justify-center items-center py-1 rounded-l-full rounded-r-full hover:bg-gray-200'
+                                                <div className='hover:cursor-not-allowed h-fullw-1/2 md:w-1/4 bg-white flex justify-center items-center py-1 rounded-l-full rounded-r-full hover:bg-gray-200'
                                                 >
                                                     <p className="font-bold">Post</p>
                                                 </div>

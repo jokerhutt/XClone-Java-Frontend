@@ -287,7 +287,7 @@ function PostActions ({setCurrentUserProfileData, buttonColor, bookMarkContent, 
 
     return (
         <div>
-                            <div className="flex-[1] max-h-5 py-2 text-gray-300 flex justify-between pb-2">
+                            <div className="flex-[1] max-h-5 py-2 px-2 text-gray-300 flex justify-between pb-2">
                     
                     
                     

@@ -30,19 +30,19 @@ function MediaPreviewModal ({cachedLikedPosts, backGroundColor, bookMarkContent,
 
     return (
         <>
-        <div className={clsx ("fixed inset-0 h-full z-70 w-screen bg-opacity-50 backdrop-blur-lg backdrop-brightness-75 flex justify-center items-center", {
+        <div className={clsx ("fixed inset-0 h-full z-70 w-screen bg-opacity-10 md:bg-opacity-50 backdrop-blur-lg backdrop-brightness-75 flex justify-center items-center", {
           "bg-dimBackGround": backGroundColor === "dimBackGround",
           "bg-twitterBlack": backGroundColor === "twitterBlack",
         })}>
 
-            <div className="flex-[80] h-full w-full flex-col relative">
-                <div className='text-white h-10 absolute py-16 px-16 z-65 text-xl'>
+            <div className="flex-[100] md:flex-[80] h-full w-full flex-col relative">
+                <div className='text-white h-10 absolute py-16 px-8 md:px-16 z-65 text-xl'>
                     <p onClick={() => navigate(-1)} className='hover:cursor-pointer'>X</p>
                 </div>
                 {position && previewedPostMedia && previewedPost ? (
                 <div className="w-full h-full flex justify-center items-center px-2">
 
-                        <div className='h-full w-22 flex items-center justify-center px-16 text-white'>
+                        <div className='h-full w-22 flex items-center justify-center px-8 md:px-16 text-white'>
                             <div className='rounded-full hover:bg-twitterBlue hover:cursor-pointer p-1'>
                             {position > 1 ? (
                                     <FaArrowLeft 
@@ -55,10 +55,10 @@ function MediaPreviewModal ({cachedLikedPosts, backGroundColor, bookMarkContent,
                         </div>
 
                     <div className='w-full h-full flex justify-center items-center py-16'>
-                        <img className='w-auto  h-auto' src={previewedPostMedia[position - 1].mediaFile} />
+                        <img className='w-full md:w-auto md:h-auto md:max-h-80 max-h-44' src={previewedPostMedia[position - 1].mediaFile} />
                     </div>
 
-                        <div className='h-full w-22 flex items-center justify-center px-16 text-white'>
+                        <div className='h-full w-22 flex items-center justify-center px-8 md:px-16 text-white'>
                             <div className='rounded-full hover:bg-twitterBlue hover:cursor-pointer p-1'>
                                 {position < previewedPostMedia.length ? (
                                     <FaArrowRight 
@@ -80,7 +80,7 @@ function MediaPreviewModal ({cachedLikedPosts, backGroundColor, bookMarkContent,
 
             </div>
             {previewedPost ? (
-            <div className={clsx ("flex-[25] bg-black h-full w-full px-2 flex justify-center items-center flex-col", {
+            <div className={clsx ("md:flex-[25] bg-black h-full w-full px-2 hidden md:flex justify-center items-center flex-col", {
                 "bg-dimBackGround": backGroundColor === "dimBackGround",
                 "bg-twitterBlack": backGroundColor === "twitterBlack",
             })}>

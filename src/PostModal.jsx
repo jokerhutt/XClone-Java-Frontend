@@ -18,15 +18,15 @@ function PostModal ({currentUser, buttonColor, backGroundColor, forYouFeedConten
     return(
         <>
         {currentUser && forYouFeedContent && isPosting ? (
-            <div className='fixed inset-0 h-full z-40 w-screen bg-opacity-55 bg-gray-700 flex flex-col justify-start pt-20 flex-grow items-center '>
-            <div className={clsx ('py-8 w-2/5 mb-0 rounded-3xl text-white flex flex-col px-4 gap-2 justify-center items-center', {
+            <div className='fixed inset-0 h-full px-4 md:px-0 z-40 w-screen bg-opacity-55 bg-gray-700 flex flex-col justify-start pt-20 flex-grow items-center '>
+            <div className={clsx ('py-8 w-full md:w-2/5 mb-0 rounded-3xl text-white flex flex-col px-4 gap-2 justify-center items-center', {
                 "bg-dimBackGround": backGroundColor === "dimBackGround",
                 "bg-twitterBlack": backGroundColor === "twitterBlack",
             })}>
-            <div className="w-full px-8 hover:cursor-pointer" onClick={() => setIsPosting(false)}>
+            <div className="w-full px-4 md:px-8 hover:cursor-pointer" onClick={() => setIsPosting(false)}>
                 <p className="text-white text-xl">X</p>
             </div>
-            <div className="w-full h-full px-8">
+            <div className="w-full h-full px-4 md:px-8">
                 <NewPost buttonColor={buttonColor} setForYouFeedContent={setForYouFeedContent} forYouFeedContent={forYouFeedContent} currentUser={currentUser} setIsPosting={setIsPosting} isPosting={isPosting}/>
             </div>
             </div>

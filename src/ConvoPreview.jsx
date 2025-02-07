@@ -145,9 +145,9 @@ function ConvoPreview ({userId, otherUserId, convo, selectedConvo, handleMarkAsR
             <div className="w-full border-b-2 border-twitterBorder pl-4 py-4 bg-gray-300 bg-opacity-30">
             {convoOtherUser && convo && otherUserFirstName ? (
             <div className=" flex w-full h-full">
-                    <div className="flex-[25]">
+                    <div className="flex-[25] mr-4">
                         <div>
-                            <img src={convoOtherUser.profilePic} className="w-10 h-10 rounded-full"/>
+                            <img src={convoOtherUser.profilePic} className="w-8 h-8 md:w-10 md:h-10 rounded-full"/>
                         </div>
                     </div>
 
@@ -192,7 +192,7 @@ function ConvoPreview ({userId, otherUserId, convo, selectedConvo, handleMarkAsR
                         </div>
                     </div>
 
-                    <div className="flex-col flex-[75] text-white">
+                    <div className="flex-col flex-[75] pl-4 md:pl-0 text-white">
                             <div className="flex gap-2">
                                 <p className="text-white font-bold">{otherUserFirstName}</p>
                                 {lastMessageTime ? (
