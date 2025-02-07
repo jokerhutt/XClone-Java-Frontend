@@ -783,7 +783,7 @@ function sortMediaCachedPosts (passedPosts) {
             <Route 
               path="/messages/:userId"
               element={
-                <MessageComponent buttonColor={buttonColor} hasMessages={hasMessages} setHasMessages={setHasMessages} setMessageNotificationCache={setMessageNotificationCache} messageNotificationCache={messageNotificationCache} sendMessage={sendMessage} socket={socket} convoCache={convoCache} setConvoCache={setConvoCache} currentUser={currentUser} messageNotifications={messageNotifications} refreshNotifications={refreshNotifications} userNotifications={userNotifications}/>
+                <MessageComponent fetchUserConvos={fetchUserConvos} buttonColor={buttonColor} hasMessages={hasMessages} setHasMessages={setHasMessages} setMessageNotificationCache={setMessageNotificationCache} messageNotificationCache={messageNotificationCache} sendMessage={sendMessage} socket={socket} convoCache={convoCache} setConvoCache={setConvoCache} currentUser={currentUser} messageNotifications={messageNotifications} refreshNotifications={refreshNotifications} userNotifications={userNotifications}/>
               }
             />
 
@@ -797,7 +797,7 @@ function sortMediaCachedPosts (passedPosts) {
             <Route 
               path="/messages/:userId/:otherUserId"
               element={
-                <MessageComponent backGroundColor={backGroundColor} buttonColor={buttonColor} hasMessages={hasMessages} setHasMessages={setHasMessages} setMessageNotificationCache={setMessageNotificationCache} messageNotificationCache={messageNotificationCache} sendMessage={sendMessage} socket={socket} currentUser={currentUser} convoCache={convoCache} setConvoCache={setConvoCache} messageNotifications={messageNotifications} refreshNotifications={refreshNotifications} userNotifications={userNotifications}/>
+                <MessageComponent fetchUserConvos={fetchUserConvos} backGroundColor={backGroundColor} buttonColor={buttonColor} hasMessages={hasMessages} setHasMessages={setHasMessages} setMessageNotificationCache={setMessageNotificationCache} messageNotificationCache={messageNotificationCache} sendMessage={sendMessage} socket={socket} currentUser={currentUser} convoCache={convoCache} setConvoCache={setConvoCache} messageNotifications={messageNotifications} refreshNotifications={refreshNotifications} userNotifications={userNotifications}/>
               }
             />
 

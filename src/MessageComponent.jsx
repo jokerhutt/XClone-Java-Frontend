@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import IndividualMessage from "./IndividualMessage";
 import ConvoPreview from "./ConvoPreview";
 
-function MessageComponent ({hasMessages, buttonColor, setHasMessages, backGroundColor, setMessageNotificationCache, messageNotificationCache, currentUser, sendMessage, socket, setConvoCache, convoCache, messageNotifications, refreshNotifications, userNotifications}) {
+function MessageComponent ({hasMessages, buttonColor, fetchUserConvos, setHasMessages, backGroundColor, setMessageNotificationCache, messageNotificationCache, currentUser, sendMessage, socket, setConvoCache, convoCache, messageNotifications, refreshNotifications, userNotifications}) {
 
     const { userId, otherUserId } = useParams();
     const [messageText, setMessageText] = useState("");
@@ -78,6 +78,22 @@ function MessageComponent ({hasMessages, buttonColor, setHasMessages, backGround
         setMessageText("");
     }
 
+    function handleNewConvo () {
+        if (otherUserId && userId && !currentConvo) {
+            fetch(`http://localhost:6790/api/conversations/${userId}/${otherUserId}`) 
+            .then(response => response.json())
+            .then(() => {
+                fetchUserConvos()
+            })
+            .catch(err => console.error("Failed to create convo:", err));
+
+        }
+    }
+
+    useEffect(() => {
+        handleNewConvo()
+    }, [otherUserId, userId, currentConvo, ])
+
     useEffect(() => {
         if (currentUser && convoCache){ 
             const unpackedConvos = Object.values(convoCache).map(entry => entry.convo);
@@ -93,9 +109,9 @@ function MessageComponent ({hasMessages, buttonColor, setHasMessages, backGround
             );
             console.log("FOUND CONVO IS " + JSON.stringify(foundConvo))
             setCurrentConvo(foundConvo)   
-        } else {
+        } else (
             setCurrentConvo(null)
-        }
+        )
     }, [userId, otherUserId, convoCache, currentUser])
 
     useEffect(() => {
